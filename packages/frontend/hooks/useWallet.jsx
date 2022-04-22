@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
 import detectEthereumProvider from '@metamask/detect-provider';
 import { ethers } from 'ethers';
+import { useEffect, useState } from 'react';
 
 export const getContract = async (tokenAddress, abi, ethereumProvider) => {
   const provider = new ethers.providers.Web3Provider(ethereumProvider);
@@ -9,8 +9,8 @@ export const getContract = async (tokenAddress, abi, ethereumProvider) => {
 };
 
 const availableChainIds = [
-  0x89, // polygon
-  0xA, // optimism
+  '0x89', // polygon
+  '0xA', // optimism
 ];
 
 const useWallet = () => {

@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Page from '../components/utils/Page';
 import useWallet from '../hooks/useWallet';
-import { StyledHeadingOne, StyledHeadingThree, StyledText } from '../styles/GlobalComponents';
+import { StyledHeadingOne } from '../styles/GlobalComponents';
+import PocItem from './gallery/PocItem';
 
 const DEV_DATA = [
   {
@@ -74,16 +75,7 @@ const Gallery = () => {
 
         <StyledPocList>
           {userPocs.map((p) => (
-            <StyledPocItem>
-              <div>
-                <div className="img-container">
-                  <img src={p.src} alt={p.name} />
-                </div>
-
-                <StyledHeadingThree className="name">{p.name}</StyledHeadingThree>
-                <StyledText className="description">{p.description}</StyledText>
-              </div>
-            </StyledPocItem>
+            <PocItem key={p.name + p.src} poc={p} />
           ))}
         </StyledPocList>
 
@@ -91,62 +83,6 @@ const Gallery = () => {
     </Page>
   );
 };
-
-const StyledPocItem = styled.li`
-
-    padding: 20px;
-
-    width: 33%;
-
-    @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
-        width: 50%;
-        padding: 1%;
-    }
-    
-    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-        width: 50%;
-    }
-
-    @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-        width: 100%;
-        padding: 20px 0px;
-    }
-
-    & > div {
-        position: relative;
-        
-        padding: 20px;
-
-        padding-left: 120px;
-
-        border-radius: 12px;
-        background-color: ${({ theme }) => `${theme.colors.typo}10`};
-        backdrop-filter: blur(4px);
-
-        .img-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            position: absolute;
-            top: -10px;
-            left: -10px;
-
-            border-radius: 50%;
-            overflow: hidden;
-
-            width: 100px;
-            height: 100px;
-
-            box-shadow: 0 0 0 4px ${({ theme }) => theme.colors.bg};
-
-            img {
-                width: 100%;
-                height: auto;
-            }
-        }
-     }
-`;
 
 const StyledPocList = styled.ul`
     display: flex;

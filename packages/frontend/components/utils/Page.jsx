@@ -23,20 +23,20 @@ const Page = ({ title = '', description = '', children }) => (
 );
 
 const StyledPage = styled.div`
-  padding: 0 20px;
+  padding: 0 5%;
+
   background-color: ${({ theme }) => theme.colors.bg};
 
   @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
-      width: 30%;
-      padding: 0 20px;
+      padding: 0 5%;
   }
     
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-      width: 50%;
+      padding: 0 5%;
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-      width: 100%;
+      padding: 0 15px;
   }
 `;
 
