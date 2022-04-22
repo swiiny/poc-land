@@ -45,4 +45,12 @@ contract Poc is ERC721, ERC721Enumerable, Ownable {
     {
         return super.supportsInterface(interfaceId);
     }
+
+
+    function tokenURI(uint256 _tokenId) public view virtual override returns (string memory) {
+        // require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
+        // uint256 tokenId = 12;
+        // string memory baseURI = _baseURI();
+        return baseURI;
+    }
 }

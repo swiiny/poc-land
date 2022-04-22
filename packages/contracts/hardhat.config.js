@@ -66,6 +66,12 @@ module.exports = {
       // gas: 800000,
       // gasPrice: 100000000000,
     },
+    rinkeby: {
+      url: "https://rinkeby.infura.io/v3/64ccd977c19d4730b461d2de8147dd1e",
+      accounts: [process.env.KEYPROD],
+      // gas: 800000,
+      // gasPrice: 100000000000,
+    },
   },
   gasReporter: {
     enabled: process.env.REPORT_GAS !== undefined,
