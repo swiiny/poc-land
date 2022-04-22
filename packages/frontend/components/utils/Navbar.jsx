@@ -10,7 +10,7 @@ export const pages = [
   },
   {
     label: 'Create',
-    url: '/new-collection',
+    url: '/create',
   },
   {
     label: 'My Gallery',
@@ -39,7 +39,7 @@ const Navbar = () => {
 
       <StyledLogo src="" />
 
-      <ul className="list-none flex align-center justify-end w-full align-center">
+      <ul>
         {pages.map((p) => (
           <li>
             <Link href={p.url}>

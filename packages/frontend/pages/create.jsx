@@ -3,16 +3,16 @@ import styled from 'styled-components';
 import Page from '../components/utils/Page';
 import { StyledHeadingOne } from '../styles/GlobalComponents';
 
-const Gallery = () => {
+const Create = () => {
   useEffect(() => {
 
   }, []);
 
   return (
-    <Page title="My Gallery">
+    <Page title="Create">
       <StyledContainer>
         <StyledHeadingOne>
-          My Gallery
+          Create POC
         </StyledHeadingOne>
 
       </StyledContainer>
@@ -30,4 +30,4 @@ const StyledContainer = styled.div`
   padding-top: ${({ theme }) => theme.spacing['3xl']};
 `;
 
-export default Gallery;
+export default Create;
