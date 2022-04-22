@@ -3,7 +3,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 import Page from '../components/utils/Page';
 import { Button, StyledHeadingOne } from '../styles/GlobalComponents';
-import addDefaultSrc from '../utils/functions';
 
 const Create = () => {
   const [pocName, setPocName] = useState('');
@@ -63,7 +62,6 @@ const Create = () => {
             >
               <StyledPocImage
                 src={pocImage}
-                onError={(e) => addDefaultSrc(e)}
               />
             </StyledImgContainer>
 
