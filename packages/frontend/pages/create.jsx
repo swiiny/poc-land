@@ -8,6 +8,7 @@ import addDefaultSrc from '../utils/functions';
 const Create = () => {
   const [pocName, setPocName] = useState('');
   const [pocImage, setPocImage] = useState('');
+  const [pocFile, setPocFile] = useState({});
   const [pocDescription, setPocDescription] = useState('');
   const [pocAddress, setPocAddress] = useState('');
 
@@ -21,6 +22,8 @@ const Create = () => {
   const importImage = (e) => {
     try {
       const img = URL.createObjectURL(e.target.files[0]);
+
+      setPocFile(e.target.files[0]);
 
       setPocImage(img);
     } catch (err) {
@@ -36,6 +39,8 @@ const Create = () => {
     console.log('name: ', pocName);
     console.log('description: ', pocDescription);
     console.log('image: ', pocImage);
+
+    console.log('file: ', pocFile);
 
     // TODO : submit to blockchain here
   };
