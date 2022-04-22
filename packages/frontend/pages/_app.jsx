@@ -29,6 +29,12 @@ const darkTheme = {
     '3xl': '80px',
     '4xl': '100px',
   },
+  breakpoints: {
+    sm: '600px',
+    md: '768px',
+    lg: '1024px',
+    xl: '1280px',
+  },
   colors: {
     typo: '#B3FCFF',
     bg: '#121923',

@@ -14,8 +14,7 @@ export const Button = styled.button`
     font-size: 20px;
     padding: 12px 24px;
 
-    color: white;
-
+    color: ${({ theme }) => theme.colors.typo};
 
     cursor: pointer;
 
@@ -34,6 +33,12 @@ export const Button = styled.button`
         padding: 16px 32px;
         font-size: 28px;
     ` : '')}
+
+    ${(props) => (props.disabled ? css`
+        background: none;
+        color: ${({ theme }) => `${theme.colors.typo}60`};
+        background-color: ${({ theme }) => `${theme.colors.typo}50`};
+    ` : '')}
 `;
 
 export const ButtonLink = styled.a`
@@ -46,7 +51,7 @@ export const StyledHeadingOne = styled.h1`
 
     letter-spacing: -0.02em;
 
-    color: white;
+    color: ${({ theme }) => theme.colors.typo};
 
     line-height: 1.5;
 
@@ -60,7 +65,7 @@ export const StyledHeadingTwo = styled.h2`
 
     letter-spacing: -0.02em;
 
-    color: white;
+    color: ${({ theme }) => theme.colors.typo};
 
     line-height: 1.5;
 
@@ -74,5 +79,5 @@ export const StyledText = styled.p`
 
     line-height: 1.5;
 
-    color: white;
+    color: ${({ theme }) => theme.colors.typo};
 `;
