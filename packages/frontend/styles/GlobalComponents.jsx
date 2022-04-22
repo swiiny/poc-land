@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
 
 export const Size = {
+  xs: 'xs',
   s: 's',
   m: 'm',
   l: 'l',
@@ -23,8 +24,11 @@ export const Button = styled.button`
         border: 1px solid ${({ theme }) => `${theme.colors.typo}60`};
     ` : '')}
 
-    ${(props) => (props.size === Size.s ? css`
+    ${(props) => (props.size === Size.xs ? css`
         padding: 8px 16px;
+        font-size: 16px;
+    ` : props.size === Size.s ? css`
+        padding: 10px 20px;
         font-size: 16px;
     ` : props.size === Size.m ? css`
         padding: 12px 24px;
@@ -73,11 +77,21 @@ export const StyledHeadingTwo = styled.h2`
 `;
 
 export const StyledText = styled.p`
-    font-size: 20px;
+    font-size: 16px;
     font-weight: normal;
     letter-spacing: -0.02em;
 
     line-height: 1.5;
 
     color: ${({ theme }) => theme.colors.typo};
+`;
+
+export const StyledTag = styled.p`
+    border-radius: 8px;
+    background: ${({ theme }) => theme.colors.typo};
+
+    font-size: 16px;
+    padding: 10px 20px;
+
+    color: ${({ theme }) => theme.colors.bg};
 `;

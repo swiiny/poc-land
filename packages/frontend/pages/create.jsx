@@ -4,11 +4,12 @@ import styled, { css } from 'styled-components';
 import Page from '../components/utils/Page';
 import { Button, StyledHeadingOne } from '../styles/GlobalComponents';
 import addDefaultSrc from '../utils/functions';
-import { storeFiles } from '../utils/ipfs';
+import { uploadPocDataToIPFS } from '../utils/ipfs';
 
 const Create = () => {
   const [pocName, setPocName] = useState('');
   const [pocImage, setPocImage] = useState('');
+  const [pocFile, setPocFile] = useState({});
   const [pocDescription, setPocDescription] = useState('');
   const [pocAddress, setPocAddress] = useState('');
 
@@ -23,6 +24,8 @@ const Create = () => {
     try {
       const img = URL.createObjectURL(e.target.files[0]);
 
+      setPocFile(e.target.files[0]);
+
       setPocImage(img);
     } catch (err) {
       console.error('Error importing image: ', err);
@@ -36,8 +39,12 @@ const Create = () => {
     console.log('description: ', pocDescription);
     console.log('image: ', pocImage);
     // TODO : submit to ipfs here
-    const cid = await storeFiles([pocImage]);
+
+    console.log('file: ', pocFile);
+    const cid = await uploadPocDataToIPFS([pocFile]);
     console.log('success?', cid);
+
+    // TODO : submit to blockchain here
   };
 
   return (

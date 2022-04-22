@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Button } from '../../styles/GlobalComponents';
+import useWallet from '../../hooks/useWallet';
+import { Button, Size, StyledTag } from '../../styles/GlobalComponents';
+import { formatAddress } from '../../utils/functions';
 
 export const pages = [
   {
@@ -30,6 +32,8 @@ export const LINKS = {
 };
 
 const Navbar = () => {
+  const { connectToWallet, account } = useWallet();
+
   useEffect(() => {
 
   }, []);
@@ -51,9 +55,19 @@ const Navbar = () => {
         ))}
 
         <li>
-          <Button className="button">
-            Connect Wallet
-          </Button>
+          {account ? (
+            <StyledTag>
+              {formatAddress(account)}
+            </StyledTag>
+          ) : (
+            <Button
+              size={Size.s}
+              onClick={() => connectToWallet()}
+            >
+              Connect Wallet
+            </Button>
+          )}
+
         </li>
       </ul>
     </StyledNavbar>
