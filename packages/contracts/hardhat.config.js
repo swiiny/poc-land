@@ -45,6 +45,11 @@ module.exports = {
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
+    goerli: {
+      url: "https://eth-goerli.alchemyapi.io/v2/xvWNZCtF0QsihW1izifdIOqZrP66u_AJ",
+      gas: 210000,
+      accounts: [process.env.KEY],
+    },
     testnetArbitrum: {
       url: "https://rinkeby.arbitrum.io/rpc",
       gas: 210000,

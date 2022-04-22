@@ -21,8 +21,10 @@ DeFi enabled, censorship resistant multi chain poaps. Built with Superfluid, IPF
 ### Production & Contest
 - Buy poc.land
 - Create server & deploy
+- Deploy contracts on the chains
 - Create slides
 - Create video
+- Create logo
 - Register on hacker dashboard
 
 
