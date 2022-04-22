@@ -47,7 +47,8 @@ module.exports = {
     },
     goerli: {
       url: "https://eth-goerli.alchemyapi.io/v2/xvWNZCtF0QsihW1izifdIOqZrP66u_AJ",
-      gas: 210000,
+      gas: 8000000,
+      gasPrice: 30000000000,
       accounts: [process.env.KEY],
     },
     testnetArbitrum: {
@@ -58,6 +59,12 @@ module.exports = {
     mainnetArbitrum: {
       url: "https://arb-mainnet.g.alchemy.com/v2/knQIgFAnRabuP2QSmrK4uF7SzgShIL3c",
       accounts: [process.env.KEYPROD],
+    },
+    polygon: {
+      url: "https://polygon-mainnet.g.alchemy.com/v2/T5feScSf_Edl3Rwxel0ygxWceNyDV8kV",
+      accounts: [process.env.KEYPROD],
+      // gas: 800000,
+      // gasPrice: 100000000000,
     },
   },
   gasReporter: {
