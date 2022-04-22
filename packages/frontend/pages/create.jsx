@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components';
 import Page from '../components/utils/Page';
 import { Button, StyledHeadingOne } from '../styles/GlobalComponents';
 import addDefaultSrc from '../utils/functions';
+import { storeFiles } from '../utils/ipfs';
 
 const Create = () => {
   const [pocName, setPocName] = useState('');
@@ -28,16 +29,15 @@ const Create = () => {
     }
   };
 
-  const createPoc = (e) => {
+  const createPoc = async (e) => {
     e.preventDefault();
-
     console.warn('submit poc with data');
-
     console.log('name: ', pocName);
     console.log('description: ', pocDescription);
     console.log('image: ', pocImage);
-
-    // TODO : submit to blockchain here
+    // TODO : submit to ipfs here
+    const cid = await storeFiles([pocImage]);
+    console.log('success?', cid);
   };
 
   return (
