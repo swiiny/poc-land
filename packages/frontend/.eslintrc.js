@@ -32,7 +32,6 @@ module.exports = {
     'react/prop-types': 'off',
     'import/no-cycle': 'off',
     'no-param-reassign': ['error', { props: false }],
-    'arrow-body-style': 'always',
     'react/jsx-props-no-spreading': ['off', {
       html: 'ignore',
       custom: 'ignore',

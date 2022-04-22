@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 html,
 body {
   padding: 0;
@@ -19,39 +15,13 @@ a {
   box-sizing: border-box;
 }
 
-
-@layer components {
-  /*
-  .title--h1 {
-    @apply ;
-  }
-
-  .title--h2 {
-    @apply ;
-  }
-
-  .title--h3 {
-    @apply ;
-  }
-
-  .title--h4 {
-    @apply ;
-  }
-
-  .text--normal {
-    @apply ;
-  }
-
-  .button {
-    @apply ;
-  } 
-
-*/
-  .text--bold {
-    @apply font-bold;
-  }
-
-  .text--italic {
-    @apply italic;
-  }
+.main-container {
+  display: flex;
+  flex-direction: column;
+  
+  min-height: 100vh;
+  max-width: 1200px;
+  
+  margin: 0 auto;
+  padding: 0 20px;
 }
