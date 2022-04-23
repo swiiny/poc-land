@@ -1,18 +1,25 @@
-import ethers from 'ethers';
+import { ethers } from 'ethers';
 import { Upload } from 'heroicons-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
-// import pkg from 'rabin-wasm';
 import {
   StyledFileInput, StyledForm, StyledFormItem, StyledInput, StyledLabel, StyledTextArea,
 } from '../components/form/Form';
 import Page from '../components/utils/Page';
 import useWallet, { availableNetworks } from '../hooks/useWallet';
-import { Button, StyledHeadingOne } from '../styles/GlobalComponents';
-import uploadPocDataToIPFS from '../utils/ipfs';
+import { Button, StyledHeadingOne, StyledText } from '../styles/GlobalComponents';
+import { uploadPocDataToIPFS } from '../utils/ipfs';
 import pocFactoryAbi from '../utils/pocFactoryAbi';
 
 // const { create } = pkg;
+
+const UPLOAD_STATE = {
+  unset: 'unset',
+  uploadToIPFS: 'uploadToIPFS',
+  waitingForMMAction: 'waitingForMMAction',
+  success: 'success',
+  denied: 'denied',
+};
 
 const Create = () => {
   const [pocName, setPocName] = useState('');
@@ -20,6 +27,8 @@ const Create = () => {
   const [pocFile, setPocFile] = useState({});
   const [pocDescription, setPocDescription] = useState('');
   const [pocCount, setPocCount] = useState(100);
+
+  const [uploadState, setUploadState] = useState(UPLOAD_STATE.unset);
 
   const { account, isWrongNetwork, currentChainId } = useWallet();
 
@@ -78,10 +87,25 @@ const Create = () => {
 
       // TODO : submit to ipfs here
       console.log('file: ', pocFile);
+
+      setUploadState(UPLOAD_STATE.uploadToIPFS);
+
       const murl = await uploadPocDataToIPFS([pocFile], pocName, pocDescription);
       console.log('metadata url', murl);
-      const res = await createPocContract(window.ethereum, murl, pocName, pocCount);
-      console.log('res', res);
+      setUploadState(UPLOAD_STATE.waitingForMMAction);
+
+      try {
+        const res = await createPocContract(window.ethereum, murl, pocName, pocCount);
+
+        const txHash = res.hash;
+
+        // const tx = ethers.getTr
+
+        setUploadState(UPLOAD_STATE.success);
+      } catch (err) {
+        console.error('Error creating POC: ', err);
+        setUploadState(UPLOAD_STATE.denied);
+      }
     }
   };
 
@@ -157,7 +181,19 @@ const Create = () => {
               />
             </StyledFormItem>
 
+            <StyledText
+              isVisible={uploadState !== UPLOAD_STATE.unset}
+              negative={uploadState === UPLOAD_STATE.denied}
+              positive={uploadState === UPLOAD_STATE.success}
+            >
+              {uploadState === UPLOAD_STATE.uploadToIPFS && 'Uploading to IPFS...'}
+              {uploadState === UPLOAD_STATE.waitingForMMAction && 'Waiting for User Wallet Action...'}
+              {uploadState === UPLOAD_STATE.success && 'PoC Successfully Created'}
+              {uploadState === UPLOAD_STATE.denied && 'Wallet Action Denied'}
+            </StyledText>
+
             <Button
+              isVisible={uploadState === UPLOAD_STATE.unset || uploadState === UPLOAD_STATE.success || uploadState === UPLOAD_STATE.denied}
               style={{ width: '100%' }}
               type="submit"
               onClick={(e) => createPoc(e)}
