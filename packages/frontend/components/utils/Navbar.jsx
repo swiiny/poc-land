@@ -152,7 +152,7 @@ const StyledBackgroundButton = styled.button`
     max-height: 0px;
   `)}
 
-  background-color: ${({ theme }) => `${theme.colors.bg}50`};
+  background-color: ${({ theme }) => `${theme.colors.gradientEnd}50`};
 `;
 
 const StyledMobileNavbar = styled.div`
