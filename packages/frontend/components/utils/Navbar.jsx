@@ -155,14 +155,19 @@ const StyledBackgroundButton = styled.button`
 `;
 
 const StyledMobileNavbar = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  position: relative;
   z-index: 110;
 
   height: 64px;
+
+  padding: 0 16px;
 `;
 
 const StyledBurger = styled.button`

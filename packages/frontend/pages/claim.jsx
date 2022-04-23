@@ -162,11 +162,8 @@ const StyledContainer = styled.div`
   z-index: 2;
 
   min-height: 100vh;
-  padding-top: ${({ theme }) => theme.spacing['3xl']};
 
-  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    padding-top: ${({ theme }) => theme.spacing.xl};
-  }
+  padding-top: ${({ theme }) => theme.spacing['3xl']};
 `;
 
 export default Claim;

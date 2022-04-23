@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { ethers } from 'ethers';
 import { ArrowLeft, ArrowRight, Upload } from 'heroicons-react';
 import Link from 'next/link';
@@ -12,7 +13,6 @@ import useWallet, { availableNetworks } from '../hooks/useWallet';
 import { Button, StyledHeadingOne, StyledText } from '../styles/GlobalComponents';
 import { uploadPocDataToIPFS } from '../utils/ipfs';
 import pocFactoryAbi from '../utils/pocFactoryAbi';
-import axios from 'axios';
 
 // const { create } = pkg;
 
@@ -428,10 +428,6 @@ const StyledContainer = styled.div`
     z-index: 2;
 
     padding-top: ${({ theme }) => theme.spacing['3xl']};
-
-    @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-      padding-top: ${({ theme }) => theme.spacing.xl};
-    }
 `;
 
 export default Create;

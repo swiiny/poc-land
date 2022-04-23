@@ -107,10 +107,6 @@ const StyledContainer = styled.div`
     min-height: 100vh;
     
     padding-top: ${({ theme }) => theme.spacing['3xl']};
-
-    @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-      padding-top: ${({ theme }) => theme.spacing.xl};
-    }
 `;
 
 export default Gallery;
