@@ -27,18 +27,17 @@ const Claim = () => {
 
   const claimPoc = async (e) => {
     e.preventDefault();
+    console.log('whatsssupppp');
 
     try {
       // TODO : Claim POC
-      const url = `${process.env.SERVER_URL}/v1/api/claim`;
-
+      const url = `${process.env.SERVER_URL}/v1/server/mint`;
       const payload = {
+        pocAddress: '0xeD616c1bb22C80c5EB35c492a992f3CDFD4098b0',
         pocId,
         recipient,
       };
-
       const res = await axios.post(url, payload);
-
       console.log('res', res);
     } catch (err) {
       console.error('Error claiming POC: ', err);
@@ -88,8 +87,8 @@ const Claim = () => {
             style={{ width: '100%' }}
             type="submit"
             onClick={(e) => claimPoc(e)}
-            disabled={!isDataValid || !isPocIdValid}
           >
+            {/* // disabled= {!isDataValid || !isPocIdValid} */}
             Claim
           </Button>
         </StyledForm>

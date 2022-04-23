@@ -1,12 +1,12 @@
-FROM node:14.11-alpine
+FROM node:16.14.0
 
 WORKDIR /app
 
 COPY package.json ./
 
-RUN apk --no-cache --virtual build-dependencies add \
-        python \
-        make \
-        g++
+#RUN apk --no-c`ache --virtual build-dependencies add \
+#        python \
+#        make \
+#        g++
         
 RUN npm install

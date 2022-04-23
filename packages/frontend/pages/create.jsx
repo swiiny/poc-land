@@ -1,15 +1,18 @@
-import { ethers } from 'ethers';
+import ethers from 'ethers';
 import { Upload } from 'heroicons-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
+// import pkg from 'rabin-wasm';
 import {
   StyledFileInput, StyledForm, StyledFormItem, StyledInput, StyledLabel, StyledTextArea,
 } from '../components/form/Form';
 import Page from '../components/utils/Page';
 import useWallet from '../hooks/useWallet';
 import { Button, StyledHeadingOne } from '../styles/GlobalComponents';
-import { uploadPocDataToIPFS } from '../utils/ipfs';
+import uploadPocDataToIPFS from '../utils/ipfs';
 import pocFactoryAbi from '../utils/pocFactoryAbi';
+
+// const { create } = pkg;
 
 const Create = () => {
   const [pocName, setPocName] = useState('');
@@ -47,10 +50,10 @@ const Create = () => {
   }
 
   // DNP SELF BOUNTIES STATE CHANGE CALLS
-  async function createPocContract(ethereumProvider, metadataURI) {
+  async function createPocContract(ethereumProvider, metadataURI, name) {
     console.log('Creating POC contract...', account);
     const pf = await getPocFactoryContract(ethereumProvider);
-    const res = await pf.populateTransaction.createPoc(account, 'POC', 'POC', 100, metadataURI);
+    const res = await pf.populateTransaction.createPoc(account, name, 'PoC', 100, metadataURI);
     res.from = account;
     // Rinkeby : make this cleaner
     // res.chainId = parseInt(4, 4)
@@ -74,9 +77,9 @@ const Create = () => {
       console.log('image: ', pocImage);
       // TODO : submit to ipfs here
       console.log('file: ', pocFile);
-      const murl = await uploadPocDataToIPFS([pocFile]);
+      const murl = await uploadPocDataToIPFS([pocFile], pocName, pocDescription);
       console.log('metadata url', murl);
-      const res = await createPocContract(window.ethereum, murl);
+      const res = await createPocContract(window.ethereum, murl, pocName);
       console.log('res', res);
     }
   };

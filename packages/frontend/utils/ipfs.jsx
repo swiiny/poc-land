@@ -9,8 +9,8 @@ function makeStorageClient() {
   return new Web3Storage({ token: getAccessToken() });
 }
 
-function createJsonFile(image) {
-  const dict = { image };
+function createJsonFile(image, name, description) {
+  const dict = { image, name, description };
   const dictstring = JSON.stringify(dict);
   return dictstring;
 }
@@ -22,13 +22,13 @@ async function storeOnIPFS(files) {
   return cid;
 }
 
-function createMetadataFile(image) {
-  const jsonMetadata = createJsonFile(image);
+function createMetadataFile(image, pocName, pocDescription) {
+  const jsonMetadata = createJsonFile(image, pocName, pocDescription);
   const f = new File([jsonMetadata], 'metadata.json', { type: 'text/plain', lastModified: Date.now() });
   return f;
 }
 
-async function uploadPocDataToIPFS(files) {
+async function uploadPocDataToIPFS(files, pocName, pocDescription) {
   // step 0 : get the image (the first file)
   const pocImage = files[0];
   console.log('files, pocImage', files, pocImage);
@@ -44,7 +44,7 @@ async function uploadPocDataToIPFS(files) {
   const imageUrl = `ipfs://${storedCid}`;
   console.log('image url', imageUrl);
   // step 3 : create opensea compatible image metadata file
-  const f = createMetadataFile(imageUrl);
+  const f = createMetadataFile(imageUrl, pocName, pocDescription);
   // step 4 : upload the metadata file to IPFS
   const cid2 = await storeOnIPFS([f]);
   // step 5 : get the url of the metadata file
