@@ -1,7 +1,9 @@
 import { ChevronDownOutline } from 'heroicons-react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import Logo from '../../assets/img/logo.svg';
 import useWallet from '../../hooks/useWallet';
 import { Button, Size, StyledTag } from '../../styles/GlobalComponents';
 import { formatAddress } from '../../utils/functions';
@@ -38,6 +40,9 @@ const Navbar = () => {
 
   const { connectToWallet, account, isWrongNetwork } = useWallet();
 
+  const Router = useRouter();
+  const { pathname } = Router;
+
   return (
     <>
       <NetworkSelector
@@ -48,46 +53,44 @@ const Navbar = () => {
 
       <StyledNavbar>
 
-        <StyledLogo src="" />
+        <StyledLogo src={Logo.src} />
 
         <ul>
           {pages.map((p) => (
             <li>
               <Link href={p.url}>
-                <StyledLink>
+                <StyledLink active={pathname === p.url}>
                   {p.label}
                 </StyledLink>
               </Link>
             </li>
           ))}
-
-          <li>
-            {account ? (
-              <StyledTag>
-                {formatAddress(account)}
-              </StyledTag>
-            ) : isWrongNetwork ? (
-              <>
-                <StyledSwitchNetwork
-                  size={Size.s}
-                  onClick={() => {}}
-                  onMouseEnter={() => setIsNetworksSelectorVisible(true)}
-                  id="switch-button"
-                >
-                  Switch Network
-                  <ChevronDownOutline size={20} style={{ marginLeft: '8px' }} />
-                </StyledSwitchNetwork>
-              </>
-            ) : (
-              <Button
-                size={Size.s}
-                onClick={() => connectToWallet()}
-              >
-                Connect Wallet
-              </Button>
-            )}
-          </li>
         </ul>
+
+        <div className="wallet-connect">
+          {account ? (
+            <StyledTag>
+              {formatAddress(account)}
+            </StyledTag>
+          ) : isWrongNetwork ? (
+            <StyledSwitchNetwork
+              size={Size.s}
+              onClick={() => {}}
+              onMouseEnter={() => setIsNetworksSelectorVisible(true)}
+              id="switch-button"
+            >
+              Switch Network
+              <ChevronDownOutline size={20} style={{ marginLeft: '8px' }} />
+            </StyledSwitchNetwork>
+          ) : (
+            <Button
+              size={Size.s}
+              onClick={() => connectToWallet()}
+            >
+              Connect Wallet
+            </Button>
+          )}
+        </div>
       </StyledNavbar>
     </>
   );
@@ -114,18 +117,26 @@ const StyledSwitchNetwork = styled.div`
 `;
 
 const StyledLogo = styled.img`
-  height: 100%;
+  height: 60%;
   width: auto;
 `;
 
 const StyledLink = styled.a`
-  color: ${({ theme }) => theme.colors.typo};
-
   &:hover {
     opacity: 0.9;
   }
 
   cursor: pointer;
+
+  transition: all 0.4s ease-in-out;
+
+  ${(props) => (props.active ? css`
+    background: ${({ theme }) => theme.colors.gradient};
+    ${() => '-webkit-background-clip: text;'}
+    -webkit-text-fill-color: transparent;
+  ` : css`
+    color: ${({ theme }) => theme.colors.typo};
+  `)}
 `;
 
 const StyledNavbar = styled.nav`
@@ -140,11 +151,21 @@ const StyledNavbar = styled.nav`
   padding: 0 ${({ theme }) => theme.spacing.l};
   
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 
   background-color: ${({ theme }) => `${theme.colors.bg}80`};
   backdrop-filter: blur(8px);
+
+  & > img {
+    position: absolute;
+    left: ${({ theme }) => theme.spacing.l};
+  }
+
+  & > .wallet-connect {
+    position: absolute;
+    right: ${({ theme }) => theme.spacing.l};
+  }
 
   & > ul {
     list-style: none;
