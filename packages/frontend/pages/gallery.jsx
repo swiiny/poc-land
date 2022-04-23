@@ -5,48 +5,10 @@ import Page from '../components/utils/Page';
 import useWallet from '../hooks/useWallet';
 import { StyledHeadingOne } from '../styles/GlobalComponents';
 
-const DEV_DATA = [
-  {
-    name: 'PoC 1',
-    description: 'This is a description for PoC 1',
-    src: 'https://picsum.photos/150/150',
-  },
-  {
-    name: 'PoC 2',
-    description: 'This is a description for PoC *',
-    src: 'https://picsum.photos/150/150',
-  },
-  {
-    name: 'PoC 3',
-    description: 'This is a description for PoC 3',
-    src: 'https://picsum.photos/150/150',
-  },
-  {
-    name: 'PoC 4',
-    description: 'This is a description for PoC 4',
-    src: 'https://picsum.photos/150/150',
-  },
-  {
-    name: 'PoC 5',
-    description: 'This is a description for PoC 5',
-    src: 'https://picsum.photos/150/150',
-  },
-  {
-    name: 'PoC 6',
-    description: 'This is a description for PoC 6',
-    src: 'https://picsum.photos/150/150',
-  },
-  {
-    name: 'PoC 7',
-    description: 'This is a description for PoC 7',
-    src: 'https://picsum.photos/150/150',
-  },
-];
-
 const Gallery = () => {
   const { account } = useWallet();
 
-  const [userPocs, setUserPocs] = useState(DEV_DATA);
+  const [userPocs, setUserPocs] = useState([{ id: 'uehf43' }, { id: 'uehf44' }, { id: 'uehf45' }]);
 
   const fetchPocForAccount = (a) => {
     try {
@@ -75,7 +37,7 @@ const Gallery = () => {
 
         <StyledPocList>
           {userPocs.map((p) => (
-            <PocItem key={p.name + p.src} poc={p} />
+            <PocItem key={p.name + p.src + p.id} poc={p} />
           ))}
         </StyledPocList>
 
@@ -106,7 +68,11 @@ const StyledContainer = styled.div`
 
     min-height: 100vh;
     
-    padding-top: ${({ theme }) => theme.spacing['3xl']};
+    padding-top: ${({ theme }) => theme.spacing['5xl']};
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        padding-top: ${({ theme }) => theme.spacing['3xl']};
+    }
 `;
 
 export default Gallery;

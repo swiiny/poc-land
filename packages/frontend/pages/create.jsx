@@ -452,7 +452,11 @@ const StyledContainer = styled.div`
 
     z-index: 2;
 
-    padding-top: ${({ theme }) => theme.spacing['3xl']};
+    padding-top: ${({ theme }) => theme.spacing['5xl']};
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+        padding-top: ${({ theme }) => theme.spacing['3xl']};
+    }
 `;
 
 export default Create;

@@ -4,10 +4,6 @@ import { ThemeProvider } from 'styled-components';
 import '../styles/globals.css';
 
 const darkTheme = {
-  defaultColors: {
-    bgDark: '#161E25',
-    bgWhite: '#E7EAED',
-  },
   radius: {
     s: '3px',
     m: '5px',
@@ -28,6 +24,7 @@ const darkTheme = {
     '2xl': '64px',
     '3xl': '80px',
     '4xl': '100px',
+    '5xl': '128px',
   },
   breakpoints: {
     sm: '600px',
