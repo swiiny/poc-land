@@ -16,6 +16,7 @@ const Create = () => {
   const [pocImage, setPocImage] = useState('');
   const [pocFile, setPocFile] = useState({});
   const [pocDescription, setPocDescription] = useState('');
+  const [pocCount, setPocCount] = useState(100);
 
   const { account, isWrongNetwork } = useWallet();
 
@@ -113,6 +114,18 @@ const Create = () => {
 
                 <input id="input-file" type="file" accept="image/*" onChange={importImage} />
               </StyledFileInput>
+            </StyledFormItem>
+
+            <StyledFormItem>
+              <StyledLabel>
+                How many PoC do you want to create?
+              </StyledLabel>
+              <StyledInput
+                type="number"
+                placeholder="100"
+                value={pocCount}
+                onChange={(e) => setPocCount(e.target.value)}
+              />
             </StyledFormItem>
 
             <StyledFormItem>

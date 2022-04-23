@@ -47,7 +47,20 @@ const darkTheme = {
       normal: '0px 8px 12px rgba(131, 238, 255, 0.1), 0px 2px 4px rgba(0, 0, 0, 0.8), 0px 1px 0px #6CEEFF',
       hover: '0px 8px 22px rgba(131, 238, 255, 0.2), 0px 2px 4px rgba(0, 0, 0, 0.8), 0px 1px 0px #6CEEFF',
     },
-  },
+  }, /*
+  colors: {
+    typo: '#ffe8b3',
+    bg: '#231212',
+    accent: '#f8d165',
+    negative: '#E35656',
+    gradientStart: '#efcd79',
+    gradientEnd: '#d70d39',
+    gradient: 'linear-gradient(97.76deg, #f8d165 0%, #d70d39 100%)',
+    shadow: {
+      normal: '0px 8px 12px rgba(131, 238, 255, 0.1), 0px 2px 4px rgba(0, 0, 0, 0.8), 0px 1px 0px #6CEEFF',
+      hover: '0px 8px 22px rgba(131, 238, 255, 0.2), 0px 2px 4px rgba(0, 0, 0, 0.8), 0px 1px 0px #6CEEFF',
+    },
+  }, */
 };
 
 const MyApp = ({ Component, pageProps }) => (
@@ -57,6 +70,8 @@ const MyApp = ({ Component, pageProps }) => (
         name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
       />
+
+      <link rel="stylesheet" href="https://use.typekit.net/ghs1jtd.css" />
     </Head>
 
     <ThemeProvider theme={darkTheme}>

@@ -27,6 +27,18 @@ const StyledPage = styled.div`
 
   background-color: ${({ theme }) => theme.colors.bg};
 
+  &::before {
+    content: " ";
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    ${({ theme }) => `background: radial-gradient(88.99% 94.44% at 92.31% 100%, ${`${theme.colors.gradientStart}20`} 0%,  ${`${theme.colors.gradientStart}00`} 100%);`}
+  }
+
   @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
       padding: 0 5%;
   }

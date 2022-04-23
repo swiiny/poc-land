@@ -11,22 +11,25 @@ export default function Home() {
   return (
     <Page title="Home">
       <StyledContainer>
-        <StyledHeadingOne>
-          POC Land
-        </StyledHeadingOne>
 
-        <StyledHeadingTwo>
-          Proof Of Community
-        </StyledHeadingTwo>
+        <StyledTextContainer>
+          <StyledHeadingOne>
+            PoC Land
+          </StyledHeadingOne>
+
+          <StyledHeadingTwo accent style={{ textAlign: 'center' }}>
+            Proof of Community, Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet Lorem Ipsum
+          </StyledHeadingTwo>
+
+        </StyledTextContainer>
 
         <CTAContainer>
           <Button
             onClick={() => router.push(LINKS.create)}
             secondary
-            style={{ marginRight: '16px' }}
             size={Size.l}
           >
-            Create POC
+            Create PoC
           </Button>
           <Button
             onClick={() => router.push(LINKS.gallery)}
@@ -48,6 +51,31 @@ const CTAContainer = styled.div`
   width: 100%;
 
   margin-top: 64px;
+
+  & > button:nth-child(1) {
+    margin-right: 16px;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    flex-direction: column;
+    
+    button {
+      width: 100%;
+      
+      &:nth-child(1) {
+        margin-right: 0px;
+      }
+      
+      & + button {
+        margin-top: 16px;
+      }
+    }
+  }
+`;
+
+const StyledTextContainer = styled.div`
+  text-align: center;
+  max-width: 1200px;
 `;
 
 const StyledContainer = styled.div`
