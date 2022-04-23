@@ -109,32 +109,30 @@ const Create = () => {
 
     if (!isWrongNetwork) {
       setCreationState(CREATION_STATE.deploying);
-      console.warn('submit poc with data');
-      console.log('name: ', pocName);
-      console.log('description: ', pocDescription);
-      console.log('image: ', pocImage);
-      console.log('count ', pocCount);
-
-      // TODO : submit to ipfs here
-      console.log('file: ', pocFile);
 
       setUploadState(UPLOAD_STATE.uploadToIPFS);
 
       const murl = await uploadPocDataToIPFS([pocFile], pocName, pocDescription);
-      console.log('metadata url', murl);
       setUploadState(UPLOAD_STATE.waitingForMMAction);
 
       try {
         const res = await createPocContract(window.ethereum, murl, pocName, pocCount);
         const txHash = res;
+
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+        setUploadState(UPLOAD_STATE.txWaiting);
+
+        const tx = await (await provider.getTransaction(txHash)).wait();
+
         const pocAddress = await getPocWithEventAndCreator(window.ethereum, pocName);
-        console.log('poc address?', pocAddress);
 
         const payload = {
           chainId: currentChainId,
           userAddress: account,
           pocAddress,
         };
+
         await axios.post(`${process.env.SERVER_URL}/v1/server/savePoc`, payload).catch((err) => {
           throw new Error('Failed to save poc in DB :', err);
         });
@@ -144,12 +142,6 @@ const Create = () => {
         // frontend : display as a QR code
         // 0x326162D47d7274f6602e08D5860A5634B8eA4182
         // const tx = ethers.getTr
-
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-
-        setUploadState(UPLOAD_STATE.txWaiting);
-
-        const tx = await (await provider.getTransaction(txHash)).wait();
 
         if (tx.status === 1) {
           setUploadState(UPLOAD_STATE.success);
