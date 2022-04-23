@@ -12,6 +12,7 @@ import useWallet, { availableNetworks } from '../hooks/useWallet';
 import { Button, StyledHeadingOne, StyledText } from '../styles/GlobalComponents';
 import { uploadPocDataToIPFS } from '../utils/ipfs';
 import pocFactoryAbi from '../utils/pocFactoryAbi';
+import axios from 'axios';
 
 // const { create } = pkg;
 
@@ -126,6 +127,16 @@ const Create = () => {
         const txHash = res;
         const pocAddress = await getPocWithEventAndCreator(window.ethereum, pocName);
         console.log('poc address?', pocAddress);
+
+        const payload = {
+          chainId: currentChainId,
+          userAddress: account,
+          pocAddress,
+        };
+        await axios.post(`${process.env.SERVER_URL}/v1/server/savePoc`, payload).catch((err) => {
+          throw new Error('Failed to save poc in DB :', err);
+        });
+
         // TODO
         // backend : save pocAddress, accountAddress (creator address) and chainID!
         // frontend : display as a QR code
