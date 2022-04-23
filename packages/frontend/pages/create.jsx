@@ -80,9 +80,11 @@ const Create = () => {
     return dnpContract;
   }
 
-  async function getPocWithEventAndCreator(ethereumProvider, name) {
+  async function getPocWithEventAndCreator(ethereumProvider) {
     const pocFactoryContract = await getPocFactoryContract(ethereumProvider);
-    const pocAddress = await pocFactoryContract.getLastPocCreatedByCreator(account);
+    const index = await pocFactoryContract.getLastPocCreatorIndex(account);
+    console.log('index', parseInt(index._hex, 16));
+    const pocAddress = await pocFactoryContract.getPocWithCreatorIndex(account, index.sub(1));
     console.log('poc address?', pocAddress);
     return pocAddress;
   }
