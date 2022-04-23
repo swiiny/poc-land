@@ -12,7 +12,7 @@ export const availableNetworks = [
   {
     name: 'Polygon',
     chainId: '0x89',
-    contractAddress: '0x473837550ceDf7f16805C15C21487d3A44f26cE5',
+    contractAddress: '0xEe1bB23886524a9fa59d01871BeFA2bb6388B1dF',
   },
   {
     name: 'Optimism',
@@ -22,7 +22,7 @@ export const availableNetworks = [
   {
     name: 'Rinkeby',
     chainId: '0x4',
-    contractAddress: '',
+    contractAddress: '0x20630D4C77Db8819Ad3b0De34eCB9Eb023AB46EA',
   },
 ];
 
