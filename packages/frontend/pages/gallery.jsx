@@ -1,18 +1,43 @@
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import PocItem from '../components/gallery/PocItem';
 import Page from '../components/utils/Page';
 import useWallet from '../hooks/useWallet';
 import { StyledHeadingOne } from '../styles/GlobalComponents';
+import { getPocContract } from './claim';
 
 const Gallery = () => {
   const { account } = useWallet();
 
   const [userPocs, setUserPocs] = useState([{ id: 'uehf43' }, { id: 'uehf44' }, { id: 'uehf45' }]);
 
-  const fetchPocForAccount = (a) => {
+  const fetchPocForAccount = async (a) => {
     try {
-      // TODO : fetch user's PoCs
+      const url = `${process.env.SERVER_URL}/v1/server/userPocs?userAddr=${a}`;
+
+      const res = await axios.get(url);
+
+      const addresses = res.data;
+      const promises = addresses.map(async (address) => {
+        const pocContract = await getPocContract(window.ethereum, address);
+        const data = await pocContract.tokenURI(4);
+        return axios.get(data).then((result) => {
+          let imageLinkIpfs = result.data.image;
+          imageLinkIpfs = imageLinkIpfs.replace('ipfs://', 'https://ipfs.io/ipfs/');
+
+          return {
+            name: result.data.name,
+            description: result.data.description,
+            src: imageLinkIpfs,
+          };
+        });
+      });
+
+      const resolvedPromises = await Promise.all(promises);
+      console.log('resolvedPromises', resolvedPromises);
+
+      setUserPocs(resolvedPromises);
     } catch (err) {
       console.error('Error fetching poc for account: ', err);
     }

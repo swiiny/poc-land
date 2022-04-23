@@ -63,8 +63,8 @@ app.post(`${BASE_URL_V1}/savePoc`, jsonParser, async (req, res) => {
 
 app.get(`${BASE_URL_V1}/userPocs`, async (req, res) => {
 	try {
-		const { userAddr, chainId } = req.query;
-		const query = await pool.query('SELECT poc_address FROM user_pocs WHERE user_address = ? AND chain_id = ?', [userAddr, chainId]);
+		const { userAddr } = req.query;
+		const query = await pool.query('SELECT poc_address FROM user_pocs WHERE user_address = ?', [userAddr]);
 		const pocs = query[0].map((e) => e.poc_address);
 		res.send(pocs);
 	} catch (err) {

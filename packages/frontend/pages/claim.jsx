@@ -2,7 +2,7 @@ import axios from 'axios';
 import { ethers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import router, { useRouter } from 'next/router';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import {
   StyledForm, StyledFormItem, StyledInput, StyledLabel,
@@ -23,6 +23,12 @@ const CLAIM_STEP = {
   error: 'error',
 };
 
+export async function getPocContract(ethereumProvider, pocAddress) {
+  const provider = new ethers.providers.Web3Provider(ethereumProvider);
+  const dnpContract = new ethers.Contract(pocAddress, pocAbi, provider);
+  return dnpContract;
+}
+
 const Claim = () => {
   const [recipient, setRecipient] = useState('');
   const [pocId, setPocId] = useState('');
@@ -36,42 +42,20 @@ const Claim = () => {
   const Router = useRouter();
   const { poc } = Router.query;
 
-  const isPocIdValid = useMemo(() => {
-    if (!pocId) {
-      return false;
-    }
-
-    // TODO : udpate when pocId will be a real id (not an address)
-    return isAddress(pocId);
-  }, [pocId]);
-
-  async function getPocContract(ethereumProvider, pocAddress) {
-    // const contractAddress = availableNetworks.find((net) => net.chainId === currentChainId)?.contractAddress;
-    const provider = new ethers.providers.Web3Provider(ethereumProvider);
-    const dnpContract = new ethers.Contract(pocAddress, pocAbi, provider);
-    return dnpContract;
-  }
-
   const getPocMetadata = async (pocAddress) => {
-    // const pocAddress = '0xE6BC298FF03054D0Fe27532388522BA1e0E43Ca3';
     const pocContract = await getPocContract(window.ethereum, pocAddress);
-    console.log('address is correct?', pocContract.address);
+
     const data = await pocContract.tokenURI(4);
-    console.log(data);
+
     axios.get(data).then((res) => {
-      console.log(res.data);
-      console.log(res.data.description);
-      console.log(res.data.name);
       let imageLinkIpfs = res.data.image;
       imageLinkIpfs = imageLinkIpfs.replace('ipfs://', 'https://ipfs.io/ipfs/');
-      console.log(imageLinkIpfs);
 
       setPocData({
         name: res.data.name,
         description: res.data.description,
         src: imageLinkIpfs,
       });
-      // setPocData(res.data);
     });
   };
 
@@ -88,18 +72,23 @@ const Claim = () => {
         pocId,
         recipient,
       };
-      const res = await axios.post(url, payload);
-      console.log('res', res);
+
+      await axios.post(url, payload);
 
       setTimeout(() => {
         setClaimStep(CLAIM_STEP.success);
-      }, 1000);
+      }, 500);
     } catch (err) {
       console.error('Error claiming PoC: ', err);
       setTimeout(() => {
         setClaimStep(CLAIM_STEP.error);
-      }, 1000);
+      }, 500);
     }
+  };
+
+  const pushToGallery = (e) => {
+    e.preventDefault();
+    router.push(LINKS.gallery);
   };
 
   useEffect(() => {
@@ -157,7 +146,7 @@ const Claim = () => {
               <Button
                 style={{ width: '100%' }}
                 type="submit"
-                onClick={claimStep === CLAIM_STEP.success ? () => router.push(LINKS.gallery) : (e) => claimPoc(e)}
+                onClick={claimStep === CLAIM_STEP.success ? (e) => pushToGallery(e) : (e) => claimPoc(e)}
                 disabled={(!isAddress(recipient) || (claimStep !== CLAIM_STEP.setAddress && claimStep !== CLAIM_STEP.error) || !pocData.name) && !claimStep === CLAIM_STEP.success}
               >
                 {claimStep === CLAIM_STEP.success ? 'See my Gallery' : 'Claim'}
