@@ -22,7 +22,7 @@ export const pages = [
   },
   {
     label: 'Claim',
-    url: '/redeem',
+    url: '/claim',
   },
 ];
 
