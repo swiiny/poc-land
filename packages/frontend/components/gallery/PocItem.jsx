@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { StyledHeadingThree, StyledText } from '../../styles/GlobalComponents';
 
-const PocItem = ({ poc, ...otherProps }) => {
+const PocItem = ({ poc, isVisible = true, ...otherProps }) => {
   useEffect(() => {
 
   }, []);
 
   return (
-    <StyledPocItem {...otherProps}>
+    <StyledPocItem {...otherProps} isVisible={isVisible}>
       <div>
         <div className="img-container">
           <img src={poc.src} alt={poc.name} />
