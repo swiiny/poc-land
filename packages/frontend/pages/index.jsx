@@ -1,10 +1,12 @@
 import { ArrowRight } from 'heroicons-react';
+import Link from 'next/link';
 import router from 'next/router';
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import LogoIpfs from '../assets/img/logo-ipfs.svg';
 import LogoOptimism from '../assets/img/logo-optimism.svg';
 import LogoPolygon from '../assets/img/logo-polygon.svg';
+import LogoSuperfluid from '../assets/img/logo-superfluid.png';
 import Poc1 from '../assets/img/poc1.png';
 import Poc2 from '../assets/img/poc2.png';
 import Poc3 from '../assets/img/poc3.png';
@@ -95,11 +97,27 @@ export default function Home() {
           </StyledHeadingTwo>
 
           <div>
-            <StyledPoweredByLogo src={LogoPolygon.src} style={{ height: '60px' }} />
-            <StyledPoweredByLogo src={LogoOptimism.src} style={{ height: '25px' }} />
-            <StyledPoweredByLogo src={LogoIpfs.src} style={isSmallerThanSm ? { marginBottom: '25px' } : {}} />
+            <Link href="https://polygon.technology/">
+              <a target="_blank" rel="noopener noreferrer">
+                <StyledPoweredByLogo src={LogoPolygon.src} style={{ height: '60px' }} />
+              </a>
+            </Link>
+            <Link href="https://www.optimism.io/">
+              <a target="_blank" rel="noopener noreferrer">
+                <StyledPoweredByLogo src={LogoOptimism.src} style={{ height: '25px' }} />
+              </a>
+            </Link>
+            <Link href="https://ipfs.io/">
+              <a target="_blank" rel="noopener noreferrer">
+                <StyledPoweredByLogo src={LogoIpfs.src} />
+              </a>
+            </Link>
+            <Link href="https://www.superfluid.finance/home">
+              <a target="_blank" rel="noopener noreferrer">
+                <StyledPoweredByLogo src={LogoSuperfluid.src} isSuperfluid />
+              </a>
+            </Link>
           </div>
-
         </StyledPowered>
       </StyledContainer>
     </Page>
@@ -110,14 +128,11 @@ const StyledPoweredByLogo = styled.img`
   height: 50px;
   width: auto;
 
-  & + img {
-    margin-left: 32px;
-
-    @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-        margin-left: 0;
-        margin-top: 24px;
-    }
-  }
+  ${(props) => (props.isSuperfluid ? `
+    position: relative;
+    height: 120px;
+    left: -40px;
+  ` : '')}
 `;
 
 const StyledPowered = styled.div`
@@ -127,11 +142,36 @@ const StyledPowered = styled.div`
   margin-top: 36px;
   
   & > div {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
 
     margin-top: 12px;
+
+    right: -40px;
+
+    &:hover > a {
+      opacity: 0.6;
+    }
+
+    & > a {
+      margin-left: 32px;
+
+      transition: all 0.4s ease-in-out 0.05s;
+
+      &:hover {
+        transform: scale(1.05);
+        margin-left: 40px;
+        margin-right: 8px;
+        opacity: 1.0;
+      }
+
+      @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+          margin-left: 0;
+          margin-top: 24px;
+      }
+    }
 
     @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
         flex-direction: column;

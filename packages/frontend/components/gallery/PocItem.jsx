@@ -1,5 +1,6 @@
 import { Skeleton } from '@mui/material';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
+import Tilt from 'react-parallax-tilt';
 import styled from 'styled-components';
 import { StyledHeadingThree, StyledText } from '../../styles/GlobalComponents';
 
@@ -12,33 +13,56 @@ const PocItem = ({ poc, isVisible = true, ...otherProps }) => {
     return false;
   }, [poc]);
 
-  const [image, setImage] = useState('');
+  const customStyle = {
+    maxWidth: '95%',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+  };
 
   return (
+
     <StyledPocItem {...otherProps} isVisible={isVisible}>
-      <div>
-        <div className="img-container">
+      <Tilt
+        tiltMaxAngleX={6}
+        tiltMaxAngleY={6}
+        perspective={1500}
+        scale={1}
+        transitionSpeed={1000}
+        transitionTimingFunction="ease-in-out"
+        glareEnable
+        glareMaxOpacity={0.07}
+        style={{ borderRadius: '8px' }}
+      >
+        <div>
+          <div className="img-container">
+            {isLoading ? (
+              <Skeleton sx={{ backgroundColor: '#12192350', borderRadius: '50%' }} variant="circular" animation="wave" width="100%" height={150} />
+            ) : (
+              <img
+                src={poc.src}
+                alt={poc.name}
+                style={{
+                  objectFit: 'cover', height: '100%', width: 'auto', zIndex: '10',
+                }}
+              />
+            )}
+          </div>
+
           {isLoading ? (
-            <Skeleton sx={{ backgroundColor: '#12192350', borderRadius: '50%' }} variant="circular" animation="wave" width="100%" height={150} />
+            <>
+              <Skeleton sx={{ backgroundColor: '#12192350', borderRadius: '5px' }} variant="rectangular" animation="wave" width="100%" height={36} style={{ marginBottom: '8px' }} />
+              <Skeleton sx={{ backgroundColor: '#12192350', borderRadius: '5px' }} variant="rectangular" animation="wave" width="100%" height={12} style={{ marginBottom: '4px' }} />
+              <Skeleton sx={{ backgroundColor: '#12192350', borderRadius: '5px' }} variant="rectangular" animation="wave" width="100%" height={12} />
+            </>
           ) : (
-            <img src={poc.src} alt={poc.name} style={{ objectFit: 'cover', height: '100%', width: 'auto' }} />
+            <>
+              <StyledHeadingThree className="name" style={customStyle}>{poc.name}</StyledHeadingThree>
+              <StyledText isVisible className="description">{poc.description}</StyledText>
+            </>
           )}
         </div>
-
-        {isLoading ? (
-          <>
-            <Skeleton sx={{ backgroundColor: '#12192350', borderRadius: '5px' }} variant="rectangular" animation="wave" width="100%" height={36} style={{ marginBottom: '8px' }} />
-            <Skeleton sx={{ backgroundColor: '#12192350', borderRadius: '5px' }} variant="rectangular" animation="wave" width="100%" height={12} style={{ marginBottom: '4px' }} />
-            <Skeleton sx={{ backgroundColor: '#12192350', borderRadius: '5px' }} variant="rectangular" animation="wave" width="100%" height={12} />
-          </>
-        ) : (
-          <>
-            <StyledHeadingThree className="name">{poc.name}</StyledHeadingThree>
-            <StyledText className="description">{poc.description}</StyledText>
-          </>
-        )}
-
-      </div>
+      </Tilt>
     </StyledPocItem>
   );
 };

@@ -31,10 +31,15 @@ const Gallery = () => {
   async function getAllPocsAddressFromUser(ethereumProvider) {
     const pocFactoryContract = await getPocFactoryContract(ethereumProvider);
     const index = await pocFactoryContract.getLastPocCreatorIndex(account);
+    const intIndex = parseInt(index, 16);
     const pocsAddresses = [];
-    for (let i = 1; i < index.sub(1); i++) {
+
+    console.log('index', index.toString());
+    console.log('intIndex', intIndex);
+
+    for (let i = 1; i < intIndex - 1; i++) {
       // eslint-disable-next-line no-await-in-loop
-      const pocAddress = await pocFactoryContract.getPocWithCreatorIndex(account, index.sub(1));
+      const pocAddress = await pocFactoryContract.getPocWithCreatorIndex(account, intIndex - 1);
       pocsAddresses.push(pocAddress);
     }
     return pocsAddresses;
@@ -59,27 +64,33 @@ const Gallery = () => {
     try {
       const addresses = await getAllPocsAddressFromUser(window.ethereum);
 
-      const promises = addresses.map(async (address) => {
-        const pocContract = await getPocContract(window.ethereum, address);
-        const data = await pocContract.tokenURI(4);
-        return axios.get(data).then((result) => {
-          let imageLinkIpfs = result.data.image;
-          imageLinkIpfs = imageLinkIpfs.replace('ipfs://', 'https://ipfs.io/ipfs/');
+      console.log('addresses', addresses);
 
-          return {
-            name: result.data.name,
-            description: result.data.description,
-            src: imageLinkIpfs,
-          };
+      const promisesContracts = addresses.map((add) => getPocContract(window.ethereum, add));
+
+      const resolvedContracts = await Promise.all(promisesContracts);
+
+      const promisesMetadata = resolvedContracts.map((c) => c.tokenURI(4));
+
+      const resolvedMetadata = await Promise.all(promisesMetadata);
+
+      const promisesData = resolvedMetadata.map((m) => axios.get(m));
+
+      const resolvedData = await Promise.all(promisesData);
+
+      const datas = resolvedData.map((d) => {
+        let imageLinkIpfs = d.data.image;
+        imageLinkIpfs = imageLinkIpfs.replace('ipfs://', 'https://ipfs.io/ipfs/');
+        return ({
+          name: d.data.name,
+          description: d.data.description,
+          src: imageLinkIpfs,
         });
       });
 
-      console.log('start resolve', promises);
+      console.log('datas', datas);
 
-      const resolvedPromises = await Promise.all(promises);
-      console.log('resolvedPromises', resolvedPromises);
-
-      setUserPocs(resolvedPromises);
+      setUserPocs(datas);
     } catch (err) {
       console.error('Error fetching poc for account: ', err);
     }
