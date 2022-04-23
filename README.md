@@ -10,13 +10,15 @@ DeFi enabled, censorship resistant multi chain poaps. Built with Superfluid, IPF
 - The 4 pannels : homepage, create, redeem & gallery
 
 ### Backend
-- Function to mint "gas-less" pocs
+- [ ] Function to mint "gas-less" pocs
 
 ### Smart contracts
-- Setup hardhat (Hugo)
-- Setup simple first version without streams : 3 contracts, factory, base poc nft contract & registry (Hugo)
-- Setup streams systems, deploy the tradeable cashflow contract on Goerli and do first tests, step 2, try to do it with multiple nfts (Clem) 
-- See example here : https://github.com/superfluid-finance/protocol-monorepo/tree/dev/examples/tradeable-cashflow-hardhat/contracts
+- [x] Setup hardhat (Hugo)
+- [x] Setup simple first version without streams : 3 contracts, factory, base poc nft contract (Hugo)
+- [x] Setup streams systems, deploy the tradeable cashflow contract on Goerli and do first tests, 
+- [ ] Step 2, try to do it with multiple nfts (Clem) 
+- [ ] How to design registry contract/data retrieval without a db. Informations we need 
+ 1. given an address, get the pocs owned by the address
 
 ### Production & Contest
 - Buy poc.land
