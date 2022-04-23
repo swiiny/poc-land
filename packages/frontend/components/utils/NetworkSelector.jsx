@@ -4,7 +4,7 @@ import useWallet, { availableNetworks } from '../../hooks/useWallet';
 import { StyledTextButton } from '../../styles/GlobalComponents';
 import Portal from './Portal';
 
-const NetworkSelector = ({ relativeTo = 'body', isVisible = false, onClose = () => {} }) => {
+const NetworkSelector = ({ relativeTo, isVisible = false, onClose = () => {} }) => {
   const { switchNetwork } = useWallet();
 
   const selectNetwork = (chainId) => {
@@ -12,6 +12,10 @@ const NetworkSelector = ({ relativeTo = 'body', isVisible = false, onClose = () 
 
     onClose();
   };
+
+  if (!relativeTo) {
+    return <></>;
+  }
 
   return (
     <Portal selector={relativeTo}>

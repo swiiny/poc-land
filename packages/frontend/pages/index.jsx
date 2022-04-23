@@ -11,13 +11,17 @@ export default function Home() {
   return (
     <Page title="Home">
       <StyledContainer>
-        <StyledHeadingOne>
-          POC Land
-        </StyledHeadingOne>
 
-        <StyledHeadingTwo>
-          Proof Of Community
-        </StyledHeadingTwo>
+        <StyledTextContainer>
+          <StyledHeadingOne>
+            PoC Land
+          </StyledHeadingOne>
+
+          <StyledHeadingTwo accent style={{ textAlign: 'center' }}>
+            Proof of Community, Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet Lorem Ipsum
+          </StyledHeadingTwo>
+
+        </StyledTextContainer>
 
         <CTAContainer>
           <Button
@@ -26,7 +30,7 @@ export default function Home() {
             style={{ marginRight: '16px' }}
             size={Size.l}
           >
-            Create POC
+            Create PoC
           </Button>
           <Button
             onClick={() => router.push(LINKS.gallery)}
@@ -48,6 +52,11 @@ const CTAContainer = styled.div`
   width: 100%;
 
   margin-top: 64px;
+`;
+
+const StyledTextContainer = styled.div`
+  text-align: center;
+  max-width: 1200px;
 `;
 
 const StyledContainer = styled.div`

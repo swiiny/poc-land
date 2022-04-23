@@ -1,6 +1,6 @@
 import { ChevronDownOutline } from 'heroicons-react';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import useWallet from '../../hooks/useWallet';
 import { Button, Size, StyledTag } from '../../styles/GlobalComponents';
@@ -38,15 +38,11 @@ const Navbar = () => {
 
   const { connectToWallet, account, isWrongNetwork } = useWallet();
 
-  useEffect(() => {
-    console.log('isNetworksSelectorVisible', isNetworksSelectorVisible);
-  }, [isNetworksSelectorVisible]);
-
   return (
     <>
       <NetworkSelector
         isVisible={isNetworksSelectorVisible}
-        relativeTo={isWrongNetwork ? '#switch-button' : 'body'}
+        relativeTo={isWrongNetwork ? '#switch-button' : null}
         onClose={() => setIsNetworksSelectorVisible(false)}
       />
 
@@ -90,7 +86,6 @@ const Navbar = () => {
                 Connect Wallet
               </Button>
             )}
-
           </li>
         </ul>
       </StyledNavbar>
@@ -148,11 +143,16 @@ const StyledNavbar = styled.nav`
   justify-content: space-between;
   align-items: center;
 
+  background-color: ${({ theme }) => `${theme.colors.bg}80`};
+  backdrop-filter: blur(8px);
+
   & > ul {
     list-style: none;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
+
+    padding: 0;
 
     & > li + li {      
       margin-left: ${({ theme }) => theme.spacing.m};

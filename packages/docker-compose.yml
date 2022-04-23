@@ -27,7 +27,7 @@ services:
         ports:
             - $DB_PORT:$DB_PORT
         volumes:
-            - blockmetrics-db:/var/lib/mysql
+            - pocland-db:/var/lib/mysql
             - ./database/query:/docker-entrypoint-initdb.d
 
     server:
@@ -42,4 +42,4 @@ services:
         restart: on-failure:10
 
 volumes:
-    blockmetrics-db:
+    pocland-db:

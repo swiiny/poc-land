@@ -85,6 +85,10 @@ export const StyledHeadingTwo = styled.h2`
     line-height: 1.5;
 
     margin: 0;
+
+    ${(props) => (props.accent ? css`
+        color: ${({ theme }) => theme.colors.accent};
+    ` : '')}
 `;
 
 export const StyledHeadingThree = styled.h3`
