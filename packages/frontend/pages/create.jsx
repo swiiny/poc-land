@@ -59,7 +59,13 @@ const Create = () => {
     return dnpContract;
   }
 
-  // DNP SELF BOUNTIES STATE CHANGE CALLS
+  async function getPocWithEventAndCreator(ethereumProvider, name) {
+    const pocFactoryContract = await getPocFactoryContract(ethereumProvider);
+    const pocAddress = await pocFactoryContract.getLastPocCreatedByCreator(account);
+    console.log('poc address?', pocAddress);
+    return pocAddress;
+  }
+
   async function createPocContract(ethereumProvider, metadataURI, name, count) {
     console.log('Creating POC contract...', account);
     const pf = await getPocFactoryContract(ethereumProvider);
@@ -96,11 +102,14 @@ const Create = () => {
 
       try {
         const res = await createPocContract(window.ethereum, murl, pocName, pocCount);
-
         const txHash = res.hash;
-
+        const pocAddress = await getPocWithEventAndCreator(window.ethereum, pocName);
+        console.log('poc address?', pocAddress);
+        // TODO
+        // backend : save pocAddress, accountAddress (creator address) and chainID!
+        // frontend : display as a QR code
+        // 0x326162D47d7274f6602e08D5860A5634B8eA4182
         // const tx = ethers.getTr
-
         setUploadState(UPLOAD_STATE.success);
       } catch (err) {
         console.error('Error creating POC: ', err);

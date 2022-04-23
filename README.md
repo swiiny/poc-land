@@ -10,7 +10,7 @@ DeFi enabled, censorship resistant multi chain poaps. Built with Superfluid, IPF
 - [ ] make it cleaner/more beautiful
 ### create
 - [ ] add count + price estimation..
-- [ ] create function to get the created contract address
+- [x] create function to get the created contract address
 - [ ] save in db address of poc with creator and chain id
 - [ ] should display QR code for the poc
 - [ ] reaccess this page?
