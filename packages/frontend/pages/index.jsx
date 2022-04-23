@@ -58,7 +58,7 @@ export default function Home() {
           </StyledHeadingOne>
 
           <StyledHeadingTwo accent style={{ textAlign: 'center' }}>
-            Permissionless, Defi-Enabled, Proof of Community tokens.
+            Permissionless, Stream-Enabled, Proof of Community NFTs.
           </StyledHeadingTwo>
 
         </StyledTextContainer>
@@ -74,7 +74,7 @@ export default function Home() {
             onClick={() => router.push(LINKS.create)}
             size={Size.m}
           >
-            Create Your First Proof of Community NFT
+            Create Your First Proof of Community
           </Button>
           <Button
             onClick={() => router.push(LINKS.gallery)}
@@ -97,7 +97,7 @@ export default function Home() {
           <div>
             <StyledPoweredByLogo src={LogoPolygon.src} style={{ height: '60px' }} />
             <StyledPoweredByLogo src={LogoOptimism.src} style={{ height: '25px' }} />
-            <StyledPoweredByLogo src={LogoIpfs.src} style={{ marginBottom: '25px' }} />
+            <StyledPoweredByLogo src={LogoIpfs.src} style={isSmallerThanSm ? { marginBottom: '25px' } : {}} />
           </div>
 
         </StyledPowered>
