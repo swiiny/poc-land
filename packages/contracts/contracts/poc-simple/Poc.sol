@@ -14,6 +14,8 @@ contract Poc is ERC721, ERC721Enumerable, Ownable {
     string public baseURI;
     address public creator;
 
+    mapping(address => bool) public hasAPoc;
+
     constructor(address _creator, string memory _name,string memory _symbol, uint256 _maxPocAmount, string memory _baseURI) ERC721(_name, _symbol) {
         creator = _creator;
         maxPocAmount = _maxPocAmount;
@@ -22,14 +24,17 @@ contract Poc is ERC721, ERC721Enumerable, Ownable {
         safeMint(creator);
     }
 
-    function _baseURI() internal view override returns (string memory) {
-        return baseURI;
+    function safeMint(address to) public {
+        require(hasAPoc[to] == false, "This address already has a Poc");
+        uint256 tokenId = _tokenIdCounter.current();
+        require(tokenId < maxPocAmount, "Max Poc amount reached");
+        _tokenIdCounter.increment();
+        hasAPoc[to] = true;
+        _safeMint(to, tokenId);
     }
 
-    function safeMint(address to) public {
-        uint256 tokenId = _tokenIdCounter.current();
-        _tokenIdCounter.increment();
-        _safeMint(to, tokenId);
+    function _baseURI() internal view override returns (string memory) {
+        return baseURI;
     }
 
     // The following functions are overrides required by Solidity.
