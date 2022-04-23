@@ -1,5 +1,6 @@
+import { ChevronDownOutline } from 'heroicons-react';
 import Link from 'next/link';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import useWallet from '../../hooks/useWallet';
 import { Button, Size, StyledTag } from '../../styles/GlobalComponents';
@@ -32,47 +33,82 @@ export const LINKS = {
 };
 
 const Navbar = () => {
-  const { connectToWallet, account } = useWallet();
+  const [isNetworksSelectorVisible, setIsNetworksSelectorVisible] = useState(false);
+
+  const { connectToWallet, account, isWrongNetwork } = useWallet();
 
   useEffect(() => {
 
   }, []);
 
   return (
-    <StyledNavbar>
+    <>
+      <StyledNavbar>
 
-      <StyledLogo src="" />
+        <StyledLogo src="" />
 
-      <ul>
-        {pages.map((p) => (
+        <ul>
+          {pages.map((p) => (
+            <li>
+              <Link href={p.url}>
+                <StyledLink>
+                  {p.label}
+                </StyledLink>
+              </Link>
+            </li>
+          ))}
+
           <li>
-            <Link href={p.url}>
-              <StyledLink>
-                {p.label}
-              </StyledLink>
-            </Link>
+            {account ? (
+              <StyledTag>
+                {formatAddress(account)}
+              </StyledTag>
+            ) : isWrongNetwork ? (
+              <StyledSwitchNetwork
+                size={Size.s}
+                onClick={() => {}}
+                onMouseEnter={() => setIsNetworksSelectorVisible(true)}
+                onMouseLeave={() => setIsNetworksSelectorVisible(false)}
+              >
+                Switch Network
+
+                <ChevronDownOutline size={20} style={{ marginLeft: '8px' }} />
+              </StyledSwitchNetwork>
+            ) : (
+              <Button
+                size={Size.s}
+                onClick={() => connectToWallet()}
+              >
+                Connect Wallet
+              </Button>
+            )}
+
           </li>
-        ))}
-
-        <li>
-          {account ? (
-            <StyledTag>
-              {formatAddress(account)}
-            </StyledTag>
-          ) : (
-            <Button
-              size={Size.s}
-              onClick={() => connectToWallet()}
-            >
-              Connect Wallet
-            </Button>
-          )}
-
-        </li>
-      </ul>
-    </StyledNavbar>
+        </ul>
+      </StyledNavbar>
+    </>
   );
 };
+
+const StyledSwitchNetwork = styled.div`
+    position: relative;
+    border: none;
+    border-radius: 8px;
+    
+
+    padding: 8px 16px;
+    font-size: 16px;
+
+    color: ${({ theme }) => theme.colors.typo};
+    background: none;
+    border: 1px solid ${({ theme }) => `${theme.colors.typo}60`};
+
+    cursor: pointer;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
 
 const StyledLogo = styled.img`
   height: 100%;
