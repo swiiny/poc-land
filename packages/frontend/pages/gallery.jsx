@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import PocItem from '../components/gallery/PocItem';
 import Page from '../components/utils/Page';
 import useWallet from '../hooks/useWallet';
 import { StyledHeadingOne } from '../styles/GlobalComponents';
-import PocItem from './gallery/PocItem';
 
 const DEV_DATA = [
   {
@@ -98,12 +98,14 @@ const StyledPocList = styled.ul`
 `;
 
 const StyledContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    z-index: 2;
 
-  min-height: 100vh;
-  padding-top: ${({ theme }) => theme.spacing['3xl']};
+    min-height: 100vh;
+    padding-top: ${({ theme }) => theme.spacing['3xl']};
 `;
 
 export default Gallery;

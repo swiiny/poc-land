@@ -7,7 +7,7 @@ import {
   StyledFileInput, StyledForm, StyledFormItem, StyledInput, StyledLabel, StyledTextArea,
 } from '../components/form/Form';
 import Page from '../components/utils/Page';
-import useWallet from '../hooks/useWallet';
+import useWallet, { availableNetworks } from '../hooks/useWallet';
 import { Button, StyledHeadingOne } from '../styles/GlobalComponents';
 import uploadPocDataToIPFS from '../utils/ipfs';
 import pocFactoryAbi from '../utils/pocFactoryAbi';
@@ -21,7 +21,7 @@ const Create = () => {
   const [pocDescription, setPocDescription] = useState('');
   const [pocCount, setPocCount] = useState(100);
 
-  const { account, isWrongNetwork } = useWallet();
+  const { account, isWrongNetwork, currentChainId } = useWallet();
 
   const isDataValid = useMemo(() => pocName?.length && pocImage?.length && pocDescription?.length,
     [pocName, pocImage, pocDescription]);
@@ -43,17 +43,18 @@ const Create = () => {
   };
 
   async function getPocFactoryContract(ethereumProvider) {
-    const pocFactoryAddress = '0x473837550ceDf7f16805C15C21487d3A44f26cE5';
+    const contractAddress = availableNetworks.find((net) => net.chainId === currentChainId)?.contractAddress;
+    const pocFactoryAddress = contractAddress;
     const provider = new ethers.providers.Web3Provider(ethereumProvider);
     const dnpContract = new ethers.Contract(pocFactoryAddress, pocFactoryAbi, provider);
     return dnpContract;
   }
 
   // DNP SELF BOUNTIES STATE CHANGE CALLS
-  async function createPocContract(ethereumProvider, metadataURI, name) {
+  async function createPocContract(ethereumProvider, metadataURI, name, count) {
     console.log('Creating POC contract...', account);
     const pf = await getPocFactoryContract(ethereumProvider);
-    const res = await pf.populateTransaction.createPoc(account, name, 'PoC', 100, metadataURI);
+    const res = await pf.populateTransaction.createPoc(account, name, 'PoC', count, metadataURI);
     res.from = account;
     // Rinkeby : make this cleaner
     // res.chainId = parseInt(4, 4)
@@ -68,25 +69,24 @@ const Create = () => {
   const createPoc = async (e) => {
     e.preventDefault();
 
-    if (isWrongNetwork) {
-
-    } else {
+    if (!isWrongNetwork) {
       console.warn('submit poc with data');
       console.log('name: ', pocName);
       console.log('description: ', pocDescription);
       console.log('image: ', pocImage);
+      console.log('count ', pocCount);
+
       // TODO : submit to ipfs here
       console.log('file: ', pocFile);
       const murl = await uploadPocDataToIPFS([pocFile], pocName, pocDescription);
       console.log('metadata url', murl);
-      const res = await createPocContract(window.ethereum, murl, pocName);
+      const res = await createPocContract(window.ethereum, murl, pocName, pocCount);
       console.log('res', res);
     }
   };
 
   return (
     <>
-
       <Page title="Create">
         <StyledContainer>
           <StyledHeadingOne>
@@ -125,6 +125,9 @@ const Create = () => {
               </StyledLabel>
               <StyledInput
                 type="number"
+                step="20"
+                min="1"
+                max="10000"
                 placeholder="100"
                 value={pocCount}
                 onChange={(e) => setPocCount(e.target.value)}
@@ -190,13 +193,16 @@ const StyledPocImage = styled.img`
 `;
 
 const StyledContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 
-  min-height: 100vh;
+    min-height: 100vh;
 
-  padding-top: ${({ theme }) => theme.spacing['3xl']};
+    z-index: 2;
+
+    padding-top: ${({ theme }) => theme.spacing['3xl']};
 `;
 
 export default Create;
