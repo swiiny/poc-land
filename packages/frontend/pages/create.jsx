@@ -45,6 +45,7 @@ const Create = () => {
 
   // DNP SELF BOUNTIES STATE CHANGE CALLS
   async function createPocContract(ethereumProvider, metadataURI) {
+    console.log('Creating POC contract...', account);
     const pf = await getPocFactoryContract(ethereumProvider);
     const res = await pf.populateTransaction.createPoc(account, 'placeholder', 'POC', 100, metadataURI);
     res.from = account;
@@ -67,9 +68,7 @@ const Create = () => {
     console.log('file: ', pocFile);
     const murl = await uploadPocDataToIPFS([pocFile]);
     console.log('metadata url', murl);
-
-    const res = await createPocContract(window.ethereum, account, murl);
-
+    const res = await createPocContract(window.ethereum, murl);
     console.log('res', res);
   };
 
