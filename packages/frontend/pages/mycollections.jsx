@@ -28,6 +28,33 @@ const Gallery = () => {
     return pocAddress;
   }
 
+  async function getAllPocsAddressFromUser(ethereumProvider) {
+    const pocFactoryContract = await getPocFactoryContract(ethereumProvider);
+    const index = await pocFactoryContract.getLastPocCreatorIndex(account);
+    const pocsAddresses = [];
+    for (let i = 1; i < index.sub(1); i++) {
+      // eslint-disable-next-line no-await-in-loop
+      const pocAddress = await pocFactoryContract.getPocWithCreatorIndex(account, index.sub(1));
+      pocsAddresses.push(pocAddress);
+    }
+    return pocsAddresses;
+  }
+
+  const getPocMetadata = async (pocAddress) => {
+    const pocContract = await getPocContract(window.ethereum, pocAddress);
+    const data = await pocContract.tokenURI(4);
+    axios.get(data).then((res) => {
+      let imageLinkIpfs = res.data.image;
+      imageLinkIpfs = imageLinkIpfs.replace('ipfs://', 'https://ipfs.io/ipfs/');
+      // TODO : use this data
+      /*
+        name: res.data.name,
+        description: res.data.description,
+        src: imageLinkIpfs,
+      */
+    });
+  };
+
   const fetchPocForAccount = async (a) => {
     try {
       const url = `${process.env.SERVER_URL}/v1/server/userPocs?userAddr=${a}`;
