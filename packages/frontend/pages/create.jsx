@@ -1,10 +1,12 @@
 import { Upload } from 'heroicons-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
+import { ethers } from 'ethers';
 import Page from '../components/utils/Page';
 import { Button, StyledHeadingOne } from '../styles/GlobalComponents';
 import addDefaultSrc from '../utils/functions';
 import { uploadPocDataToIPFS } from '../utils/ipfs';
+import pocFactoryAbi from '../utils/pocFactoryAbi.js';
 
 const Create = () => {
   const [pocName, setPocName] = useState('');
@@ -32,6 +34,27 @@ const Create = () => {
     }
   };
 
+  async function getPocFactoryContract(ethereumProvider) {
+    const pocFactoryAddress = '0x9702224c5f09f9814cf75e04f7c1b6d103f356ae';
+    const provider = new ethers.providers.Web3Provider(ethereumProvider);
+    const dnpContract = new ethers.Contract(pocFactoryAddress, pocFactoryAbi, provider);
+    return dnpContract;
+  }
+
+  // DNP SELF BOUNTIES STATE CHANGE CALLS
+  async function createPocContract(ethereumProvider, account, metadataURI) {
+    const pf = await getPocFactoryContract(ethereumProvider);
+    const res = await pf.populateTransaction.createPoc(account, 'placeholder', 'POC', 100, metadataURI);
+    res.from = account;
+    // Rinkeby : make this cleaner
+    res.chainId = parseInt(process.env.CHAIN_ID, 4);
+    const txHash = await ethereumProvider.request({
+      method: 'eth_sendTransaction',
+      params: [res],
+    });
+    console.log(txHash);
+  }
+
   const createPoc = async (e) => {
     e.preventDefault();
     console.warn('submit poc with data');
@@ -39,12 +62,9 @@ const Create = () => {
     console.log('description: ', pocDescription);
     console.log('image: ', pocImage);
     // TODO : submit to ipfs here
-
     console.log('file: ', pocFile);
-    const cid = await uploadPocDataToIPFS([pocFile]);
-    console.log('success?', cid);
-
-    // TODO : submit to blockchain here
+    const murl = await uploadPocDataToIPFS([pocFile]);
+    console.log('metadata url', murl);
   };
 
   return (
