@@ -54,7 +54,7 @@ app.post(`${BASE_URL_V1}/savePoc`, jsonParser, async (req, res) => {
 	try {
 		const { userAddress, chainId, pocAddress } = req.body;
 		const decimalChainId = parseInt(chainId, 16);
-		await pool.query('INSERT INTO userPocs VALUES ?', [[[userAddress, decimalChainId, pocAddress]]]);
+		await pool.query('INSERT INTO pocs VALUES ?', [[[userAddress, decimalChainId, pocAddress]]]);
 	} catch (e) {
 		console.log(e);
 		res.status(500).send(e);
@@ -64,7 +64,7 @@ app.post(`${BASE_URL_V1}/savePoc`, jsonParser, async (req, res) => {
 app.get(`${BASE_URL_V1}/userPocs`, async (req, res) => {
 	try {
 		const { userAddr, chainId } = req.query;
-		const query = await pool.query('SELECT poc_address FROM userPocs WHERE user_address = ? AND chain_id = ?', [userAddr, chainId]);
+		const query = await pool.query('SELECT poc_address FROM user_pocs WHERE user_address = ? AND chain_id = ?', [userAddr, chainId]);
 		const pocs = query[0].map((e) => e.poc_address);
 		res.send(pocs);
 	} catch (err) {
@@ -75,7 +75,7 @@ app.get(`${BASE_URL_V1}/userPocs`, async (req, res) => {
 
 app.get(`${BASE_URL_V1}/allPocs`, async (req, res) => {
 	try {
-		const query = await pool.query('SELECT DISTINCT poc_address FROM userPocs');
+		const query = await pool.query('SELECT DISTINCT poc_address FROM user_pocs');
 		const pocs = query[0].map((e) => e.poc_address);
 		res.send(pocs);
 	} catch (err) {
@@ -89,25 +89,24 @@ app.get(`${BASE_URL_V1}/allPocs`, async (req, res) => {
 app.post(`${BASE_URL_V1}/mint`, jsonParser, async (req, res) => {
 	// read the request data
 	console.log(req.body);
-	const { pocAddress, pocId, recipient } = req.body;
-	// console.log(req);
-	console.log("we got all of this :)", pocAddress, pocId, recipient)
-	res.send("pong");	
-
-	const minterAddress = "0x77768f90098c9A13c94060408A2943B9a2100f74";
-	const chainID = 137;
+	const { pocAddress, recipient } = req.body;
+	console.log("poc address and recipient", pocAddress, recipient)
+	// select the poc address in the poc table
+	const pocs = await pool.query('SELECT * FROM pocs WHERE poc_address = ?', [pocAddress]);
+	console.log("found pocs", pocs.length);
+	console.log("found pocs", pocs[0][0]);
+	const chainID = parseInt(pocs[0][0].chain_id, 10)
+	console.log("chainID?", chainID, pocs[0].chain_id)
 	const providerURL = chainIDToProvider(chainID)
+	console.log("chainID, provider url", chainID, providerURL);
 	const provider = new ethers.providers.JsonRpcProvider(providerURL)
 	const pocContract = new ethers.Contract(pocAddress, pocAbi, provider);
 	const signer = new ethers.Wallet(process.env.SK, provider);
 	let gasPrice = await provider.getGasPrice()
-	await pocContract.connect(signer).safeMint(minterAddress, {gasPrice});
-	/*
-	const pocAddress = "0xeD616c1bb22C80c5EB35c492a992f3CDFD4098b0";
-	// now attach to the poc contract using ethers
-	// instantiate signer with private key
-	*/
-	
+	await pocContract.connect(signer).safeMint(recipient, {gasPrice});
+	// save the minted poc to the userPocs table
+	await pool.query('INSERT INTO user_pocs VALUES ?', [[[recipient, chainID, pocAddress]]]);	
+	res.send("minted");
 });
 
 // launch server on port 3000
