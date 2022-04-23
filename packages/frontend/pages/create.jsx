@@ -1,10 +1,13 @@
+import axios from 'axios';
 import { ethers } from 'ethers';
 import { ArrowLeft, ArrowRight, Upload } from 'heroicons-react';
+import Link from 'next/link';
 import React, { useEffect, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 import {
   StyledFileInput, StyledForm, StyledFormItem, StyledInput, StyledLabel, StyledTextArea,
 } from '../components/form/Form';
+import { LINKS } from '../components/utils/Navbar';
 import Page from '../components/utils/Page';
 import useWallet, { availableNetworks } from '../hooks/useWallet';
 import { Button, StyledHeadingOne, StyledText } from '../styles/GlobalComponents';
@@ -33,6 +36,7 @@ const CREATION_STATE = {
   deploying: 'deploying',
   success: 'success',
   error: 'error',
+  deployingError: 'deployingError',
 };
 
 const Create = () => {
@@ -85,7 +89,7 @@ const Create = () => {
   }
 
   async function createPocContract(ethereumProvider, metadataURI, name, count) {
-    console.log('Creating POC contract...', account);
+    console.log('Creating PoC contract...', account);
 
     const pf = await getPocFactoryContract(ethereumProvider);
     const res = await pf.populateTransaction.createPoc(account, name, 'PoC', count, metadataURI);
@@ -104,6 +108,7 @@ const Create = () => {
     e.preventDefault();
 
     if (!isWrongNetwork) {
+      setCreationState(CREATION_STATE.deploying);
       console.warn('submit poc with data');
       console.log('name: ', pocName);
       console.log('description: ', pocDescription);
@@ -124,6 +129,16 @@ const Create = () => {
         const txHash = res;
         const pocAddress = await getPocWithEventAndCreator(window.ethereum, pocName);
         console.log('poc address?', pocAddress);
+
+        const payload = {
+          chainId: currentChainId,
+          userAddress: account,
+          pocAddress,
+        };
+        await axios.post(`${process.env.SERVER_URL}/v1/server/savePoc`, payload).catch((err) => {
+          throw new Error('Failed to save poc in DB :', err);
+        });
+
         // TODO
         // backend : save pocAddress, accountAddress (creator address) and chainID!
         // frontend : display as a QR code
@@ -140,12 +155,14 @@ const Create = () => {
           setUploadState(UPLOAD_STATE.success);
         } else {
           setUploadState(UPLOAD_STATE.txError);
+          setCreationState(CREATION_STATE.deployingError);
         }
 
         setUploadState(UPLOAD_STATE.success);
       } catch (err) {
-        console.error('Error creating POC: ', err);
+        console.error('Error creating PoC: ', err);
         setUploadState(UPLOAD_STATE.denied);
+        setCreationState(CREATION_STATE.deployingError);
       }
     }
   };
@@ -164,8 +181,10 @@ const Create = () => {
       case CREATION_STATE.validation:
         setCreationState(CREATION_STATE.setCount);
         break;
+      case CREATION_STATE.deployingError:
+        setCreationState(CREATION_STATE.setCount);
+        break;
       default:
-        setCreationState(CREATION_STATE.setImage);
         break;
     }
   };
@@ -185,7 +204,6 @@ const Create = () => {
         setCreationState(CREATION_STATE.validation);
         break;
       default:
-        setCreationState(CREATION_STATE.setName);
         break;
     }
   };
@@ -195,7 +213,7 @@ const Create = () => {
       <Page title="Create">
         <StyledContainer>
           <StyledHeadingOne>
-            Create POC
+            Create PoC
           </StyledHeadingOne>
 
           <StyledFormContainer>
@@ -215,6 +233,7 @@ const Create = () => {
                   />
                 </StyledImgContainer>
 
+                {creationState === CREATION_STATE.setImage && (
                 <StyledFileInput
                   for="input-file"
                   secondary
@@ -225,6 +244,7 @@ const Create = () => {
 
                   <input id="input-file" type="file" accept="image/*" onChange={importImage} />
                 </StyledFileInput>
+                )}
               </StyledFormItem>
 
               <StyledFormItem isVisible={creationState === CREATION_STATE.setCount}>
@@ -244,7 +264,7 @@ const Create = () => {
 
               <StyledFormItem isVisible={creationState === CREATION_STATE.setName}>
                 <StyledLabel>
-                  Name your POC
+                  Name your PoC
                 </StyledLabel>
                 <StyledInput
                   type="text"
@@ -259,14 +279,14 @@ const Create = () => {
                   Add a short description
                 </StyledLabel>
                 <StyledTextArea
-                  placeholder="My POC is..."
+                  placeholder="My PoC is..."
                   value={pocDescription}
                   onChange={(e) => setPocDescription(e.target.value)}
                 />
               </StyledFormItem>
 
               <StyledText
-                isVisible={creationState === CREATION_STATE.deploying}
+                isVisible={creationState === CREATION_STATE.deploying || creationState === CREATION_STATE.deployingError || creationState === CREATION_STATE.success}
                 negative={uploadState === UPLOAD_STATE.denied || uploadState === UPLOAD_STATE.txError}
                 positive={uploadState === UPLOAD_STATE.success}
               >
@@ -275,7 +295,7 @@ const Create = () => {
                 {uploadState === UPLOAD_STATE.success && 'PoC Successfully Created'}
                 {uploadState === UPLOAD_STATE.denied && 'Wallet Action Denied'}
                 {uploadState === UPLOAD_STATE.txError && 'Transaction Error'}
-                {uploadState === UPLOAD_STATE.txWaiting && 'Waiting for Transaction to be mined...'}
+                {uploadState === UPLOAD_STATE.txWaiting && 'Waiting for Transaction to be mined, please do not refresh the page or close the browser'}
               </StyledText>
 
               <StyledFormItem isVisible={creationState === CREATION_STATE.validation}>
@@ -286,7 +306,7 @@ const Create = () => {
                   style={{ width: '100%' }}
                   type="submit"
                   onClick={(e) => createPoc(e)}
-                  disabled={!isDataValid}
+                  disabled={!isDataValid || creationState !== CREATION_STATE.validation}
                   id="submit-poc"
                 >
                   {isWrongNetwork ? 'Wrong Network' : 'Save and Continue'}
@@ -294,17 +314,42 @@ const Create = () => {
               </StyledFormItem>
             </StyledForm>
 
-            <ArrowContainer>
-              <StyledButton
-                onClick={() => previousCreationState()}
-                style={{ marginRight: '32px' }}
-              >
-                <ArrowLeft size={28} />
-              </StyledButton>
-              <StyledButton onClick={() => nextCreationState()}>
-                <ArrowRight size={28} />
-              </StyledButton>
-            </ArrowContainer>
+            {uploadState === UPLOAD_STATE.success ? (
+              <Link href={LINKS.collections}>
+                <Button>
+                  See My Collection
+                </Button>
+              </Link>
+            ) : creationState === CREATION_STATE.deployingError ? (
+              <ArrowContainer>
+                <StyledButton
+                  onClick={() => previousCreationState()}
+                  style={{ marginRight: '32px' }}
+                  disabled={creationState === CREATION_STATE.deploying || creationState === CREATION_STATE.setImage}
+                >
+                  <ArrowLeft size={28} />
+                </StyledButton>
+                <Button
+                  onClick={(e) => createPoc(e)}
+                >
+                  Try again
+                </Button>
+              </ArrowContainer>
+            ) : (
+              <ArrowContainer>
+                <StyledButton
+                  onClick={() => previousCreationState()}
+                  style={{ marginRight: '32px' }}
+                  disabled={creationState === CREATION_STATE.deploying || creationState === CREATION_STATE.setImage}
+                >
+                  <ArrowLeft size={28} />
+                </StyledButton>
+                <StyledButton onClick={() => nextCreationState()} disabled={creationState === CREATION_STATE.deploying || creationState === CREATION_STATE.validation || creationState === CREATION_STATE.deployingError}>
+                  <ArrowRight size={28} />
+                </StyledButton>
+              </ArrowContainer>
+            )}
+
           </StyledFormContainer>
         </StyledContainer>
       </Page>
@@ -322,13 +367,21 @@ const StyledButton = styled.button`
 
   border-radius: 50%;
 
-  cursor: pointer;
-
   border: 1px solid ${({ theme }) => theme.colors.typo};
 
   display: flex;
   justify-content: center;
   align-items: center;
+
+  transition: all 0.4s ease-in-out;
+
+  ${(props) => (props.disabled ? css`
+    opacity: 0.4;
+    cursor: default;
+  ` : css`
+    opacity: 1.0;
+    cursor: pointer;
+  `)}
 `;
 
 const StyledFormContainer = styled.div`

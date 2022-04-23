@@ -79,10 +79,13 @@ const StyledTextContainer = styled.div`
 `;
 
 const StyledContainer = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  z-index: 2;
 
   min-height: 100vh;
 `;

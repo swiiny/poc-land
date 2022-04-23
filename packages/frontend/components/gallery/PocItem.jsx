@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { StyledHeadingThree, StyledText } from '../../styles/GlobalComponents';
 
-const PocItem = ({ poc }) => {
+const PocItem = ({ poc, ...otherProps }) => {
   useEffect(() => {
 
   }, []);
 
   return (
-    <StyledPocItem>
+    <StyledPocItem {...otherProps}>
       <div>
         <div className="img-container">
           <img src={poc.src} alt={poc.name} />
@@ -22,7 +22,7 @@ const PocItem = ({ poc }) => {
 };
 
 const StyledPocItem = styled.li`
-
+    list-style: none;
     padding: 2%;
     width: 32%;
 
