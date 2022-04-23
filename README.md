@@ -9,8 +9,8 @@ DeFi enabled, censorship resistant multi chain poaps. Built with Superfluid, IPF
 ### homepage 
 - [ ] make it cleaner/more beautiful
 ### create
-- [ ] add count + price estimation..
-- [ ] create function to get the created contract address
+- [x] add count + price estimation..
+- [x] create function to get the created contract address
 - [ ] save in db address of poc with creator and chain id
 - [ ] should display QR code for the poc
 - [ ] reaccess this page?
@@ -21,6 +21,9 @@ DeFi enabled, censorship resistant multi chain poaps. Built with Superfluid, IPF
 ### gallery
 - [ ] use db to get all pocs related to a user
 - [ ] flow visulisation
+### My Collections
+- [ ] When Gallery is finished, copy past the page and change the fetch addresses endpoint url
+- [ ] Add option to start Flow using Superfluid
 
 ## Backend
 - [ ] Setup db connection

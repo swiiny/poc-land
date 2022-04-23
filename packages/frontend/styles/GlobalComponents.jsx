@@ -61,14 +61,6 @@ export const Button = styled.button`
     ` : 'cursor: pointer;')}
 
     transition: all 0.4s ease-in-out;
-
-    ${(props) => (props.isVisible ? css`
-        opacity: 1.0;
-        max-height: fit-content;
-    ` : css`
-        opacity: 0.0;
-        max-height: 0;
-    `)}
 `;
 
 export const StyledTextButton = styled.button`
