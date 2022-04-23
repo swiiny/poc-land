@@ -3,12 +3,14 @@ import { ethers } from 'ethers';
 import { ArrowLeft, ArrowRight, Upload } from 'heroicons-react';
 import Link from 'next/link';
 import React, { useEffect, useMemo, useState } from 'react';
+import QRCode from 'react-qr-code';
 import styled, { css } from 'styled-components';
 import {
   StyledFileInput, StyledForm, StyledFormItem, StyledInput, StyledLabel, StyledTextArea,
 } from '../components/form/Form';
 import { LINKS } from '../components/utils/Navbar';
 import Page from '../components/utils/Page';
+import useResponsive from '../hooks/useResponsive';
 import useWallet, { availableNetworks } from '../hooks/useWallet';
 import { Button, StyledHeadingOne, StyledText } from '../styles/GlobalComponents';
 import { uploadPocDataToIPFS } from '../utils/ipfs';
@@ -52,6 +54,7 @@ const Create = () => {
   const [uploadState, setUploadState] = useState(UPLOAD_STATE.unset);
 
   const { account, isWrongNetwork, currentChainId } = useWallet();
+  const { isSmallerThanSm } = useResponsive();
 
   const isDataValid = useMemo(() => pocName?.length && pocImage?.length && pocDescription?.length,
     [pocName, pocImage, pocDescription]);
@@ -203,7 +206,7 @@ const Create = () => {
 
   return (
     <>
-      <Page title="Create">
+      <Page title="Create PoC">
         <StyledContainer>
           <StyledHeadingOne>
             Create PoC
@@ -308,17 +311,12 @@ const Create = () => {
 
               <StyledFormItem isVisible={creationState === CREATION_STATE.success}>
                 <StyledLabel>
-                  Are you ready to create your PoC ?
+                  Scan this QR Code to claim this Poc
                 </StyledLabel>
-                <Button
-                  style={{ width: '100%' }}
-                  type="submit"
-                  onClick={(e) => createPoc(e)}
-                  disabled={!isDataValid || creationState !== CREATION_STATE.validation}
-                  id="submit-poc"
-                >
-                  {isWrongNetwork ? 'Wrong Network' : 'Save and Continue'}
-                </Button>
+                <QRCode
+                  size={isSmallerThanSm ? 150 : 200}
+                  value={pocLink}
+                />
               </StyledFormItem>
 
             </StyledForm>
