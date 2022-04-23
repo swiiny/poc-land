@@ -69,9 +69,7 @@ const Create = () => {
   const createPoc = async (e) => {
     e.preventDefault();
 
-    if (isWrongNetwork) {
-
-    } else {
+    if (!isWrongNetwork) {
       console.warn('submit poc with data');
       console.log('name: ', pocName);
       console.log('description: ', pocDescription);

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import PocItem from '../components/gallery/PocItem';
 import Page from '../components/utils/Page';
 import useWallet from '../hooks/useWallet';
 import { StyledHeadingOne } from '../styles/GlobalComponents';
-import PocItem from './gallery/PocItem';
 
 const DEV_DATA = [
   {
