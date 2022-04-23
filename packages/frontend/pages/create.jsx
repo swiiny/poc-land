@@ -12,11 +12,11 @@ import { LINKS } from '../components/utils/Navbar';
 import Page from '../components/utils/Page';
 import useResponsive from '../hooks/useResponsive';
 import useWallet, { availableNetworks } from '../hooks/useWallet';
-import { Button, StyledHeadingOne, StyledText } from '../styles/GlobalComponents';
+import {
+  Button, Size, StyledHeadingOne, StyledText,
+} from '../styles/GlobalComponents';
 import { uploadPocDataToIPFS } from '../utils/ipfs';
 import pocFactoryAbi from '../utils/pocFactoryAbi';
-
-// const { create } = pkg;
 
 const UPLOAD_STATE = {
   unset: 'unset',
@@ -50,11 +50,10 @@ const Create = () => {
   const [pocLink, setPocLink] = useState('');
 
   const [creationState, setCreationState] = useState(CREATION_STATE.setImage);
-
   const [uploadState, setUploadState] = useState(UPLOAD_STATE.unset);
 
   const { account, isWrongNetwork, currentChainId } = useWallet();
-  const { isSmallerThanSm } = useResponsive();
+  const { isSmallerThanSm, isSmallerThanMd } = useResponsive();
 
   const isDataValid = useMemo(() => pocName?.length && pocImage?.length && pocDescription?.length,
     [pocName, pocImage, pocDescription]);
@@ -86,9 +85,7 @@ const Create = () => {
   async function getPocWithEventAndCreator(ethereumProvider) {
     const pocFactoryContract = await getPocFactoryContract(ethereumProvider);
     const index = await pocFactoryContract.getLastPocCreatorIndex(account);
-    console.log('index', parseInt(index._hex, 16));
     const pocAddress = await pocFactoryContract.getPocWithCreatorIndex(account, index.sub(1));
-    console.log('poc address?', pocAddress);
     return pocAddress;
   }
 
@@ -131,18 +128,10 @@ const Create = () => {
 
         const pocAddress = await getPocWithEventAndCreator(window.ethereum, pocName);
 
-        // TODO
-        // backend : save pocAddress, accountAddress (creator address) and chainID!
-        // frontend : display as a QR code
-        // 0x326162D47d7274f6602e08D5860A5634B8eA4182
-        // const tx = ethers.getTr
-
         if (tx.status === 1) {
           setUploadState(UPLOAD_STATE.success);
 
           setPocLink(`${process.env.FRONTEND_URL}${LINKS.redeem}?poc=${pocAddress}`);
-
-          console.log('pocLink', `${process.env.FRONTEND_URL}${LINKS.redeem}?poc=${pocAddress}`);
 
           const payload = {
             chainId: currentChainId,
@@ -187,6 +176,29 @@ const Create = () => {
       default:
         break;
     }
+  };
+
+  const downloadQrCode = (e) => {
+    e.preventDefault();
+
+    // download svg file with id to-pdf-item
+    const svg = document.getElementById('to-pdf-item');
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const canvas = document.createElement('canvas');
+    const svgSize = svg.getBoundingClientRect();
+    canvas.width = svgSize.width;
+    canvas.height = svgSize.height;
+    const ctx = canvas.getContext('2d');
+    const img = document.createElement('img');
+    img.setAttribute('src', `data:image/svg+xml;base64,${btoa(svgData)}`);
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0);
+      const canvasdata = canvas.toDataURL('image/png');
+      const png = document.createElement('a');
+      png.download = `${pocName}.png`;
+      png.href = canvasdata;
+      png.click();
+    };
   };
 
   const nextCreationState = () => {
@@ -253,6 +265,7 @@ const Create = () => {
                 </StyledLabel>
                 <StyledInput
                   type="number"
+                  formNoValidate
                   step="20"
                   min="1"
                   max="10000"
@@ -285,18 +298,32 @@ const Create = () => {
                 />
               </StyledFormItem>
 
-              <StyledFormItem isVisible={uploadState === UPLOAD_STATE.success}>
+              <StyledFormItem isVisible={uploadState === UPLOAD_STATE.success} style={!isSmallerThanMd ? { top: '30%' } : {}}>
                 <StyledLabel style={{ textAlign: 'center' }}>
-                  Scan this QR Code to claim this Poc
+                  Scan this QR Code to claim this PoC
                 </StyledLabel>
                 <QrCodeContainer>
                   <QRCode
+                    id="to-pdf-item"
                     size={isSmallerThanSm ? 150 : 200}
                     value={pocLink}
                   />
-
+                </QrCodeContainer>
+                <QrCodeContainer style={{ flexDirection: 'row' }}>
+                  <Button
+                    onClick={(e) => downloadQrCode(e)}
+                    style={{ marginTop: '60px', marginRight: '16px' }}
+                    secondary
+                    size={Size.s}
+                    disabled={uploadState !== UPLOAD_STATE.success}
+                  >
+                    Download QR Code
+                  </Button>
                   <Link href={LINKS.collections}>
-                    <Button style={{ marginTop: '60px' }}>
+                    <Button
+                      style={{ marginTop: '60px' }}
+                      size={Size.s}
+                    >
                       See My Collection
                     </Button>
                   </Link>

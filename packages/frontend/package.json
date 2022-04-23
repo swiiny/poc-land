@@ -7,13 +7,17 @@
     "build": "next build",
     "start": "next start -p 8080",
     "lint": "next lint",
-    "export": "next export"  
+    "export": "next export"
   },
   "dependencies": {
+    "@emotion/react": "^11.8.2",
+    "@emotion/styled": "^11.8.1",
     "@metamask/detect-provider": "^1.2.0",
+    "@mui/material": "^5.5.0",
     "axios": "^0.21.1",
     "ethers": "^5.6.4",
     "heroicons-react": "^1.4.1",
+    "jspdf": "^2.5.1",
     "next": "12.1.5",
     "process": "^0.11.10",
     "react": "18.0.0",
@@ -21,10 +25,7 @@
     "react-dom": "18.0.0",
     "react-qr-code": "^2.0.2",
     "styled-components": "^5.3.0",
-    "web3.storage": "^4.2.0",
-    "@mui/material": "^5.5.0",
-    "@emotion/react": "^11.8.2",
-		"@emotion/styled": "^11.8.1"
+    "web3.storage": "^4.2.0"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.0",
