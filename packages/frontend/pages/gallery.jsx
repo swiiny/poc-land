@@ -98,12 +98,14 @@ const StyledPocList = styled.ul`
 `;
 
 const StyledContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    z-index: 2;
 
-  min-height: 100vh;
-  padding-top: ${({ theme }) => theme.spacing['3xl']};
+    min-height: 100vh;
+    padding-top: ${({ theme }) => theme.spacing['3xl']};
 `;
 
 export default Gallery;

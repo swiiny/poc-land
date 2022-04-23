@@ -87,7 +87,6 @@ const Create = () => {
 
   return (
     <>
-
       <Page title="Create">
         <StyledContainer>
           <StyledHeadingOne>
@@ -191,13 +190,16 @@ const StyledPocImage = styled.img`
 `;
 
 const StyledContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 
-  min-height: 100vh;
+    min-height: 100vh;
 
-  padding-top: ${({ theme }) => theme.spacing['3xl']};
+    z-index: 2;
+
+    padding-top: ${({ theme }) => theme.spacing['3xl']};
 `;
 
 export default Create;

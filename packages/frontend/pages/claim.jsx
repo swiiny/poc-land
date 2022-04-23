@@ -99,9 +99,12 @@ const Claim = () => {
 };
 
 const StyledContainer = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+
+  z-index: 2;
 
   min-height: 100vh;
   padding-top: ${({ theme }) => theme.spacing['3xl']};
