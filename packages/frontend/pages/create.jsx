@@ -75,7 +75,13 @@ const Create = () => {
     return dnpContract;
   }
 
-  // DNP SELF BOUNTIES STATE CHANGE CALLS
+  async function getPocWithEventAndCreator(ethereumProvider, name) {
+    const pocFactoryContract = await getPocFactoryContract(ethereumProvider);
+    const pocAddress = await pocFactoryContract.getLastPocCreatedByCreator(account);
+    console.log('poc address?', pocAddress);
+    return pocAddress;
+  }
+
   async function createPocContract(ethereumProvider, metadataURI, name, count) {
     console.log('Creating POC contract...', account);
 
@@ -112,9 +118,21 @@ const Create = () => {
       setUploadState(UPLOAD_STATE.waitingForMMAction);
 
       try {
+<<<<<<< HEAD
         const txHash = await createPocContract(window.ethereum, murl, pocName, pocCount);
 
         console.log('txHash: ', txHash);
+=======
+        const res = await createPocContract(window.ethereum, murl, pocName, pocCount);
+        const txHash = res.hash;
+        const pocAddress = await getPocWithEventAndCreator(window.ethereum, pocName);
+        console.log('poc address?', pocAddress);
+        // TODO
+        // backend : save pocAddress, accountAddress (creator address) and chainID!
+        // frontend : display as a QR code
+        // 0x326162D47d7274f6602e08D5860A5634B8eA4182
+        // const tx = ethers.getTr
+>>>>>>> d9336a6c2ad0d8afa3cdf051f49e11c182943a3e
 
         const provider = new ethers.providers.Web3Provider(window.ethereum);
 

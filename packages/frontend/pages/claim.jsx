@@ -25,6 +25,10 @@ const Claim = () => {
     return isAddress(pocId);
   }, [pocId]);
 
+  const getPocMetadata = async (e) => {
+    // TODO
+  };
+
   const claimPoc = async (e) => {
     e.preventDefault();
     console.log('whatsssupppp');
