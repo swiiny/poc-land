@@ -62,7 +62,7 @@ const Create = () => {
 
   }, []);
 
-  const importImage = (e) => {
+  const importImage = async (e) => {
     try {
       const img = URL.createObjectURL(e.target.files[0]);
 
@@ -90,8 +90,6 @@ const Create = () => {
   }
 
   async function createPocContract(ethereumProvider, metadataURI, name, count) {
-    console.log('Creating PoC contract...', account);
-
     const pf = await getPocFactoryContract(ethereumProvider);
     const res = await pf.populateTransaction.createPoc(account, name, 'PoC', count, metadataURI);
 
@@ -113,11 +111,13 @@ const Create = () => {
 
       setUploadState(UPLOAD_STATE.uploadToIPFS);
 
-      const murl = await uploadPocDataToIPFS([pocFile], pocName, pocDescription);
+      const brandedName = `PoC - ${pocName}`;
+
+      const murl = await uploadPocDataToIPFS([pocFile], brandedName, pocDescription);
       setUploadState(UPLOAD_STATE.waitingForMMAction);
 
       try {
-        const res = await createPocContract(window.ethereum, murl, pocName, pocCount);
+        const res = await createPocContract(window.ethereum, murl, brandedName, pocCount);
         const txHash = res;
 
         const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -126,7 +126,7 @@ const Create = () => {
 
         const tx = await (await provider.getTransaction(txHash)).wait();
 
-        const pocAddress = await getPocWithEventAndCreator(window.ethereum, pocName);
+        const pocAddress = await getPocWithEventAndCreator(window.ethereum, brandedName);
 
         if (tx.status === 1) {
           setUploadState(UPLOAD_STATE.success);
@@ -195,7 +195,7 @@ const Create = () => {
       ctx.drawImage(img, 0, 0);
       const canvasdata = canvas.toDataURL('image/png');
       const png = document.createElement('a');
-      png.download = `${pocName}.png`;
+      png.download = `PoC-${pocName}.png`;
       png.href = canvasdata;
       png.click();
     };
@@ -334,6 +334,7 @@ const Create = () => {
                 isVisible={creationState === CREATION_STATE.deploying || creationState === CREATION_STATE.deployingError}
                 negative={uploadState === UPLOAD_STATE.denied || uploadState === UPLOAD_STATE.txError}
                 positive={uploadState === UPLOAD_STATE.success}
+                size={Size.l}
               >
                 {uploadState === UPLOAD_STATE.uploadToIPFS && 'Uploading to IPFS...'}
                 {uploadState === UPLOAD_STATE.waitingForMMAction && 'Waiting for User Wallet Action...'}
@@ -346,6 +347,7 @@ const Create = () => {
                 <StyledLabel>
                   Are you ready to create your PoC ?
                 </StyledLabel>
+
                 <Button
                   style={{ width: '100%' }}
                   type="submit"
@@ -434,6 +436,10 @@ const StyledButton = styled.button`
   `)}
 `;
 
+const StyledSpan = styled.span`
+  font-weight: bold;
+`;
+
 const StyledFormContainer = styled.div`
   width: 100%;
   display: flex;
@@ -444,7 +450,7 @@ const StyledFormContainer = styled.div`
 `;
 
 const ArrowContainer = styled.div`
-  margin-top: 64px;
+  margin-top: 84px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -467,6 +473,9 @@ const StyledImgContainer = styled.div`
 const StyledPocImage = styled.img`
     width: 150px;
     height: 150px;
+    object-fit: cover;
+
+    border-radius: 50%;
 `;
 
 const StyledContainer = styled.div`

@@ -176,6 +176,18 @@ export const StyledText = styled.p`
     @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
         font-size: 14px;
     }
+
+    ${(props) => (props.size === Size.l ? css`
+        font-size: 32px;
+
+        @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+            font-size: 24px;
+        }
+        
+        @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+            font-size: 16px;
+        }
+    ` : '')}
 `;
 
 export const StyledTag = styled.p`

@@ -1,5 +1,5 @@
 import { Skeleton } from '@mui/material';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { StyledHeadingThree, StyledText } from '../../styles/GlobalComponents';
 
@@ -12,6 +12,8 @@ const PocItem = ({ poc, isVisible = true, ...otherProps }) => {
     return false;
   }, [poc]);
 
+  const [image, setImage] = useState('');
+
   return (
     <StyledPocItem {...otherProps} isVisible={isVisible}>
       <div>
@@ -19,7 +21,7 @@ const PocItem = ({ poc, isVisible = true, ...otherProps }) => {
           {isLoading ? (
             <Skeleton sx={{ backgroundColor: '#12192350', borderRadius: '50%' }} variant="circular" animation="wave" width="100%" height={150} />
           ) : (
-            <img src={poc.src} alt={poc.name} />
+            <img src={poc.src} alt={poc.name} style={{ objectFit: 'cover', height: '100%', width: 'auto' }} />
           )}
         </div>
 
