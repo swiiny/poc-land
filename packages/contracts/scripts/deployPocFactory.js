@@ -8,8 +8,8 @@ const hre = require("hardhat");
 async function main() {
   // We get the contract to deploy
   const PocFactory = await hre.ethers.getContractFactory("PocFactory");
-  const popfactory = await PocFactory.deploy();
-  console.log("Poc deployed to:", popfactory.address);
+  const pocfactory = await PocFactory.deploy();
+  console.log("Poc deployed to:", pocfactory.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

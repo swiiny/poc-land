@@ -4,8 +4,8 @@ pragma solidity ^0.8.13;
 import "./Poc.sol";
 
 contract PocFactory {
-    mapping(address => uint256) creatorToPocIndex;
-    mapping(address => mapping(uint256 => address)) creatorToPoc;
+    mapping(address => uint256) private creatorToPocIndex;
+    mapping(address => mapping(uint256 => address)) private creatorToPoc;
 
     event NewPoc(address creator, string name, address poc);
 

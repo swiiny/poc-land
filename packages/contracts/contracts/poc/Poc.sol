@@ -6,13 +6,13 @@ import { RedirectAll, ISuperToken, ISuperfluid } from "./RedirectAll.sol";
 
 contract Poc is ERC721, RedirectAll {
 
-    address public gasLessMinter;
-    address public creator;
-    uint256 public _tokenIdCounter;
-    uint256 public maxPocAmount;
-    string public baseURI;
+    address private gasLessMinter;
+    address private creator;
+    uint256 private _tokenIdCounter;
+    uint256 private maxPocAmount;
+    string private baseURI;
 
-    mapping(address => bool) public hasAPoc;
+    mapping(address => bool) private hasAPoc;
 
     constructor (
         address _gasLessMinter,
@@ -58,7 +58,6 @@ contract Poc is ERC721, RedirectAll {
     }
 
     function tokenURI(uint256 _tokenId) public view virtual override returns (string memory) {
-        // require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
         return baseURI;
     }
 }
