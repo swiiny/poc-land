@@ -53,7 +53,8 @@ app.get(`${BASE_URL_V1}/ping`, async (req, res) => {
 app.post(`${BASE_URL_V1}/savePoc`, jsonParser, async (req, res) => {
 	try {
 		const { userAddress, chainId, pocAddress } = req.body;
-		await pool.query('INSERT INTO userPocs VALUES ?', [[[userAddress, chainId, pocAddress]]]);
+		const decimalChainId = parseInt(chainId, 16);
+		await pool.query('INSERT INTO userPocs VALUES ?', [[[userAddress, decimalChainId, pocAddress]]]);
 	} catch (e) {
 		console.log(e);
 		res.status(500).send(e);
