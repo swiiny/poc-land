@@ -7,7 +7,7 @@ import {
   StyledFileInput, StyledForm, StyledFormItem, StyledInput, StyledLabel, StyledTextArea,
 } from '../components/form/Form';
 import Page from '../components/utils/Page';
-import useWallet from '../hooks/useWallet';
+import useWallet, { availableNetworks } from '../hooks/useWallet';
 import { Button, StyledHeadingOne } from '../styles/GlobalComponents';
 import uploadPocDataToIPFS from '../utils/ipfs';
 import pocFactoryAbi from '../utils/pocFactoryAbi';
@@ -21,7 +21,7 @@ const Create = () => {
   const [pocDescription, setPocDescription] = useState('');
   const [pocCount, setPocCount] = useState(100);
 
-  const { account, isWrongNetwork } = useWallet();
+  const { account, isWrongNetwork, currentChainId } = useWallet();
 
   const isDataValid = useMemo(() => pocName?.length && pocImage?.length && pocDescription?.length,
     [pocName, pocImage, pocDescription]);
@@ -43,7 +43,8 @@ const Create = () => {
   };
 
   async function getPocFactoryContract(ethereumProvider) {
-    const pocFactoryAddress = '0x473837550ceDf7f16805C15C21487d3A44f26cE5';
+    const contractAddress = availableNetworks.find((net) => net.chainId === currentChainId)?.contractAddress;
+    const pocFactoryAddress = contractAddress;
     const provider = new ethers.providers.Web3Provider(ethereumProvider);
     const dnpContract = new ethers.Contract(pocFactoryAddress, pocFactoryAbi, provider);
     return dnpContract;

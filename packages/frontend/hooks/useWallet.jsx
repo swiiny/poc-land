@@ -12,14 +12,17 @@ export const availableNetworks = [
   {
     name: 'Polygon',
     chainId: '0x89',
+    contractAddress: '0x473837550ceDf7f16805C15C21487d3A44f26cE5',
   },
   {
     name: 'Optimism',
     chainId: '0xA',
+    contractAddress: '',
   },
   {
     name: 'Rinkeby',
     chainId: '0x4',
+    contractAddress: '',
   },
 ];
 
@@ -123,6 +126,7 @@ const useWallet = () => {
     account,
     providerValid,
     isWrongNetwork,
+    currentChainId,
   };
 };
 
