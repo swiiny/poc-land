@@ -44,9 +44,7 @@ app.use(cors(corsOptions));
 app.use(helmet());
 app.use(limiter);
 
-var jsonParser = bodyParser.json()
-
-
+var jsonParser = bodyParser.json();
 
 app.get(`${BASE_URL_V1}/ping`, async (req, res) => {
 	res.send("pong");
@@ -55,7 +53,7 @@ app.get(`${BASE_URL_V1}/ping`, async (req, res) => {
 app.post(`${BASE_URL_V1}/savePoc`, jsonParser, async (req, res) => {
 	try {
 		const { userAddress, chainId, pocAddress } = req.body;
-		await pool.query(await DBCPool.query('INSERT INTO userPocs VALUES ?', [[[userAddress, chainId, pocAddress]]]));
+		await pool.query('INSERT INTO userPocs VALUES ?', [[[userAddress, chainId, pocAddress]]]);
 	} catch (e) {
 		console.log(e);
 		res.status(500).send(e);
