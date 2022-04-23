@@ -51,10 +51,10 @@ const Create = () => {
   }
 
   // DNP SELF BOUNTIES STATE CHANGE CALLS
-  async function createPocContract(ethereumProvider, metadataURI, name) {
+  async function createPocContract(ethereumProvider, metadataURI, name, count) {
     console.log('Creating POC contract...', account);
     const pf = await getPocFactoryContract(ethereumProvider);
-    const res = await pf.populateTransaction.createPoc(account, name, 'PoC', 100, metadataURI);
+    const res = await pf.populateTransaction.createPoc(account, name, 'PoC', count, metadataURI);
     res.from = account;
     // Rinkeby : make this cleaner
     // res.chainId = parseInt(4, 4)
@@ -80,7 +80,7 @@ const Create = () => {
       console.log('file: ', pocFile);
       const murl = await uploadPocDataToIPFS([pocFile], pocName, pocDescription);
       console.log('metadata url', murl);
-      const res = await createPocContract(window.ethereum, murl, pocName);
+      const res = await createPocContract(window.ethereum, murl, pocName, pocCount);
       console.log('res', res);
     }
   };
