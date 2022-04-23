@@ -22,7 +22,7 @@ contract Poc is ERC721, ERC721Enumerable, Ownable {
         safeMint(creator);
     }
 
-     function _baseURI() internal view override returns (string memory) {
+    function _baseURI() internal view override returns (string memory) {
         return baseURI;
     }
 
@@ -33,7 +33,6 @@ contract Poc is ERC721, ERC721Enumerable, Ownable {
     }
 
     // The following functions are overrides required by Solidity.
-
     function _beforeTokenTransfer(address from, address to, uint256 tokenId)
         internal
         override(ERC721, ERC721Enumerable)
@@ -49,7 +48,6 @@ contract Poc is ERC721, ERC721Enumerable, Ownable {
     {
         return super.supportsInterface(interfaceId);
     }
-
 
     function tokenURI(uint256 _tokenId) public view virtual override returns (string memory) {
         // require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
