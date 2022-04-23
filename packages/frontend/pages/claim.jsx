@@ -54,11 +54,20 @@ const Claim = () => {
   const getPocMetadata = async (e) => {
     // TODO
     e.preventDefault();
-    const pocAddress = '0xec26D215fe3BCcFC843eE5874E389CBCb84023C9';
+    const pocAddress = '0xE6BC298FF03054D0Fe27532388522BA1e0E43Ca3';
     const poc = await getPocContract(window.ethereum, pocAddress);
     console.log('address is correct?', poc.address);
     const data = await poc.tokenURI(4);
     console.log(data);
+    axios.get(data).then((res) => {
+      console.log(res.data);
+      console.log(res.data.description);
+      console.log(res.data.name);
+      let imageLinkIpfs = res.data.image;
+      imageLinkIpfs = imageLinkIpfs.replace('ipfs://', 'https://ipfs.io/ipfs/');
+      console.log(imageLinkIpfs);
+      // setPocData(res.data);
+    });
   };
 
   const claimPoc = async (e) => {
