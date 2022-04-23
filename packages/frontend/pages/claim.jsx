@@ -36,16 +36,16 @@ const Claim = () => {
 
   const getPocMetadata = async (e) => {
     // TODO
-    const pocAddress = '0x326162D47d7274f6602e08D5860A5634B8eA4182';
+    e.preventDefault();
+    const pocAddress = '0x9332806d5ef48f0b350AD5b493e16955A3616df9';
     const poc = await getPocContract(window.ethereum, pocAddress);
-    poc.callStatic('tokenURI').then((metadata) => {
-      console.log('metadata', metadata);
-    });
+    console.log('address is correct?', poc.address);
+    const data = await poc.tokenURI(4);
+    console.log(data);
   };
 
   const claimPoc = async (e) => {
     e.preventDefault();
-    console.log('whatsssupppp');
 
     try {
       // TODO : Claim POC
@@ -96,6 +96,15 @@ const Claim = () => {
           >
             {/* // disabled= {!isDataValid || !isPocIdValid} */}
             Claim
+          </Button>
+
+          <Button
+            style={{ width: '100%' }}
+            type="submit"
+            onClick={(e) => getPocMetadata(e)}
+          >
+            {/* // disabled= {!isDataValid || !isPocIdValid} */}
+            GetPocMetadata
           </Button>
 
         </StyledForm>
