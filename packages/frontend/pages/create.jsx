@@ -15,7 +15,7 @@ const Create = () => {
   const [pocDescription, setPocDescription] = useState('');
   const [pocAddress, setPocAddress] = useState('');
 
-  const { account } = useWallet();
+  const { account, isWrongNetwork } = useWallet();
 
   const isDataValid = useMemo(() => pocName?.length && pocImage?.length && pocDescription?.length,
     [pocName, pocImage, pocDescription]);
@@ -47,10 +47,10 @@ const Create = () => {
   async function createPocContract(ethereumProvider, metadataURI) {
     console.log('Creating POC contract...', account);
     const pf = await getPocFactoryContract(ethereumProvider);
-    const res = await pf.populateTransaction.createPoc(account, 'placeholder', 'POC', 100, metadataURI);
+    const res = await pf.populateTransaction.createPoc(account, 'POC', 'POC', 100, metadataURI);
     res.from = account;
     // Rinkeby : make this cleaner
-    res.chainId = parseInt(process.env.CHAIN_ID, 4);
+    // res.chainId = parseInt(4, 4)
     const txHash = await ethereumProvider.request({
       method: 'eth_sendTransaction',
       params: [res],
@@ -60,16 +60,23 @@ const Create = () => {
 
   const createPoc = async (e) => {
     e.preventDefault();
-    console.warn('submit poc with data');
-    console.log('name: ', pocName);
-    console.log('description: ', pocDescription);
-    console.log('image: ', pocImage);
-    // TODO : submit to ipfs here
-    console.log('file: ', pocFile);
-    const murl = await uploadPocDataToIPFS([pocFile]);
-    console.log('metadata url', murl);
-    const res = await createPocContract(window.ethereum, murl);
-    console.log('res', res);
+
+    if (isWrongNetwork) {
+
+    } else {
+      console.warn('submit poc with data');
+      console.log('name: ', pocName);
+      console.log('description: ', pocDescription);
+      console.log('image: ', pocImage);
+      // TODO : submit to ipfs here
+      console.log('file: ', pocFile);
+      const murl = await uploadPocDataToIPFS([pocFile]);
+      console.log('metadata url', murl);
+
+      const res = await createPocContract(window.ethereum, account, murl);
+
+      console.log('res', res);
+    }
   };
 
   return (
@@ -134,7 +141,7 @@ const Create = () => {
             onClick={(e) => createPoc(e)}
             disabled={!isDataValid}
           >
-            Save and Continue
+            {isWrongNetwork ? 'Switch Network' : 'Save and Continue'}
           </Button>
         </StyledForm>
       </StyledContainer>

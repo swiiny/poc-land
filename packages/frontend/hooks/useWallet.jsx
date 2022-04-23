@@ -11,6 +11,7 @@ export const getContract = async (tokenAddress, abi, ethereumProvider) => {
 const availableChainIds = [
   '0x89', // polygon
   '0xA', // optimism
+  '0x4', // rinkeby
 ];
 
 const useWallet = () => {
