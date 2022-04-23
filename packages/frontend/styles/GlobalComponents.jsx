@@ -61,6 +61,24 @@ export const Button = styled.button`
     ` : 'cursor: pointer;')}
 
     transition: all 0.4s ease-in-out;
+
+    ${(props) => (props.tertiary ? css`
+        background: none;
+        border: none;
+
+        ${props.disabled ? 'opacity: 0' : 'opacity: 1'}
+
+    ` : '')}
+
+    ${(props) => (props.hidden ? css`
+        opacity: 0.0;
+    ` : css`
+        opacity: 1.0;
+    `)}
+
+    &:hover {
+        transform: translateX(2px) translateY(-2px);
+    }
 `;
 
 export const StyledTextButton = styled.button`
@@ -79,8 +97,8 @@ export const StyledTextButton = styled.button`
 `;
 
 export const StyledHeadingOne = styled.h1`
-    font-size: 64px;
-    font-weight: bold;
+    font-size: 48px;
+    font-weight: semi-bold;
     font-weight: normal;
 
     letter-spacing: -0.02em;
@@ -92,12 +110,16 @@ export const StyledHeadingOne = styled.h1`
     margin: 0;
 
     @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-      font-size: 48px;
+      font-size: 36px;
+    }
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+      font-size: 24px;
     }
 `;
 
 export const StyledHeadingTwo = styled.h2`
-    font-size: 48px;
+    font-size: 28px;
     font-weight: bold;
     font-weight: normal;
 

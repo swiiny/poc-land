@@ -89,7 +89,7 @@ const StyledPocItem = styled.li`
             width: 100px;
             height: 100px;
 
-            box-shadow: 0 0 0 4px ${({ theme }) => theme.colors.bg};
+            box-shadow: 0 0 0 4px ${({ theme }) => `${theme.colors.bg}30`};
 
             img {
                 width: 100%;

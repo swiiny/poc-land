@@ -88,7 +88,7 @@ const Navbar = () => {
         <StyledLogo src={Logo.src} />
         )}
 
-        <ul>
+        <ul className={isSmallerThanMd ? 'wave-aniamtion ' : ''}>
           {pages.filter((p) => !p.isHidden).map((p) => (
             <li>
               <Link href={p.url}>
@@ -152,7 +152,7 @@ const StyledBackgroundButton = styled.button`
     max-height: 0px;
   `)}
 
-  background-color: ${({ theme }) => `${theme.colors.gradientEnd}50`};
+  background-color: ${({ theme }) => `${theme.colors.bg}60`};
 `;
 
 const StyledMobileNavbar = styled.div`
@@ -271,13 +271,17 @@ const StyledNavbar = styled.nav`
 
   height: 84px;
 
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    height: 64px;
+  }
+
   padding: 0 ${({ theme }) => theme.spacing.l};
   
   display: flex;
   justify-content: center;
   align-items: center;
 
-  background-color: ${({ theme }) => `${theme.colors.bg}80`};
+  background-color: ${({ theme }) => `${theme.colors.bg}20`};
   backdrop-filter: blur(8px);
 
   & > img {
@@ -305,9 +309,12 @@ const StyledNavbar = styled.nav`
     @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
       position: absolute;
       z-index: 100;
-      top: 64px;
+      top: 0;
       left: 0;
       right: 0;
+
+      padding-top: 64px;
+      margin-top: 0;
 
       flex-direction: column;
 
