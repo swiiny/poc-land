@@ -44,7 +44,7 @@ export const StyledFileInput = styled.label`
     border-radius: 8px;
     background: ${({ theme }) => theme.colors.gradient};
 
-    margin-top: 4px;
+    margin-top: 24px;
 
     svg {
         margin-left: 8px;
