@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
 export const StyledFormItem = styled.div`
-    position: absolute;
+    position: ${(props) => (props.normalPos ? 'relative' : 'absolute')};
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -25,6 +25,14 @@ export const StyledFormItem = styled.div`
     @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
         top: 30%;
     }
+
+    ${(props) => (props.normalPos ? css`
+        top: unset;
+        
+        @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+            top: unset;
+        }
+    ` : '')}
 `;
 
 export const StyledFileInput = styled.label`
