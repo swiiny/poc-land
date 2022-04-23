@@ -19,7 +19,7 @@ DeFi enabled, censorship resistant multi chain poaps. Built with Superfluid, IPF
 - See example here : https://github.com/superfluid-finance/protocol-monorepo/tree/dev/examples/tradeable-cashflow-hardhat/contracts
 
 ### Production & Contest
-- Buy poc.land
+- Buy poc.land [done]
 - Create server & deploy
 - Deploy contracts on the chains
 - Create slides
