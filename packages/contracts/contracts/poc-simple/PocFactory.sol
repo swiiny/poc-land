@@ -19,7 +19,6 @@ contract PocFactory {
         ISuperToken acceptedToken
     ) public {
         Poc poc = new Poc(_creator,_name, _symbol, _maxPocAmount, _baseURI, host, acceptedToken);
-        creatorToPoc[_creator][_name] = address(poc);
         uint256 currentIndex = creatorToPocIndex[_creator]+1;
         creatorToPoc[_creator][currentIndex] = address(poc);
         creatorToPocIndex[_creator] = currentIndex + 1;

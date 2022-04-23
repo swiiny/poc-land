@@ -58,7 +58,7 @@ contract RedirectAll is SuperAppBase {
      * Redirect Logic
      *************************************************************************/
 
-    event ReceiverChanged(address receiver); //what is this?
+    event ReceiverChanged(address receiver);
 
     // @dev adds a receiver to the list of receivers if not already present
     function _addReceiver(address receiver, uint256 tokenId) internal {

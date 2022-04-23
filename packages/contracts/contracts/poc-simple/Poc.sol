@@ -2,10 +2,9 @@
 pragma solidity ^0.8.13;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import { RedirectAll, ISuperToken, ISuperfluid } from "./RedirectAll.sol";
 
-contract Poc is ERC721, RedirectAll, Ownable {
+contract Poc is ERC721, RedirectAll {
 
     uint256 public _tokenIdCounter;
     uint256 public maxPocAmount;
