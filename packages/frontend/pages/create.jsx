@@ -74,6 +74,8 @@ const Create = () => {
       console.log('name: ', pocName);
       console.log('description: ', pocDescription);
       console.log('image: ', pocImage);
+      console.log('count ', pocCount);
+
       // TODO : submit to ipfs here
       console.log('file: ', pocFile);
       const murl = await uploadPocDataToIPFS([pocFile], pocName, pocDescription);
@@ -123,6 +125,9 @@ const Create = () => {
               </StyledLabel>
               <StyledInput
                 type="number"
+                step="20"
+                min="1"
+                max="10000"
                 placeholder="100"
                 value={pocCount}
                 onChange={(e) => setPocCount(e.target.value)}
