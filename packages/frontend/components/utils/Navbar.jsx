@@ -28,6 +28,10 @@ export const pages = [
     label: 'Claim',
     url: '/claim',
   },
+  {
+    label: 'My Collections',
+    url: '/collections',
+  },
 ];
 
 export const LINKS = {
@@ -35,6 +39,7 @@ export const LINKS = {
   create: pages[1].url,
   gallery: pages[2].url,
   redeem: pages[3].url,
+  collections: pages[4].url,
 };
 
 const Navbar = () => {
@@ -132,6 +137,7 @@ const StyledBackgroundButton = styled.button`
   right: 0;
   bottom: 0;
   z-index: 50;
+  height: 100vh;
 
   border: none;
 
@@ -139,10 +145,10 @@ const StyledBackgroundButton = styled.button`
 
   ${(props) => (props.isVisible ? css`
     opacity: 1.0;
-    min-height: 100vh;
+    max-height: 100vh;
   ` : css`
     opacity: 0.0;
-    min-height: 0px;
+    max-height: 0px;
   `)}
 
   background-color: ${({ theme }) => `${theme.colors.bg}50`};
