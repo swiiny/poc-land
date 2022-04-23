@@ -118,13 +118,8 @@ const Create = () => {
       setUploadState(UPLOAD_STATE.waitingForMMAction);
 
       try {
-<<<<<<< HEAD
-        const txHash = await createPocContract(window.ethereum, murl, pocName, pocCount);
-
-        console.log('txHash: ', txHash);
-=======
         const res = await createPocContract(window.ethereum, murl, pocName, pocCount);
-        const txHash = res.hash;
+        const txHash = res;
         const pocAddress = await getPocWithEventAndCreator(window.ethereum, pocName);
         console.log('poc address?', pocAddress);
         // TODO
@@ -132,7 +127,6 @@ const Create = () => {
         // frontend : display as a QR code
         // 0x326162D47d7274f6602e08D5860A5634B8eA4182
         // const tx = ethers.getTr
->>>>>>> d9336a6c2ad0d8afa3cdf051f49e11c182943a3e
 
         const provider = new ethers.providers.Web3Provider(window.ethereum);
 
