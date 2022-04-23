@@ -6,23 +6,32 @@
     "dev": "next dev -p 8080",
     "build": "next build",
     "start": "next start -p 8080",
-    "lint": "next lint"
+    "lint": "next lint",
+    "export": "next export"  
   },
   "dependencies": {
+    "@metamask/detect-provider": "^1.2.0",
+    "axios": "^0.21.1",
+    "ethers": "^5.6.4",
+    "heroicons-react": "^1.4.1",
     "next": "12.1.5",
+    "process": "^0.11.10",
     "react": "18.0.0",
-    "react-dom": "18.0.0"
+    "react-countup": "^6.1.0",
+    "react-dom": "18.0.0",
+    "react-qr-code": "^2.0.2",
+    "styled-components": "^5.3.0",
+    "web3.storage": "^4.2.0"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.4",
-    "eslint": "^8.13.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-next": "12.1.5",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-jsx-a11y": "^6.5.1",
-    "eslint-plugin-react": "^7.29.4",
-    "eslint-plugin-react-hooks": "^4.4.0",
-    "postcss": "^8.4.12",
-    "tailwindcss": "^3.0.24"
+    "autoprefixer": "^10.4.0",
+    "babel-plugin-styled-components": "^2.0.2",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-next": "^11.0.1",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0"
   }
 }
