@@ -84,7 +84,7 @@ const Claim = () => {
 
       const url = `${process.env.SERVER_URL}/v1/server/mint`;
       const payload = {
-        pocAddress: '0xeD616c1bb22C80c5EB35c492a992f3CDFD4098b0',
+        pocAddress: poc,
         pocId,
         recipient,
       };

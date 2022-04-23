@@ -1,21 +1,40 @@
-import React, { useEffect } from 'react';
+import { Skeleton } from '@mui/material';
+import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { StyledHeadingThree, StyledText } from '../../styles/GlobalComponents';
 
 const PocItem = ({ poc, isVisible = true, ...otherProps }) => {
-  useEffect(() => {
+  const isLoading = useMemo(() => {
+    if (!poc?.name) {
+      return true;
+    }
 
-  }, []);
+    return false;
+  }, [poc]);
 
   return (
     <StyledPocItem {...otherProps} isVisible={isVisible}>
       <div>
         <div className="img-container">
-          <img src={poc.src} alt={poc.name} />
+          {isLoading ? (
+            <Skeleton sx={{ backgroundColor: '#E7EAED10', borderRadius: '50%' }} variant="circular" animation="pulse" width="100%" height={150} />
+          ) : (
+            <img src={poc.src} alt={poc.name} />
+          )}
         </div>
 
-        <StyledHeadingThree className="name">{poc.name}</StyledHeadingThree>
-        <StyledText className="description">{poc.description}</StyledText>
+        {isLoading ? (
+          <>
+            <Skeleton sx={{ backgroundColor: '#E7EAED10', borderRadius: '5px' }} variant="rectangular" animation="pulse" width="100%" height={46} />
+            <Skeleton sx={{ backgroundColor: '#E7EAED10', borderRadius: '5px' }} variant="rectangular" animation="pulse" width="100%" height={46} />
+          </>
+        ) : (
+          <>
+            <StyledHeadingThree className="name">{poc.name}</StyledHeadingThree>
+            <StyledText className="description">{poc.description}</StyledText>
+          </>
+        )}
+
       </div>
     </StyledPocItem>
   );
