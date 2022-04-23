@@ -52,6 +52,16 @@ app.get(`${BASE_URL_V1}/ping`, async (req, res) => {
 	res.send("pong");
 });
 
+app.post(`${BASE_URL_V1}/savePoc`, jsonParser, async (req, res) => {
+	try {
+		const { userAddress, chainId, pocAddress } = req.body;
+		await pool.query(await DBCPool.query('INSERT INTO userPocs VALUES ?', [[userAddress, chainId, pocAddress]]));
+	} catch (e) {
+		console.log(e);
+		res.status(500).send(e);
+	}
+});
+
 app.get(`${BASE_URL_V1}/userPocs`, async (req, res) => {
 	try {
 		const { userAddr, chainId } = req.query;
