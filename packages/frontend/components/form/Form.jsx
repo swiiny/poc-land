@@ -19,7 +19,7 @@ export const StyledFormItem = styled.div`
         z-index: 10;
     ` : css`
         opacity: 0.0;
-        z-index: 0;
+        z-index: -1;
     `)}
 
     @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
@@ -28,7 +28,7 @@ export const StyledFormItem = styled.div`
 
     ${(props) => (props.normalPos ? css`
         top: unset;
-        
+
         @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
             top: unset;
         }

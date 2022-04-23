@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { ethers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
+import { useRouter } from 'next/router';
 import React, { useEffect, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
 import {
@@ -31,6 +32,9 @@ const Claim = () => {
   const { account } = useWallet();
   const { isSmallerThanSm } = useResponsive();
 
+  const Router = useRouter();
+  const { poc } = Router.query;
+
   const isPocIdValid = useMemo(() => {
     if (!pocId) {
       return false;
@@ -47,13 +51,11 @@ const Claim = () => {
     return dnpContract;
   }
 
-  const getPocMetadata = async (e) => {
-    // TODO
-    e.preventDefault();
-    const pocAddress = '0xE6BC298FF03054D0Fe27532388522BA1e0E43Ca3';
-    const poc = await getPocContract(window.ethereum, pocAddress);
-    console.log('address is correct?', poc.address);
-    const data = await poc.tokenURI(4);
+  const getPocMetadata = async (pocAddress) => {
+    // const pocAddress = '0xE6BC298FF03054D0Fe27532388522BA1e0E43Ca3';
+    const pocContract = await getPocContract(window.ethereum, pocAddress);
+    console.log('address is correct?', pocContract.address);
+    const data = await pocContract.tokenURI(4);
     console.log(data);
     axios.get(data).then((res) => {
       console.log(res.data);
@@ -104,6 +106,12 @@ const Claim = () => {
       setRecipient(account);
     }
   }, [account]);
+
+  useEffect(() => {
+    if (poc) {
+      getPocMetadata(poc);
+    }
+  }, [poc]);
 
   return (
     <Page title="Claim">
@@ -164,17 +172,19 @@ const Claim = () => {
 const StyledMargin = styled.div`
   margin: 40px 0;
 
+  width: 100%;
+
   transition: all 0.4s ease-in-out;
 
   overflow: hidden;
 
   ${(props) => (props.isVisible ? css`
     opacity: 1.0;
-    max-height: fit-content;
+    max-height: 300px;
     ` : css`
     opacity: 0.0;
     max-height: 0px;
-    margin: 0;
+    margin: 0 0;
   `)}
 `;
 

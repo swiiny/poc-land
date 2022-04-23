@@ -140,6 +140,10 @@ const Create = () => {
         if (tx.status === 1) {
           setUploadState(UPLOAD_STATE.success);
 
+          setPocLink(`${process.env.FRONTEND_URL}${LINKS.redeem}?poc=${pocAddress}`);
+
+          console.log('pocLink', `${process.env.FRONTEND_URL}${LINKS.redeem}?poc=${pocAddress}`);
+
           const payload = {
             chainId: currentChainId,
             userAddress: account,
@@ -281,14 +285,31 @@ const Create = () => {
                 />
               </StyledFormItem>
 
+              <StyledFormItem isVisible={uploadState === UPLOAD_STATE.success}>
+                <StyledLabel style={{ textAlign: 'center' }}>
+                  Scan this QR Code to claim this Poc
+                </StyledLabel>
+                <QrCodeContainer>
+                  <QRCode
+                    size={isSmallerThanSm ? 150 : 200}
+                    value={pocLink}
+                  />
+
+                  <Link href={LINKS.collections}>
+                    <Button style={{ marginTop: '60px' }}>
+                      See My Collection
+                    </Button>
+                  </Link>
+                </QrCodeContainer>
+              </StyledFormItem>
+
               <StyledText
-                isVisible={creationState === CREATION_STATE.deploying || creationState === CREATION_STATE.deployingError || creationState === CREATION_STATE.success}
+                isVisible={creationState === CREATION_STATE.deploying || creationState === CREATION_STATE.deployingError}
                 negative={uploadState === UPLOAD_STATE.denied || uploadState === UPLOAD_STATE.txError}
                 positive={uploadState === UPLOAD_STATE.success}
               >
                 {uploadState === UPLOAD_STATE.uploadToIPFS && 'Uploading to IPFS...'}
                 {uploadState === UPLOAD_STATE.waitingForMMAction && 'Waiting for User Wallet Action...'}
-                {uploadState === UPLOAD_STATE.success && 'PoC Successfully Created'}
                 {uploadState === UPLOAD_STATE.denied && 'Wallet Action Denied'}
                 {uploadState === UPLOAD_STATE.txError && 'Transaction Error'}
                 {uploadState === UPLOAD_STATE.txWaiting && 'Waiting for Transaction to be mined, please do not refresh the page or close the browser'}
@@ -309,24 +330,10 @@ const Create = () => {
                 </Button>
               </StyledFormItem>
 
-              <StyledFormItem isVisible={creationState === CREATION_STATE.success}>
-                <StyledLabel>
-                  Scan this QR Code to claim this Poc
-                </StyledLabel>
-                <QRCode
-                  size={isSmallerThanSm ? 150 : 200}
-                  value={pocLink}
-                />
-              </StyledFormItem>
-
             </StyledForm>
 
             {uploadState === UPLOAD_STATE.success ? (
-              <Link href={LINKS.collections}>
-                <Button>
-                  See My Collection
-                </Button>
-              </Link>
+              <></>
             ) : creationState === CREATION_STATE.deployingError ? (
               <ArrowContainer>
                 <StyledButton
@@ -363,6 +370,15 @@ const Create = () => {
     </>
   );
 };
+
+const QrCodeContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 32px;
+  width: 100%;
+`;
 
 const StyledButton = styled.button`
   border: none;
