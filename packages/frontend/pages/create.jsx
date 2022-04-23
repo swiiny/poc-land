@@ -15,7 +15,7 @@ const Create = () => {
   const [pocDescription, setPocDescription] = useState('');
   const [pocAddress, setPocAddress] = useState('');
 
-  const { account } = useWallet();
+  const { account, isWrongNetwork } = useWallet();
 
   const isDataValid = useMemo(() => pocName?.length && pocImage?.length && pocDescription?.length,
     [pocName, pocImage, pocDescription]);
@@ -59,18 +59,23 @@ const Create = () => {
 
   const createPoc = async (e) => {
     e.preventDefault();
-    console.warn('submit poc with data');
-    console.log('name: ', pocName);
-    console.log('description: ', pocDescription);
-    console.log('image: ', pocImage);
-    // TODO : submit to ipfs here
-    console.log('file: ', pocFile);
-    const murl = await uploadPocDataToIPFS([pocFile]);
-    console.log('metadata url', murl);
 
-    const res = await createPocContract(window.ethereum, account, murl);
+    if (isWrongNetwork) {
 
-    console.log('res', res);
+    } else {
+      console.warn('submit poc with data');
+      console.log('name: ', pocName);
+      console.log('description: ', pocDescription);
+      console.log('image: ', pocImage);
+      // TODO : submit to ipfs here
+      console.log('file: ', pocFile);
+      const murl = await uploadPocDataToIPFS([pocFile]);
+      console.log('metadata url', murl);
+
+      const res = await createPocContract(window.ethereum, account, murl);
+
+      console.log('res', res);
+    }
   };
 
   return (
@@ -135,7 +140,7 @@ const Create = () => {
             onClick={(e) => createPoc(e)}
             disabled={!isDataValid}
           >
-            Save and Continue
+            {isWrongNetwork ? 'Switch Network' : 'Save and Continue'}
           </Button>
         </StyledForm>
       </StyledContainer>
