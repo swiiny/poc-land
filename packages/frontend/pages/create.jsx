@@ -2,7 +2,7 @@ import ethers from 'ethers';
 import { Upload } from 'heroicons-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
-import pkg from 'rabin-wasm';
+// import pkg from 'rabin-wasm';
 import {
   StyledFileInput, StyledForm, StyledFormItem, StyledInput, StyledLabel, StyledTextArea,
 } from '../components/form/Form';
@@ -12,7 +12,7 @@ import { Button, StyledHeadingOne } from '../styles/GlobalComponents';
 import uploadPocDataToIPFS from '../utils/ipfs';
 import pocFactoryAbi from '../utils/pocFactoryAbi';
 
-const { create } = pkg;
+// const { create } = pkg;
 
 const Create = () => {
   const [pocName, setPocName] = useState('');
