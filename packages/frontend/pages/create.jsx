@@ -45,6 +45,7 @@ const Create = () => {
   const [pocFile, setPocFile] = useState({});
   const [pocDescription, setPocDescription] = useState('');
   const [pocCount, setPocCount] = useState(100);
+  const [pocLink, setPocLink] = useState('');
 
   const [creationState, setCreationState] = useState(CREATION_STATE.setImage);
 
@@ -125,16 +126,6 @@ const Create = () => {
 
         const pocAddress = await getPocWithEventAndCreator(window.ethereum, pocName);
 
-        const payload = {
-          chainId: currentChainId,
-          userAddress: account,
-          pocAddress,
-        };
-
-        await axios.post(`${process.env.SERVER_URL}/v1/server/savePoc`, payload).catch((err) => {
-          throw new Error('Failed to save poc in DB :', err);
-        });
-
         // TODO
         // backend : save pocAddress, accountAddress (creator address) and chainID!
         // frontend : display as a QR code
@@ -143,6 +134,16 @@ const Create = () => {
 
         if (tx.status === 1) {
           setUploadState(UPLOAD_STATE.success);
+
+          const payload = {
+            chainId: currentChainId,
+            userAddress: account,
+            pocAddress,
+          };
+
+          await axios.post(`${process.env.SERVER_URL}/v1/server/savePoc`, payload).catch((err) => {
+            throw new Error('Failed to save poc in DB :', err);
+          });
         } else {
           setUploadState(UPLOAD_STATE.txError);
           setCreationState(CREATION_STATE.deployingError);
@@ -302,6 +303,22 @@ const Create = () => {
                   {isWrongNetwork ? 'Wrong Network' : 'Save and Continue'}
                 </Button>
               </StyledFormItem>
+
+              <StyledFormItem isVisible={creationState === CREATION_STATE.success}>
+                <StyledLabel>
+                  Are you ready to create your PoC ?
+                </StyledLabel>
+                <Button
+                  style={{ width: '100%' }}
+                  type="submit"
+                  onClick={(e) => createPoc(e)}
+                  disabled={!isDataValid || creationState !== CREATION_STATE.validation}
+                  id="submit-poc"
+                >
+                  {isWrongNetwork ? 'Wrong Network' : 'Save and Continue'}
+                </Button>
+              </StyledFormItem>
+
             </StyledForm>
 
             {uploadState === UPLOAD_STATE.success ? (
