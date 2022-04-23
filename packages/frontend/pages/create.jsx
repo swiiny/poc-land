@@ -36,7 +36,7 @@ const Create = () => {
   };
 
   async function getPocFactoryContract(ethereumProvider) {
-    const pocFactoryAddress = '0x9702224c5f09f9814cf75e04f7c1b6d103f356ae';
+    const pocFactoryAddress = '0x473837550ceDf7f16805C15C21487d3A44f26cE5';
     const provider = new ethers.providers.Web3Provider(ethereumProvider);
     const dnpContract = new ethers.Contract(pocFactoryAddress, pocFactoryAbi, provider);
     return dnpContract;
@@ -44,11 +44,12 @@ const Create = () => {
 
   // DNP SELF BOUNTIES STATE CHANGE CALLS
   async function createPocContract(ethereumProvider, metadataURI) {
+    console.log('Creating POC contract...', account);
     const pf = await getPocFactoryContract(ethereumProvider);
-    const res = await pf.populateTransaction.createPoc(account, 'placeholder', 'POC', 100, metadataURI);
+    const res = await pf.populateTransaction.createPoc(account, 'POC', 'POC', 100, metadataURI);
     res.from = account;
     // Rinkeby : make this cleaner
-    res.chainId = parseInt(process.env.CHAIN_ID, 4);
+    // res.chainId = parseInt(4, 4)
     const txHash = await ethereumProvider.request({
       method: 'eth_sendTransaction',
       params: [res],
@@ -71,9 +72,7 @@ const Create = () => {
       console.log('file: ', pocFile);
       const murl = await uploadPocDataToIPFS([pocFile]);
       console.log('metadata url', murl);
-
-      const res = await createPocContract(window.ethereum, account, murl);
-
+      const res = await createPocContract(window.ethereum, murl);
       console.log('res', res);
     }
   };

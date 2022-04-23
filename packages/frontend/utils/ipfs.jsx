@@ -34,8 +34,14 @@ async function uploadPocDataToIPFS(files) {
   console.log('files, pocImage', files, pocImage);
   // step 1 : upload the image data to IPFS
   const cid = await storeOnIPFS(files);
+  const client = makeStorageClient();
+  const storedFiles = await client.get(cid);
+  console.log('stored files');
+  const sf = await storedFiles.files();
+  console.log('stored files', sf);
+  const storedCid = sf[0].cid;
   // step 2 : get the url of the image
-  const imageUrl = `https://${cid}.ipfs.dweb.link/${pocImage.name}`;
+  const imageUrl = `ipfs://${storedCid}`;
   console.log('image url', imageUrl);
   // step 3 : create opensea compatible image metadata file
   const f = createMetadataFile(imageUrl);
