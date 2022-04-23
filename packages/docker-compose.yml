@@ -35,6 +35,8 @@ services:
         build: ./server
         env_file:
             - .env
+        volumes:
+            - ./server:/app
         environment:
             PORT: $SERVER_PORT
         ports:
