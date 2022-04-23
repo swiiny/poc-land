@@ -12,10 +12,14 @@ contract Poc is ERC721, ERC721Enumerable, Ownable {
     Counters.Counter private _tokenIdCounter;
     uint256 public maxPocAmount;
     string public baseURI;
+    address public creator;
 
-    constructor(string memory _name,string memory _symbol, uint256 _maxPocAmount, string memory _baseURI) ERC721(_name, _symbol) {
+    constructor(address _creator, string memory _name,string memory _symbol, uint256 _maxPocAmount, string memory _baseURI) ERC721(_name, _symbol) {
+        creator = _creator;
         maxPocAmount = _maxPocAmount;
         baseURI = _baseURI;
+        // TODO : remove this
+        safeMint(creator);
     }
 
      function _baseURI() internal view override returns (string memory) {

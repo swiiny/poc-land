@@ -44,6 +44,7 @@ async function uploadPocDataToIPFS(files) {
   // step 5 : get the url of the metadata file
   const metadataUrl = `https://${cid2}.ipfs.dweb.link/${f.name}`;
   console.log('metadata url', metadataUrl);
+  return metadataUrl;
 }
 
 export { uploadPocDataToIPFS, getAccessToken };
