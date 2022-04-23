@@ -99,7 +99,11 @@ const Create = () => {
 
         const txHash = res.hash;
 
-        // const tx = ethers.getTr
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+        const tx = await provider.getTransactionReceipt(txHash);
+
+        console.log('tx', tx);
 
         setUploadState(UPLOAD_STATE.success);
       } catch (err) {
