@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import useWallet from '../../hooks/useWallet';
 import { Button, Size, StyledTag } from '../../styles/GlobalComponents';
 import { formatAddress } from '../../utils/functions';
+import NetworkSelector from './NetworkSelector';
 
 export const pages = [
   {
@@ -21,7 +22,7 @@ export const pages = [
   },
   {
     label: 'Claim',
-    url: '/redeem',
+    url: '/claim',
   },
 ];
 
@@ -38,11 +39,17 @@ const Navbar = () => {
   const { connectToWallet, account, isWrongNetwork } = useWallet();
 
   useEffect(() => {
-
-  }, []);
+    console.log('isNetworksSelectorVisible', isNetworksSelectorVisible);
+  }, [isNetworksSelectorVisible]);
 
   return (
     <>
+      <NetworkSelector
+        isVisible={isNetworksSelectorVisible}
+        relativeTo={isWrongNetwork ? '#switch-button' : 'body'}
+        onClose={() => setIsNetworksSelectorVisible(false)}
+      />
+
       <StyledNavbar>
 
         <StyledLogo src="" />
@@ -69,10 +76,9 @@ const Navbar = () => {
                   size={Size.s}
                   onClick={() => {}}
                   onMouseEnter={() => setIsNetworksSelectorVisible(true)}
-                  onMouseLeave={() => setIsNetworksSelectorVisible(false)}
+                  id="switch-button"
                 >
                   Switch Network
-
                   <ChevronDownOutline size={20} style={{ marginLeft: '8px' }} />
                 </StyledSwitchNetwork>
               </>
@@ -142,13 +148,13 @@ const StyledNavbar = styled.nav`
   justify-content: space-between;
   align-items: center;
 
-  ul {
+  & > ul {
     list-style: none;
     display: flex;
     justify-content: flex-end;
     align-items: center;
 
-    li + li {      
+    & > li + li {      
       margin-left: ${({ theme }) => theme.spacing.m};
     }
   }

@@ -8,6 +8,7 @@ export const Size = {
 };
 
 export const Button = styled.button`
+    position: relative;
     border: none;
     border-radius: 8px;
     background: ${({ theme }) => theme.colors.gradient};
@@ -16,8 +17,6 @@ export const Button = styled.button`
     padding: 12px 24px;
 
     color: ${({ theme }) => theme.colors.typo};
-
-    cursor: pointer;
 
     ${(props) => (props.secondary ? css`
         background: none;
@@ -42,10 +41,22 @@ export const Button = styled.button`
         background: none;
         color: ${({ theme }) => `${theme.colors.typo}60`};
         background-color: ${({ theme }) => `${theme.colors.typo}50`};
-    ` : '')}
+    ` : 'cursor: pointer;')}
 `;
 
-export const ButtonLink = styled.a`
+export const StyledTextButton = styled.button`
+    background: none;
+    border: none;
+
+    font-size: 16px;
+
+    color: ${({ theme }) => theme.colors.typo};
+
+    &:hover {
+        opacity: 0.9;
+    }
+
+    cursor: pointer;
 `;
 
 export const StyledHeadingOne = styled.h1`
