@@ -17,7 +17,7 @@ const PocItem = ({ poc, isVisible = true, ...otherProps }) => {
       <div>
         <div className="img-container">
           {isLoading ? (
-            <Skeleton sx={{ backgroundColor: '#E7EAED10', borderRadius: '50%' }} variant="circular" animation="pulse" width="100%" height={150} />
+            <Skeleton sx={{ backgroundColor: '#12192350', borderRadius: '50%' }} variant="circular" animation="wave" width="100%" height={150} />
           ) : (
             <img src={poc.src} alt={poc.name} />
           )}
@@ -25,8 +25,9 @@ const PocItem = ({ poc, isVisible = true, ...otherProps }) => {
 
         {isLoading ? (
           <>
-            <Skeleton sx={{ backgroundColor: '#E7EAED10', borderRadius: '5px' }} variant="rectangular" animation="pulse" width="100%" height={46} />
-            <Skeleton sx={{ backgroundColor: '#E7EAED10', borderRadius: '5px' }} variant="rectangular" animation="pulse" width="100%" height={46} />
+            <Skeleton sx={{ backgroundColor: '#12192350', borderRadius: '5px' }} variant="rectangular" animation="wave" width="100%" height={36} style={{ marginBottom: '8px' }} />
+            <Skeleton sx={{ backgroundColor: '#12192350', borderRadius: '5px' }} variant="rectangular" animation="wave" width="100%" height={12} style={{ marginBottom: '4px' }} />
+            <Skeleton sx={{ backgroundColor: '#12192350', borderRadius: '5px' }} variant="rectangular" animation="wave" width="100%" height={12} />
           </>
         ) : (
           <>

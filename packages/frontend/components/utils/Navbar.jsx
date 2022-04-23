@@ -27,6 +27,7 @@ export const pages = [
   {
     label: 'Claim',
     url: '/claim',
+    isHidden: true,
   },
   {
     label: 'My Collections',
@@ -88,7 +89,7 @@ const Navbar = () => {
         )}
 
         <ul>
-          {pages.map((p) => (
+          {pages.filter((p) => !p.isHidden).map((p) => (
             <li>
               <Link href={p.url}>
                 <StyledLink active={pathname === p.url}>
