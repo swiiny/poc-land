@@ -6,6 +6,9 @@ import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract TradeableCashflow is ERC721, RedirectAll {
 
+  // counter for nfts
+  uint256 private _tokenIdCounter = 1;
+
   constructor (
     address owner,
     string memory _name,
@@ -15,21 +18,27 @@ contract TradeableCashflow is ERC721, RedirectAll {
   )
     ERC721 ( _name, _symbol )
     RedirectAll (
+      owner,
       host,
-      acceptedToken,
-      owner
+      acceptedToken
      )
-      {
-
-      _mint(owner, 1);
-  }
+    {
+      _mint(owner, _tokenIdCounter);
+      _tokenIdCounter++;
+    }
 
   //now I will insert a nice little hook in the _transfer, including the RedirectAll function I need
   function _beforeTokenTransfer(
-    address /*from*/,
+    address from,
     address to,
     uint256 /*tokenId*/
   ) internal override {
-      _changeReceiver(to);
+      _changeReceiver(from, to);
+  }
+
+  function addReceiver(address receiver) public {
+    _mint(receiver, _tokenIdCounter);
+    _addReceiver(receiver, _tokenIdCounter);
+    _tokenIdCounter++;
   }
 }
