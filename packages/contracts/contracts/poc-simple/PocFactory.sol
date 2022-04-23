@@ -2,7 +2,6 @@
 pragma solidity ^0.8.13;
 
 import "./Poc.sol";
-import "hardhat/console.sol";
 
 contract PocFactory {
     mapping(address => uint256) creatorToPocIndex;
@@ -10,11 +9,17 @@ contract PocFactory {
 
     event NewPoc(address creator, string name, address poc);
 
-    function createPoc(address _creator, string memory _name,string memory _symbol, uint256 _maxPocAmount, string memory _baseURI) public {
-        Poc poc = new Poc(_creator,_name, _symbol, _maxPocAmount, _baseURI);
+    function createPoc (
+        address _creator,
+        string memory _name,
+        string memory _symbol,
+        uint256 _maxPocAmount,
+        string memory _baseURI,
+        ISuperfluid host,
+        ISuperToken acceptedToken
+    ) public {
+        Poc poc = new Poc(_creator,_name, _symbol, _maxPocAmount, _baseURI, host, acceptedToken);
         uint256 currentIndex = creatorToPocIndex[_creator]+1;
-        console.log(currentIndex);
-        console.log(address(poc));
         creatorToPoc[_creator][currentIndex] = address(poc);
         creatorToPocIndex[_creator] = currentIndex + 1;
         emit NewPoc(_creator, _name, address(poc));
