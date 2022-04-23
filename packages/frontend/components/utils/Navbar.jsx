@@ -4,10 +4,12 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import Logo from '../../assets/img/logo.svg';
+import useResponsive from '../../hooks/useResponsive';
 import useWallet from '../../hooks/useWallet';
 import { Button, Size, StyledTag } from '../../styles/GlobalComponents';
 import { formatAddress } from '../../utils/functions';
 import NetworkSelector from './NetworkSelector';
+import Portal from './Portal';
 
 export const pages = [
   {
@@ -37,8 +39,10 @@ export const LINKS = {
 
 const Navbar = () => {
   const [isNetworksSelectorVisible, setIsNetworksSelectorVisible] = useState(false);
+  const [mobileNavbarVisible, setMobileNavbarVisible] = useState(false);
 
   const { connectToWallet, account, isWrongNetwork } = useWallet();
+  const { isSmallerThanMd } = useResponsive();
 
   const Router = useRouter();
   const { pathname } = Router;
@@ -51,9 +55,32 @@ const Navbar = () => {
         onClose={() => setIsNetworksSelectorVisible(false)}
       />
 
-      <StyledNavbar>
+      {isSmallerThanMd && (
+      <StyledMobileNavbar>
+        <Portal>
+          <StyledBackgroundButton
+            isVisible={mobileNavbarVisible}
+            onClick={() => setMobileNavbarVisible(false)}
+          />
+        </Portal>
+        <StyledLogo isSmall src={Logo.src} />
 
+        <StyledBurger
+          onClick={() => setMobileNavbarVisible(!mobileNavbarVisible)}
+          isActive={mobileNavbarVisible}
+        >
+          <span />
+          <span />
+          <span />
+        </StyledBurger>
+      </StyledMobileNavbar>
+      )}
+
+      <StyledNavbar isMobileVisible={mobileNavbarVisible}>
+
+        {!isSmallerThanMd && (
         <StyledLogo src={Logo.src} />
+        )}
 
         <ul>
           {pages.map((p) => (
@@ -67,6 +94,7 @@ const Navbar = () => {
           ))}
         </ul>
 
+        {!isSmallerThanMd && (
         <div className="wallet-connect">
           {account ? (
             <StyledTag>
@@ -91,17 +119,99 @@ const Navbar = () => {
             </Button>
           )}
         </div>
+        )}
       </StyledNavbar>
     </>
   );
 };
+
+const StyledBackgroundButton = styled.button`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+
+  border: none;
+
+  transition: all 0.4s ease-in-out;
+
+  ${(props) => (props.isVisible ? css`
+    opacity: 1.0;
+    min-height: 100vh;
+  ` : css`
+    opacity: 0.0;
+    min-height: 0px;
+  `)}
+
+  background-color: ${({ theme }) => `${theme.colors.bg}50`};
+`;
+
+const StyledMobileNavbar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  position: relative;
+  z-index: 110;
+
+  height: 64px;
+`;
+
+const StyledBurger = styled.button`
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+
+  position: relative;
+  z-index: 998;
+  width: 30px;
+  height: 24px;
+
+  padding: 0;
+  margin: 0;
+  border: none;
+  background-color: transparent;
+
+  span {
+      display: block;
+      transition: all 0.4s ease-in-out;
+      height: 2px;
+      width: 100%;
+      background-color: ${({ theme }) => theme.colors.typo};
+      opacity: 1;
+
+      &:nth-child(2) {
+          margin: 8px 0;
+      }
+  }
+
+  ${({ isActive }) => (isActive ? css`
+      span {
+          &:nth-child(1) {
+              transform: rotate(-45deg) translateX(-2px) translateY(2px);
+          }
+
+          &:nth-child(2) {
+              width: 0;
+              margin: 0 50%;
+          }
+
+          &:nth-child(3) {
+              transform: rotate(45deg);
+          }
+      }
+
+      ` : '')}
+  
+`;
 
 const StyledSwitchNetwork = styled.div`
     position: relative;
     border: none;
     border-radius: 8px;
     
-
     padding: 8px 16px;
     font-size: 16px;
 
@@ -145,6 +255,7 @@ const StyledNavbar = styled.nav`
   left: 0;
   right: 0;
   width: 100%;
+  z-index: 100;
 
   height: 84px;
 
@@ -178,6 +289,39 @@ const StyledNavbar = styled.nav`
     & > li + li {      
       margin-left: ${({ theme }) => theme.spacing.m};
     }
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+      position: absolute;
+      z-index: 100;
+      top: 64px;
+      left: 0;
+      right: 0;
+
+      flex-direction: column;
+
+      overflow: hidden;
+
+      transition: all 0.4s ease-in-out;
+
+      background-color: ${({ theme }) => `${theme.colors.bg}`};
+
+      padding-bottom: ${({ theme }) => theme.spacing.l};
+
+      & > li + li {      
+        margin-left: 0;
+        margin-top: 16px;
+      }
+
+      ${(props) => (props.isMobileVisible ? css`
+        max-height: 200px;
+        opacity: 1.0;
+      ` : css`
+        max-height: 0px;
+        opacity: 0;
+      `)};
+    }
+
+    
   }
 `;
 
