@@ -2,7 +2,7 @@ import axios from 'axios';
 import { ethers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
 import React, { useEffect, useMemo, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import {
   StyledForm, StyledFormItem, StyledInput, StyledLabel,
 } from '../components/form/Form';
@@ -24,11 +24,7 @@ const CLAIM_STEP = {
 const Claim = () => {
   const [recipient, setRecipient] = useState('');
   const [pocId, setPocId] = useState('');
-  const [pocData, setPocData] = useState({
-    name: 'PoC 1',
-    description: 'This is a description for PoC 1',
-    src: 'https://picsum.photos/150/150',
-  });
+  const [pocData, setPocData] = useState({});
 
   const [claimStep, setClaimStep] = useState(CLAIM_STEP.setAddress);
 
@@ -66,6 +62,12 @@ const Claim = () => {
       let imageLinkIpfs = res.data.image;
       imageLinkIpfs = imageLinkIpfs.replace('ipfs://', 'https://ipfs.io/ipfs/');
       console.log(imageLinkIpfs);
+
+      setPocData({
+        name: res.data.name,
+        description: res.data.description,
+        src: imageLinkIpfs,
+      });
       // setPocData(res.data);
     });
   };
@@ -113,7 +115,12 @@ const Claim = () => {
         <StyledFormContainer>
 
           <StyledForm>
-            <PocItem poc={pocData} style={{ width: '110%', margin: '40px 0', marginLeft: `${isSmallerThanSm ? '-5%' : '0'}` }} />
+            <StyledMargin isVisible={pocData.name}>
+              <PocItem
+                poc={pocData}
+                style={{ width: '110%', marginLeft: `${isSmallerThanSm ? '-5%' : '0'}` }}
+              />
+            </StyledMargin>
 
             <StyledFormItem isVisible normalPos>
               <StyledLabel>
@@ -142,15 +149,7 @@ const Claim = () => {
                 style={{ width: '100%' }}
                 type="submit"
                 onClick={(e) => claimPoc(e)}
-                disabled={!isAddress(recipient) || (claimStep !== CLAIM_STEP.setAddress && claimStep !== CLAIM_STEP.error)}
-              >
-                Claim
-              </Button>
-              <Button
-                style={{ width: '100%' }}
-                type="submit"
-                onClick={(e) => getPocMetadata(e)}
-                disabled={!isAddress(recipient) || (claimStep !== CLAIM_STEP.setAddress && claimStep !== CLAIM_STEP.error)}
+                disabled={!isAddress(recipient) || (claimStep !== CLAIM_STEP.setAddress && claimStep !== CLAIM_STEP.error) || !pocData.name}
               >
                 Claim
               </Button>
@@ -161,6 +160,23 @@ const Claim = () => {
     </Page>
   );
 };
+
+const StyledMargin = styled.div`
+  margin: 40px 0;
+
+  transition: all 0.4s ease-in-out;
+
+  overflow: hidden;
+
+  ${(props) => (props.isVisible ? css`
+    opacity: 1.0;
+    max-height: fit-content;
+    ` : css`
+    opacity: 0.0;
+    max-height: 0px;
+    margin: 0;
+  `)}
+`;
 
 const StyledFormContainer = styled.div`
   width: 100%;
