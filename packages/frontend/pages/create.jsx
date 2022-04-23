@@ -1,11 +1,12 @@
+import { ethers } from 'ethers';
 import { Upload } from 'heroicons-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
-import { ethers } from 'ethers';
 import Page from '../components/utils/Page';
+import useWallet from '../hooks/useWallet';
 import { Button, StyledHeadingOne } from '../styles/GlobalComponents';
 import { uploadPocDataToIPFS } from '../utils/ipfs';
-import pocFactoryAbi from '../utils/pocFactoryAbi.js';
+import pocFactoryAbi from '../utils/pocFactoryAbi';
 
 const Create = () => {
   const [pocName, setPocName] = useState('');
@@ -13,6 +14,8 @@ const Create = () => {
   const [pocFile, setPocFile] = useState({});
   const [pocDescription, setPocDescription] = useState('');
   const [pocAddress, setPocAddress] = useState('');
+
+  const { account } = useWallet();
 
   const isDataValid = useMemo(() => pocName?.length && pocImage?.length && pocDescription?.length,
     [pocName, pocImage, pocDescription]);
@@ -41,7 +44,7 @@ const Create = () => {
   }
 
   // DNP SELF BOUNTIES STATE CHANGE CALLS
-  async function createPocContract(ethereumProvider, account, metadataURI) {
+  async function createPocContract(ethereumProvider, metadataURI) {
     const pf = await getPocFactoryContract(ethereumProvider);
     const res = await pf.populateTransaction.createPoc(account, 'placeholder', 'POC', 100, metadataURI);
     res.from = account;
@@ -64,6 +67,10 @@ const Create = () => {
     console.log('file: ', pocFile);
     const murl = await uploadPocDataToIPFS([pocFile]);
     console.log('metadata url', murl);
+
+    const res = await createPocContract(window.ethereum, account, murl);
+
+    console.log('res', res);
   };
 
   return (

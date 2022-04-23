@@ -64,16 +64,18 @@ const Navbar = () => {
                 {formatAddress(account)}
               </StyledTag>
             ) : isWrongNetwork ? (
-              <StyledSwitchNetwork
-                size={Size.s}
-                onClick={() => {}}
-                onMouseEnter={() => setIsNetworksSelectorVisible(true)}
-                onMouseLeave={() => setIsNetworksSelectorVisible(false)}
-              >
-                Switch Network
+              <>
+                <StyledSwitchNetwork
+                  size={Size.s}
+                  onClick={() => {}}
+                  onMouseEnter={() => setIsNetworksSelectorVisible(true)}
+                  onMouseLeave={() => setIsNetworksSelectorVisible(false)}
+                >
+                  Switch Network
 
-                <ChevronDownOutline size={20} style={{ marginLeft: '8px' }} />
-              </StyledSwitchNetwork>
+                  <ChevronDownOutline size={20} style={{ marginLeft: '8px' }} />
+                </StyledSwitchNetwork>
+              </>
             ) : (
               <Button
                 size={Size.s}
