@@ -8,11 +8,22 @@ export const getContract = async (tokenAddress, abi, ethereumProvider) => {
   return contract;
 };
 
-const availableChainIds = [
-  '0x89', // polygon
-  '0xA', // optimism
-  '0x4', // rinkeby
+export const availableNetworks = [
+  {
+    name: 'Polygon',
+    chainId: '0x89',
+  },
+  {
+    name: 'Optimism',
+    chainId: '0xA',
+  },
+  {
+    name: 'Rinkeby',
+    chainId: '0x4',
+  },
 ];
+
+const availableChainIds = availableNetworks.map(({ chainId }) => chainId);
 
 const useWallet = () => {
   if (typeof window === 'undefined') {

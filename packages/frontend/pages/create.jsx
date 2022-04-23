@@ -13,7 +13,6 @@ const Create = () => {
   const [pocImage, setPocImage] = useState('');
   const [pocFile, setPocFile] = useState({});
   const [pocDescription, setPocDescription] = useState('');
-  const [pocAddress, setPocAddress] = useState('');
 
   const { account, isWrongNetwork } = useWallet();
 
@@ -54,7 +53,8 @@ const Create = () => {
       method: 'eth_sendTransaction',
       params: [res],
     });
-    console.log(txHash);
+
+    return txHash;
   }
 
   const createPoc = async (e) => {
@@ -79,72 +79,76 @@ const Create = () => {
   };
 
   return (
-    <Page title="Create">
-      <StyledContainer>
-        <StyledHeadingOne>
-          Create POC
-        </StyledHeadingOne>
+    <>
 
-        <StyledForm>
-          <StyledFormItem>
-            <StyledLabel>
-              Select an Image
-            </StyledLabel>
+      <Page title="Create">
+        <StyledContainer>
+          <StyledHeadingOne>
+            Create POC
+          </StyledHeadingOne>
 
-            <StyledImgContainer
-              isVisible={pocImage?.length}
-            >
-              <StyledPocImage
-                src={pocImage}
+          <StyledForm>
+            <StyledFormItem>
+              <StyledLabel>
+                Select an Image
+              </StyledLabel>
+
+              <StyledImgContainer
+                isVisible={pocImage?.length}
+              >
+                <StyledPocImage
+                  src={pocImage}
+                />
+              </StyledImgContainer>
+
+              <StyledFileInput
+                for="input-file"
+                secondary
+              >
+                {pocImage.length === 0 ? 'Upload Image' : 'Update Image'}
+
+                <Upload size={20} />
+
+                <input id="input-file" type="file" accept="image/*" onChange={importImage} />
+              </StyledFileInput>
+            </StyledFormItem>
+
+            <StyledFormItem>
+              <StyledLabel>
+                Name your POC
+              </StyledLabel>
+              <StyledInput
+                type="text"
+                placeholder="Name"
+                value={pocName}
+                onChange={(e) => setPocName(e.target.value)}
               />
-            </StyledImgContainer>
+            </StyledFormItem>
 
-            <StyledFileInput
-              for="input-file"
-              secondary
+            <StyledFormItem>
+              <StyledLabel>
+                Add a short description
+              </StyledLabel>
+              <StyledTextArea
+                placeholder="My POC is..."
+                value={pocDescription}
+                onChange={(e) => setPocDescription(e.target.value)}
+              />
+            </StyledFormItem>
+
+            <Button
+              style={{ width: '100%' }}
+              type="submit"
+              onClick={(e) => createPoc(e)}
+              disabled={!isDataValid}
+              id="submit-poc"
             >
-              {pocImage.length === 0 ? 'Upload Image' : 'Update Image'}
-
-              <Upload size={20} />
-
-              <input id="input-file" type="file" accept="image/*" onChange={importImage} />
-            </StyledFileInput>
-          </StyledFormItem>
-
-          <StyledFormItem>
-            <StyledLabel>
-              Name your POC
-            </StyledLabel>
-            <StyledInput
-              type="text"
-              placeholder="Name"
-              value={pocName}
-              onChange={(e) => setPocName(e.target.value)}
-            />
-          </StyledFormItem>
-
-          <StyledFormItem>
-            <StyledLabel>
-              Add a short description
-            </StyledLabel>
-            <StyledTextArea
-              placeholder="My POC is..."
-              value={pocDescription}
-              onChange={(e) => setPocDescription(e.target.value)}
-            />
-          </StyledFormItem>
-
-          <Button
-            style={{ width: '100%' }}
-            type="submit"
-            onClick={(e) => createPoc(e)}
-            disabled={!isDataValid}
-          >
-            {isWrongNetwork ? 'Switch Network' : 'Save and Continue'}
-          </Button>
-        </StyledForm>
-      </StyledContainer>
-    </Page>
+              {isWrongNetwork ? 'Wrong Network' : 'Save and Continue'}
+            </Button>
+          </StyledForm>
+        </StyledContainer>
+      </Page>
+    </>
   );
 };
 
