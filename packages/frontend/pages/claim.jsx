@@ -1,13 +1,14 @@
 import axios from 'axios';
 import { ethers } from 'ethers';
 import { isAddress } from 'ethers/lib/utils';
-import { useRouter } from 'next/router';
+import router, { useRouter } from 'next/router';
 import React, { useEffect, useMemo, useState } from 'react';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import {
   StyledForm, StyledFormItem, StyledInput, StyledLabel,
 } from '../components/form/Form';
 import PocItem from '../components/gallery/PocItem';
+import { LINKS } from '../components/utils/Navbar';
 import Page from '../components/utils/Page';
 import useResponsive from '../hooks/useResponsive';
 import useWallet from '../hooks/useWallet';
@@ -152,14 +153,14 @@ const Claim = () => {
               {claimStep === CLAIM_STEP.error && 'Error claiming PoC, please try again later'}
             </StyledText>
 
-            <StyledFormItem isVisible={claimStep === CLAIM_STEP.setAddress || claimStep === CLAIM_STEP.error} normalPos>
+            <StyledFormItem isVisible={claimStep === CLAIM_STEP.setAddress || claimStep === CLAIM_STEP.error || claimStep === CLAIM_STEP.success} normalPos>
               <Button
                 style={{ width: '100%' }}
                 type="submit"
-                onClick={(e) => claimPoc(e)}
-                disabled={!isAddress(recipient) || (claimStep !== CLAIM_STEP.setAddress && claimStep !== CLAIM_STEP.error) || !pocData.name}
+                onClick={claimStep === CLAIM_STEP.success ? () => router.push(LINKS.gallery) : (e) => claimPoc(e)}
+                disabled={(!isAddress(recipient) || (claimStep !== CLAIM_STEP.setAddress && claimStep !== CLAIM_STEP.error) || !pocData.name) && !claimStep === CLAIM_STEP.success}
               >
-                Claim
+                {claimStep === CLAIM_STEP.success ? 'See my Gallery' : 'Claim'}
               </Button>
             </StyledFormItem>
           </StyledForm>
@@ -170,22 +171,12 @@ const Claim = () => {
 };
 
 const StyledMargin = styled.div`
+  width: 90%;
   margin: 40px 0;
 
-  width: 100%;
-
-  transition: all 0.4s ease-in-out;
-
-  overflow: hidden;
-
-  ${(props) => (props.isVisible ? css`
-    opacity: 1.0;
-    max-height: 300px;
-    ` : css`
-    opacity: 0.0;
-    max-height: 0px;
-    margin: 0 0;
-  `)}
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    margin: 0 auto;
+  }
 `;
 
 const StyledFormContainer = styled.div`
