@@ -19,17 +19,33 @@
 
 USE `pocland`;
 
-DROP TABLE IF EXISTS `userPocs`;
-CREATE TABLE `userPocs` (
-  `user_address` varchar(255) NOT NULL,
+DROP TABLE IF EXISTS `pocs`;
+CREATE TABLE `pocs` (
+  `creator_address` varchar(255) NOT NULL,
   `chain_id` decimal(10,0) DEFAULT NULL,
   `poc_address` varchar(255) NOT NULL,
-  PRIMARY KEY (`user_address`,`poc_address`)
+  PRIMARY KEY (`creator_address`,`poc_address`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
-INSERT INTO `userPocs` (`user_address`, `chain_id`, `poc_address`) VALUES
+DROP TABLE IF EXISTS `user_pocs`;
+CREATE TABLE IF NOT EXISTS `user_pocs` (
+  user_address VARCHAR(255),
+  chain_id NUMERIC(10,0),
+  poc_address VARCHAR(255)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `pocs` (`creator_address`, `chain_id`, `poc_address`) VALUES
 ('0xf62ada6Eb3747323CBBfa89ACb57Cb8E231Ef8F7', 137, '0x1'),
 ('0xf62ada6Eb3747323CBBfa89ACb57Cb8E231Ef8F7', 137, '0x2');
+
+
+INSERT INTO `pocs` (`creator_address`, `chain_id`, `poc_address`) VALUES
+('0xe84132be566a83988501a1ea134dec5992ea0aae', 4, '0x4f76591D9D77168d4c1A768675B2B14e891d0a21');
+/* 0x4f76591D9D77168d4c1A768675B2B14e891d0a21 the amsterdam poc! (infinite mint) */
+
+INSERT INTO `user_pocs` (`user_address`, `chain_id`, `poc_address`) VALUES
+('0x0679edaa331915cB1ea92A3de25497E75E8AC8E4', 4, '0x4f76591D9D77168d4c1A768675B2B14e891d0a21'),
+('0xf62ada6Eb3747323CBBfa89ACb57Cb8E231Ef8F7', 4, '0x4f76591D9D77168d4c1A768675B2B14e891d0a21');
 
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
