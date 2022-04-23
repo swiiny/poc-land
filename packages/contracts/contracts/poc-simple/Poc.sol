@@ -41,24 +41,6 @@ contract Poc is ERC721, RedirectAll, Ownable {
         _safeMint(to, tokenId);
     }
 
-/*
-    // The following functions are overrides required by Solidity.
-    function _beforeTokenTransfer(address from, address to, uint256 tokenId)
-        internal
-        override
-    {
-        super._beforeTokenTransfer(from, to, tokenId);
-    }
-
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        override
-        returns (bool)
-    {
-        return super.supportsInterface(interfaceId);
-    }
-*/
     function tokenURI(uint256 _tokenId) public view virtual override returns (string memory) {
         // require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
         return baseURI;
