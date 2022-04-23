@@ -27,6 +27,11 @@ export const pages = [
   {
     label: 'Claim',
     url: '/claim',
+    isHidden: true,
+  },
+  {
+    label: 'My Collections',
+    url: '/collections',
   },
 ];
 
@@ -35,6 +40,7 @@ export const LINKS = {
   create: pages[1].url,
   gallery: pages[2].url,
   redeem: pages[3].url,
+  collections: pages[4].url,
 };
 
 const Navbar = () => {
@@ -83,7 +89,7 @@ const Navbar = () => {
         )}
 
         <ul>
-          {pages.map((p) => (
+          {pages.filter((p) => !p.isHidden).map((p) => (
             <li>
               <Link href={p.url}>
                 <StyledLink active={pathname === p.url}>
@@ -132,6 +138,7 @@ const StyledBackgroundButton = styled.button`
   right: 0;
   bottom: 0;
   z-index: 50;
+  height: 100vh;
 
   border: none;
 
@@ -139,24 +146,29 @@ const StyledBackgroundButton = styled.button`
 
   ${(props) => (props.isVisible ? css`
     opacity: 1.0;
-    min-height: 100vh;
+    max-height: 100vh;
   ` : css`
     opacity: 0.0;
-    min-height: 0px;
+    max-height: 0px;
   `)}
 
-  background-color: ${({ theme }) => `${theme.colors.bg}50`};
+  background-color: ${({ theme }) => `${theme.colors.gradientEnd}50`};
 `;
 
 const StyledMobileNavbar = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  position: relative;
   z-index: 110;
 
   height: 64px;
+
+  padding: 0 16px;
 `;
 
 const StyledBurger = styled.button`

@@ -37,6 +37,17 @@ const StyledPage = styled.div`
     bottom: 0;
 
     ${({ theme }) => `background: radial-gradient(88.99% 94.44% at 92.31% 100%, ${`${theme.colors.gradientStart}20`} 0%,  ${`${theme.colors.gradientStart}00`} 100%);`}
+/*
+    ${({ theme }) => `
+      //background-image: linear-gradient(to right, rgb(242, 112, 156), rgb(255, 148, 114));
+
+      background:
+      linear-gradient(217deg, ${theme.colors.gradientStart}, rgba(255,0,0,0) 70.71%),
+      linear-gradient(127deg, ${theme.colors.gradientEnd}, rgba(0,255,0,0) 70.71%),
+      linear-gradient(336deg, ${theme.colors.gradientStart}, rgba(0,0,255,0) 70.71%);
+
+    `}
+    */
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
@@ -48,7 +59,7 @@ const StyledPage = styled.div`
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-      padding: 0 15px;
+      padding: 0 10px;
   }
 `;
 

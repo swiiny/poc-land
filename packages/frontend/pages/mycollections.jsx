@@ -1,16 +1,59 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { ethers } from 'ethers';
 import PocItem from '../components/gallery/PocItem';
 import Page from '../components/utils/Page';
-import useWallet from '../hooks/useWallet';
+import useWallet, { availableNetworks } from '../hooks/useWallet';
 import { StyledHeadingOne } from '../styles/GlobalComponents';
 import { getPocContract } from './claim';
+import pocFactoryAbi from '../utils/pocFactoryAbi';
 
 const Gallery = () => {
-  const { account } = useWallet();
-
   const [userPocs, setUserPocs] = useState([{ id: 'uehf43' }, { id: 'uehf44' }, { id: 'uehf45' }]);
+  const { account, isWrongNetwork, currentChainId } = useWallet();
+
+  async function getPocFactoryContract(ethereumProvider) {
+    const contractAddress = availableNetworks.find((net) => net.chainId === currentChainId)?.contractAddress;
+    const pocFactoryAddress = contractAddress;
+    const provider = new ethers.providers.Web3Provider(ethereumProvider);
+    const dnpContract = new ethers.Contract(pocFactoryAddress, pocFactoryAbi, provider);
+    return dnpContract;
+  }
+
+  async function getPocWithEventAndCreator(ethereumProvider) {
+    const pocFactoryContract = await getPocFactoryContract(ethereumProvider);
+    const index = await pocFactoryContract.getLastPocCreatorIndex(account);
+    const pocAddress = await pocFactoryContract.getPocWithCreatorIndex(account, index.sub(1));
+    return pocAddress;
+  }
+
+  async function getAllPocsAddressFromUser(ethereumProvider) {
+    const pocFactoryContract = await getPocFactoryContract(ethereumProvider);
+    const index = await pocFactoryContract.getLastPocCreatorIndex(account);
+    const pocsAddresses = [];
+    for (let i = 1; i < index.sub(1); i++) {
+      // eslint-disable-next-line no-await-in-loop
+      const pocAddress = await pocFactoryContract.getPocWithCreatorIndex(account, index.sub(1));
+      pocsAddresses.push(pocAddress);
+    }
+    return pocsAddresses;
+  }
+
+  const getPocMetadata = async (pocAddress) => {
+    const pocContract = await getPocContract(window.ethereum, pocAddress);
+    const data = await pocContract.tokenURI(4);
+    axios.get(data).then((res) => {
+      let imageLinkIpfs = res.data.image;
+      imageLinkIpfs = imageLinkIpfs.replace('ipfs://', 'https://ipfs.io/ipfs/');
+      // TODO : use this data
+      /*
+        name: res.data.name,
+        description: res.data.description,
+        src: imageLinkIpfs,
+      */
+    });
+  };
 
   const fetchPocForAccount = async (a) => {
     try {

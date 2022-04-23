@@ -1,28 +1,50 @@
-import React, { useEffect } from 'react';
+import { Skeleton } from '@mui/material';
+import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { StyledHeadingThree, StyledText } from '../../styles/GlobalComponents';
 
-const PocItem = ({ poc }) => {
-  useEffect(() => {
+const PocItem = ({ poc, isVisible = true, ...otherProps }) => {
+  const isLoading = useMemo(() => {
+    if (!poc?.name) {
+      return true;
+    }
 
-  }, []);
+    return false;
+  }, [poc]);
+
+  const [image, setImage] = useState('');
 
   return (
-    <StyledPocItem>
+    <StyledPocItem {...otherProps} isVisible={isVisible}>
       <div>
         <div className="img-container">
-          <img src={poc.src} alt={poc.name} />
+          {isLoading ? (
+            <Skeleton sx={{ backgroundColor: '#12192350', borderRadius: '50%' }} variant="circular" animation="wave" width="100%" height={150} />
+          ) : (
+            <img src={poc.src} alt={poc.name} style={{ objectFit: 'cover', height: '100%', width: 'auto' }} />
+          )}
         </div>
 
-        <StyledHeadingThree className="name">{poc.name}</StyledHeadingThree>
-        <StyledText className="description">{poc.description}</StyledText>
+        {isLoading ? (
+          <>
+            <Skeleton sx={{ backgroundColor: '#12192350', borderRadius: '5px' }} variant="rectangular" animation="wave" width="100%" height={36} style={{ marginBottom: '8px' }} />
+            <Skeleton sx={{ backgroundColor: '#12192350', borderRadius: '5px' }} variant="rectangular" animation="wave" width="100%" height={12} style={{ marginBottom: '4px' }} />
+            <Skeleton sx={{ backgroundColor: '#12192350', borderRadius: '5px' }} variant="rectangular" animation="wave" width="100%" height={12} />
+          </>
+        ) : (
+          <>
+            <StyledHeadingThree className="name">{poc.name}</StyledHeadingThree>
+            <StyledText className="description">{poc.description}</StyledText>
+          </>
+        )}
+
       </div>
     </StyledPocItem>
   );
 };
 
 const StyledPocItem = styled.li`
-
+    list-style: none;
     padding: 2%;
     width: 32%;
 

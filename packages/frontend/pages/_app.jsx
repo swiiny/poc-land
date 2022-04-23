@@ -4,10 +4,6 @@ import { ThemeProvider } from 'styled-components';
 import '../styles/globals.css';
 
 const darkTheme = {
-  defaultColors: {
-    bgDark: '#161E25',
-    bgWhite: '#E7EAED',
-  },
   radius: {
     s: '3px',
     m: '5px',
@@ -28,6 +24,7 @@ const darkTheme = {
     '2xl': '64px',
     '3xl': '80px',
     '4xl': '100px',
+    '5xl': '128px',
   },
   breakpoints: {
     sm: '600px',
@@ -35,6 +32,7 @@ const darkTheme = {
     lg: '1200px',
     xl: '1600px',
   },
+  /*
   colors: {
     typo: '#B3FCFF',
     bg: '#121923',
@@ -47,20 +45,21 @@ const darkTheme = {
       normal: '0px 8px 12px rgba(131, 238, 255, 0.1), 0px 2px 4px rgba(0, 0, 0, 0.8), 0px 1px 0px #6CEEFF',
       hover: '0px 8px 22px rgba(131, 238, 255, 0.2), 0px 2px 4px rgba(0, 0, 0, 0.8), 0px 1px 0px #6CEEFF',
     },
-  }, /*
+  },
+  */
   colors: {
-    typo: '#ffe8b3',
-    bg: '#231212',
+    typo: '#F7F7F7',
+    bg: '#020024',
     accent: '#f8d165',
     negative: '#E35656',
-    gradientStart: '#efcd79',
-    gradientEnd: '#d70d39',
-    gradient: 'linear-gradient(97.76deg, #f8d165 0%, #d70d39 100%)',
+    gradientStart: '#eb6e6e',
+    gradientEnd: '#020024',
+    gradient: 'linear-gradient(97.76deg, #eb6e6e 0%, #f8d165 100%)',
     shadow: {
       normal: '0px 8px 12px rgba(131, 238, 255, 0.1), 0px 2px 4px rgba(0, 0, 0, 0.8), 0px 1px 0px #6CEEFF',
       hover: '0px 8px 22px rgba(131, 238, 255, 0.2), 0px 2px 4px rgba(0, 0, 0, 0.8), 0px 1px 0px #6CEEFF',
     },
-  }, */
+  },
 };
 
 const MyApp = ({ Component, pageProps }) => (

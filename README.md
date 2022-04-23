@@ -9,21 +9,24 @@ DeFi enabled, censorship resistant multi chain poaps. Built with Superfluid, IPF
 ### homepage 
 - [ ] make it cleaner/more beautiful
 ### create
-- [ ] add count + price estimation..
-- [ ] create function to get the created contract address
-- [ ] save in db address of poc with creator and chain id
+- [x] add count + price estimation..
+- [x] create function to get the created contract address
+- [x] save in db address of poc with creator and chain id
 - [ ] should display QR code for the poc
 - [ ] reaccess this page?
 ### redeem 
-- [ ] check on which network the poap is ? 
+- [x] check on which network the poap is ? 
 - [ ] save in db if successful server side
-- [ ] fetch metadata to display poc being claimed
+- [x] fetch metadata to display poc being claimed
 ### gallery
 - [ ] use db to get all pocs related to a user
 - [ ] flow visulisation
+### My Collections
+- [ ] When Gallery is finished, copy past the page and change the fetch addresses endpoint url
+- [ ] Add option to start Flow using Superfluid
 
 ## Backend
-- [ ] Setup db connection
+- [x] Setup db connection
 
 ## Smart contracts : base
 - [ ] Setup fee to mint

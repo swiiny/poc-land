@@ -12,6 +12,8 @@ contract Poc is ERC721, RedirectAll, Ownable {
     string public baseURI;
     address public creator;
 
+    mapping(address => bool) public hasAPoc;
+
     constructor (
         address _creator,
         string memory _name,
@@ -31,8 +33,11 @@ contract Poc is ERC721, RedirectAll, Ownable {
     }
 
     function safeMint(address to) public {
+        require(hasAPoc[to] == false, "This address already has a Poc");
         uint256 tokenId = _tokenIdCounter;
         _tokenIdCounter++;
+        require(tokenId < maxPocAmount, "Max Poc amount reached");
+        hasAPoc[to] = true;
         _safeMint(to, tokenId);
     }
 

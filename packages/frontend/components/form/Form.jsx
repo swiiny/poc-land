@@ -1,13 +1,38 @@
 import styled, { css } from 'styled-components';
 
 export const StyledFormItem = styled.div`
+    position: ${(props) => (props.normalPos ? 'relative' : 'absolute')};
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
     width: 100%;
 
+    top: 50%;
+
     margin-bottom: ${({ theme }) => theme.spacing.m};
+
+    transition: all 0.4s ease-in-out;
+
+    ${(props) => (props.isVisible ? css`
+        opacity: 1.0;
+        z-index: 10;
+    ` : css`
+        opacity: 0.0;
+        z-index: -1;
+    `)}
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+        top: 30%;
+    }
+
+    ${(props) => (props.normalPos ? css`
+        top: unset;
+
+        @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+            top: unset;
+        }
+    ` : '')}
 `;
 
 export const StyledFileInput = styled.label`
@@ -19,7 +44,7 @@ export const StyledFileInput = styled.label`
     border-radius: 8px;
     background: ${({ theme }) => theme.colors.gradient};
 
-    margin-top: 4px;
+    margin-top: 24px;
 
     svg {
         margin-left: 8px;
@@ -33,6 +58,9 @@ export const StyledFileInput = styled.label`
     font-size: 16px;
 
     color: ${({ theme }) => theme.colors.typo};
+
+    width: 100%;
+    padding: 10px 8px;
 
     cursor: pointer;
 
@@ -77,18 +105,25 @@ export const StyledLabel = styled.label`
 
     line-height: 1.5;
 
+    margin-bottom: 20px;
+
     color: ${({ theme }) => theme.colors.typo};
 `;
 
 export const StyledForm = styled.form`
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 
     width: 400px;
+    height: 400px;
 
     @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
         width: 100%;
+        height: 300px;
+        align-items: flex-start;
+        justify-content: flex-start;
     }
 `;

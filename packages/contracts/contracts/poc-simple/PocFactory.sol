@@ -2,9 +2,13 @@
 pragma solidity ^0.8.13;
 
 import "./Poc.sol";
+import "hardhat/console.sol";
+
 contract PocFactory {
-    
-    mapping(address => mapping(string =>address)) creatorToPoc;
+    mapping(address => uint256) creatorToPocIndex;
+    mapping(address => mapping(uint256 => address)) creatorToPoc;
+
+    event NewPoc(address creator, string name, address poc);
 
     function createPoc (
         address _creator,
@@ -17,9 +21,19 @@ contract PocFactory {
     ) public {
         Poc poc = new Poc(_creator,_name, _symbol, _maxPocAmount, _baseURI, host, acceptedToken);
         creatorToPoc[_creator][_name] = address(poc);
+        uint256 currentIndex = creatorToPocIndex[_creator]+1;
+        console.log(currentIndex);
+        console.log(address(poc));
+        creatorToPoc[_creator][currentIndex] = address(poc);
+        creatorToPocIndex[_creator] = currentIndex + 1;
+        emit NewPoc(_creator, _name, address(poc));
     }
 
-    function getPocWithEventAndCreator(address creator, string memory name) public view returns (address) {
-        return creatorToPoc[creator][name];
+    function getLastPocCreatorIndex(address creator) public view returns (uint256) {
+        return creatorToPocIndex[creator];
+    }
+
+    function getPocWithCreatorIndex(address creator, uint256 index) public view returns (address) {
+        return creatorToPoc[creator][index];
     }
 }

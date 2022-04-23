@@ -14,11 +14,14 @@ export default function Home() {
 
         <StyledTextContainer>
           <StyledHeadingOne>
-            PoC Land
+            Welcome to Poc.Land
           </StyledHeadingOne>
 
           <StyledHeadingTwo accent style={{ textAlign: 'center' }}>
-            Proof of Community, Lorem Ipsum Dolor Sit Amet Lorem Ipsum Dolor Sit Amet Lorem Ipsum
+            Permissionless, Defi-Enabled, Proof of Community tokens.
+            <br />
+            {' '}
+            Powered by Optimism, Polygon & IPFS.
           </StyledHeadingTwo>
 
         </StyledTextContainer>
@@ -79,10 +82,13 @@ const StyledTextContainer = styled.div`
 `;
 
 const StyledContainer = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  z-index: 2;
 
   min-height: 100vh;
 `;

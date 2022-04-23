@@ -2,7 +2,7 @@ FROM node:16.9.1
 
 WORKDIR /app
 
-COPY . .
+COPY package.json ./
 
 RUN npm install
 
