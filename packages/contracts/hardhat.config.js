@@ -42,13 +42,17 @@ module.exports = {
     },
     ropsten: {
       url: process.env.ROPSTEN_URL || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      accounts: [process.env.KEY],
     },
     goerli: {
       url: "https://eth-goerli.alchemyapi.io/v2/xvWNZCtF0QsihW1izifdIOqZrP66u_AJ",
-      gas: 210000,
-      accounts: [process.env.KEY],
+      accounts: [
+        process.env.K,
+        process.env.KEY,
+        process.env.KEY2,
+        process.env.KEY3,
+        process.env.KEY4,
+      ],
     },
     testnetArbitrum: {
       url: "https://rinkeby.arbitrum.io/rpc",
@@ -57,7 +61,7 @@ module.exports = {
     },
     mainnetArbitrum: {
       url: "https://arb-mainnet.g.alchemy.com/v2/knQIgFAnRabuP2QSmrK4uF7SzgShIL3c",
-      accounts: [process.env.KEYPROD],
+      accounts: [process.env.KEY],
     },
   },
   gasReporter: {
