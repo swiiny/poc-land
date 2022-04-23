@@ -10,6 +10,7 @@ contract PocFactory {
     event NewPoc(address creator, string name, address poc);
 
     function createPoc (
+        address _gasLessMinter,
         address _creator,
         string memory _name,
         string memory _symbol,
@@ -18,7 +19,7 @@ contract PocFactory {
         ISuperfluid host,
         ISuperToken acceptedToken
     ) public {
-        Poc poc = new Poc(_creator,_name, _symbol, _maxPocAmount, _baseURI, host, acceptedToken);
+        Poc poc = new Poc(_gasLessMinter, _creator, _name, _symbol, _maxPocAmount, _baseURI, host, acceptedToken);
         uint256 currentIndex = creatorToPocIndex[_creator]+1;
         creatorToPoc[_creator][currentIndex] = address(poc);
         creatorToPocIndex[_creator] = currentIndex + 1;

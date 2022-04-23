@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.13;
 
-import {ISuperfluid, ISuperToken, ISuperApp, ISuperAgreement, SuperAppDefinitions} from "@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperfluid.sol"; //"@superfluid-finance/ethereum-monorepo/packages/ethereum-contracts/contracts/interfaces/superfluid/ISuperfluid.sol";
-
+import {ISuperfluid, ISuperToken, ISuperApp, ISuperAgreement, SuperAppDefinitions} from "@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperfluid.sol";
 import {CFAv1Library} from "@superfluid-finance/ethereum-contracts/contracts/apps/CFAv1Library.sol";
-
 import {IConstantFlowAgreementV1} from "@superfluid-finance/ethereum-contracts/contracts/interfaces/agreements/IConstantFlowAgreementV1.sol";
-
 import {SuperAppBase} from "@superfluid-finance/ethereum-contracts/contracts/apps/SuperAppBase.sol";
 
 contract RedirectAll is SuperAppBase {
@@ -29,7 +26,6 @@ contract RedirectAll is SuperAppBase {
     ) {
         assert(address(host) != address(0));
         assert(address(acceptedToken) != address(0));
-        //assert(!_host.isApp(ISuperApp(receiver)));
 
         _host = host;
         _cfa = IConstantFlowAgreementV1(
@@ -57,8 +53,6 @@ contract RedirectAll is SuperAppBase {
     /**************************************************************************
      * Redirect Logic
      *************************************************************************/
-
-    event ReceiverChanged(address receiver);
 
     // @dev adds a receiver to the list of receivers if not already present
     function _addReceiver(address receiver, uint256 tokenId) internal {
@@ -166,8 +160,6 @@ contract RedirectAll is SuperAppBase {
 
         _receivers[newReceiver] = _receivers[oldReceiver];
         delete _receivers[oldReceiver];
-
-        emit ReceiverChanged(newReceiver);
     }
 
     /**************************************************************************

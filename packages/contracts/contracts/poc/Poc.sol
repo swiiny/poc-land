@@ -6,14 +6,16 @@ import { RedirectAll, ISuperToken, ISuperfluid } from "./RedirectAll.sol";
 
 contract Poc is ERC721, RedirectAll {
 
+    address public gasLessMinter;
+    address public creator;
     uint256 public _tokenIdCounter;
     uint256 public maxPocAmount;
     string public baseURI;
-    address public creator;
 
     mapping(address => bool) public hasAPoc;
 
     constructor (
+        address _gasLessMinter,
         address _creator,
         string memory _name,
         string memory _symbol,
@@ -25,19 +27,34 @@ contract Poc is ERC721, RedirectAll {
         ERC721(_name, _symbol)
         RedirectAll (host, acceptedToken)
     {
+        gasLessMinter = _gasLessMinter;
         creator = _creator;
         maxPocAmount = _maxPocAmount;
         baseURI = _baseURI;
         _tokenIdCounter = 1;
     }
 
+    function setGasLessMinter(address _gasLessMinter) public {
+        require(msg.sender == gasLessMinter);
+        gasLessMinter = _gasLessMinter;
+    }
+
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 /*tokenId*/
+    ) internal override {
+        _changeReceiver(from, to);
+    }
+
     function safeMint(address to) public {
+        require(msg.sender == gasLessMinter);
         require(hasAPoc[to] == false, "This address already has a Poc");
-        uint256 tokenId = _tokenIdCounter;
+        require(_tokenIdCounter < maxPocAmount, "Max Poc amount reached");
+        _safeMint(to, _tokenIdCounter);
+        _addReceiver(to, _tokenIdCounter);
         _tokenIdCounter++;
-        require(tokenId < maxPocAmount, "Max Poc amount reached");
         hasAPoc[to] = true;
-        _safeMint(to, tokenId);
     }
 
     function tokenURI(uint256 _tokenId) public view virtual override returns (string memory) {
