@@ -6,6 +6,8 @@ body {
   font-family: forma-djr-micro, sans-serif;
   font-weight: 400;
   font-style: normal;
+  
+  background-color: #121923;
 }
 
 body {
@@ -30,6 +32,8 @@ a {
   
   margin: 0 auto;
   padding: 0 20px;
+
+  height: auto;
 }
 
 

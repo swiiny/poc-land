@@ -2,6 +2,7 @@ import Head from 'next/head';
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
 import '../styles/globals.css';
+import '../styles/waves.css';
 
 const darkTheme = {
   radius: {
@@ -32,33 +33,14 @@ const darkTheme = {
     lg: '1200px',
     xl: '1600px',
   },
-  /*
   colors: {
-    typo: '#B3FCFF',
+    typo: '#ecf6f7',
     bg: '#121923',
     accent: '#79DCEF',
     negative: '#E35656',
-    gradientStart: '#79DCEF',
-    gradientEnd: '#0D9BD7',
-    gradient: 'linear-gradient(97.76deg, #79DCEF 0%, #0D9BD7 100%)',
-    shadow: {
-      normal: '0px 8px 12px rgba(131, 238, 255, 0.1), 0px 2px 4px rgba(0, 0, 0, 0.8), 0px 1px 0px #6CEEFF',
-      hover: '0px 8px 22px rgba(131, 238, 255, 0.2), 0px 2px 4px rgba(0, 0, 0, 0.8), 0px 1px 0px #6CEEFF',
-    },
-  },
-  */
-  colors: {
-    typo: '#F7F7F7',
-    bg: '#020024',
-    accent: '#f8d165',
-    negative: '#E35656',
-    gradientStart: '#eb6e6e',
-    gradientEnd: '#020024',
-    gradient: 'linear-gradient(97.76deg, #eb6e6e 0%, #f8d165 100%)',
-    shadow: {
-      normal: '0px 8px 12px rgba(131, 238, 255, 0.1), 0px 2px 4px rgba(0, 0, 0, 0.8), 0px 1px 0px #6CEEFF',
-      hover: '0px 8px 22px rgba(131, 238, 255, 0.2), 0px 2px 4px rgba(0, 0, 0, 0.8), 0px 1px 0px #6CEEFF',
-    },
+    gradientStart: '#E73C7E',
+    gradientEnd: '#EE7752',
+    gradient: 'linear-gradient(97.76deg, #E73C7E 0%, #EE7752 100%)',
   },
 };
 

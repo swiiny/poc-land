@@ -1,13 +1,13 @@
 import axios from 'axios';
+import { ethers } from 'ethers';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { ethers } from 'ethers';
 import PocItem from '../components/gallery/PocItem';
 import Page from '../components/utils/Page';
 import useWallet, { availableNetworks } from '../hooks/useWallet';
 import { StyledHeadingOne } from '../styles/GlobalComponents';
-import { getPocContract } from './claim';
 import pocFactoryAbi from '../utils/pocFactoryAbi';
+import { getPocContract } from './claim';
 
 const Gallery = () => {
   const [userPocs, setUserPocs] = useState([{ id: 'uehf43' }, { id: 'uehf44' }, { id: 'uehf45' }]);
@@ -57,11 +57,8 @@ const Gallery = () => {
 
   const fetchPocForAccount = async (a) => {
     try {
-      const url = `${process.env.SERVER_URL}/v1/server/userPocs?userAddr=${a}`;
+      const addresses = await getAllPocsAddressFromUser(window.ethereum);
 
-      const res = await axios.get(url);
-
-      const addresses = res.data;
       const promises = addresses.map(async (address) => {
         const pocContract = await getPocContract(window.ethereum, address);
         const data = await pocContract.tokenURI(4);
@@ -76,6 +73,8 @@ const Gallery = () => {
           };
         });
       });
+
+      console.log('start resolve', promises);
 
       const resolvedPromises = await Promise.all(promises);
       console.log('resolvedPromises', resolvedPromises);
@@ -100,7 +99,7 @@ const Gallery = () => {
     <Page title="My Gallery">
       <StyledContainer>
         <StyledHeadingOne>
-          My Gallery
+          My Collections
         </StyledHeadingOne>
 
         <StyledPocList>

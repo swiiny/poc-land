@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { ethers } from 'ethers';
-import { ArrowLeft, ArrowRight, Upload } from 'heroicons-react';
+import { Upload } from 'heroicons-react';
 import Link from 'next/link';
 import React, { useEffect, useMemo, useState } from 'react';
 import QRCode from 'react-qr-code';
@@ -225,7 +225,7 @@ const Create = () => {
       <Page title="Create PoC">
         <StyledContainer>
           <StyledHeadingOne>
-            Create PoC
+            Engage your community with a new PoC
           </StyledHeadingOne>
 
           <StyledFormContainer>
@@ -340,7 +340,20 @@ const Create = () => {
                 {uploadState === UPLOAD_STATE.waitingForMMAction && 'Waiting for User Wallet Action...'}
                 {uploadState === UPLOAD_STATE.denied && 'Wallet Action Denied'}
                 {uploadState === UPLOAD_STATE.txError && 'Transaction Error'}
-                {uploadState === UPLOAD_STATE.txWaiting && 'Waiting for Transaction to be mined, please do not refresh the page or close the browser'}
+                {uploadState === UPLOAD_STATE.txWaiting && (
+                  <>
+                    <span>
+                      Waiting for Transaction to be mined
+                    </span>
+                    <br />
+                    <span style={{
+                      fontStyle: 'italic', marginTop: '8px', textAlign: 'right', opacity: '0.5',
+                    }}
+                    >
+                      Please do not refresh the page or close the browser
+                    </span>
+                  </>
+                )}
               </StyledText>
 
               <StyledFormItem isVisible={creationState === CREATION_STATE.validation}>
@@ -365,31 +378,46 @@ const Create = () => {
               <></>
             ) : creationState === CREATION_STATE.deployingError ? (
               <ArrowContainer>
-                <StyledButton
-                  onClick={() => previousCreationState()}
-                  style={{ marginRight: '32px' }}
-                  disabled={creationState === CREATION_STATE.deploying || creationState === CREATION_STATE.setImage}
-                >
-                  <ArrowLeft size={28} />
-                </StyledButton>
                 <Button
                   onClick={(e) => createPoc(e)}
                 >
                   Try again
                 </Button>
+
+                <Button
+                  onClick={() => previousCreationState()}
+                  style={{ marginTop: '12px' }}
+                  disabled={creationState === CREATION_STATE.deploying || creationState === CREATION_STATE.setImage}
+                  tertiary
+                  isVisible={creationState === CREATION_STATE.setImage}
+                >
+                  Go Back
+                </Button>
+
               </ArrowContainer>
             ) : (
               <ArrowContainer>
-                <StyledButton
-                  onClick={() => previousCreationState()}
-                  style={{ marginRight: '32px' }}
-                  disabled={creationState === CREATION_STATE.deploying || creationState === CREATION_STATE.setImage}
+                <Button
+                  onClick={() => nextCreationState()}
+                  disabled={creationState === CREATION_STATE.deploying || creationState === CREATION_STATE.validation || creationState === CREATION_STATE.deployingError}
+                  hidden={creationState === CREATION_STATE.validation}
                 >
-                  <ArrowLeft size={28} />
-                </StyledButton>
-                <StyledButton onClick={() => nextCreationState()} disabled={creationState === CREATION_STATE.deploying || creationState === CREATION_STATE.validation || creationState === CREATION_STATE.deployingError}>
-                  <ArrowRight size={28} />
-                </StyledButton>
+                  {creationState === CREATION_STATE.setImage ? 'Choose a Name'
+                    : creationState === CREATION_STATE.setName ? 'Create a small description'
+                      : creationState === CREATION_STATE.setDescription ? 'Select Count of PoC'
+                        : creationState === CREATION_STATE.setCount ? 'Ready ?'
+                          : creationState === CREATION_STATE.validation ? 'Start Factory'
+                            : 'Deploying...'}
+                </Button>
+                <Button
+                  onClick={() => previousCreationState()}
+                  style={{ marginTop: '12px' }}
+                  disabled={creationState === CREATION_STATE.deploying || creationState === CREATION_STATE.setImage}
+                  tertiary
+                  isVisible={creationState === CREATION_STATE.setImage}
+                >
+                  Go Back
+                </Button>
               </ArrowContainer>
             )}
 
@@ -409,37 +437,6 @@ const QrCodeContainer = styled.div`
   width: 100%;
 `;
 
-const StyledButton = styled.button`
-  border: none;
-  background: none;
-  color: ${({ theme }) => theme.colors.typo};
-
-  width: 50px;
-  height: 50px;
-
-  border-radius: 50%;
-
-  border: 1px solid ${({ theme }) => theme.colors.typo};
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  transition: all 0.4s ease-in-out;
-
-  ${(props) => (props.disabled ? css`
-    opacity: 0.4;
-    cursor: default;
-  ` : css`
-    opacity: 1.0;
-    cursor: pointer;
-  `)}
-`;
-
-const StyledSpan = styled.span`
-  font-weight: bold;
-`;
-
 const StyledFormContainer = styled.div`
   width: 100%;
   display: flex;
@@ -454,6 +451,8 @@ const ArrowContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  flex-direction: column;
 `;
 
 const StyledImgContainer = styled.div`
@@ -462,7 +461,7 @@ const StyledImgContainer = styled.div`
     overflow: hidden;
 
     ${(props) => (props.isVisible ? css`
-        max-height: 150px;
+        max-height: 120px;
         opacity: 1.0;
     ` : css`
         max-height: 0px;
@@ -471,8 +470,8 @@ const StyledImgContainer = styled.div`
 `;
 
 const StyledPocImage = styled.img`
-    width: 150px;
-    height: 150px;
+    width: 120px;
+    height: 120px;
     object-fit: cover;
 
     border-radius: 50%;
