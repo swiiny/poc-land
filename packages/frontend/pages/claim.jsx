@@ -54,7 +54,7 @@ const Claim = () => {
   const getPocMetadata = async (e) => {
     // TODO
     e.preventDefault();
-    const pocAddress = '0x9332806d5ef48f0b350AD5b493e16955A3616df9';
+    const pocAddress = '0xec26D215fe3BCcFC843eE5874E389CBCb84023C9';
     const poc = await getPocContract(window.ethereum, pocAddress);
     console.log('address is correct?', poc.address);
     const data = await poc.tokenURI(4);
@@ -133,6 +133,14 @@ const Claim = () => {
                 style={{ width: '100%' }}
                 type="submit"
                 onClick={(e) => claimPoc(e)}
+                disabled={!isAddress(recipient) || (claimStep !== CLAIM_STEP.setAddress && claimStep !== CLAIM_STEP.error)}
+              >
+                Claim
+              </Button>
+              <Button
+                style={{ width: '100%' }}
+                type="submit"
+                onClick={(e) => getPocMetadata(e)}
                 disabled={!isAddress(recipient) || (claimStep !== CLAIM_STEP.setAddress && claimStep !== CLAIM_STEP.error)}
               >
                 Claim

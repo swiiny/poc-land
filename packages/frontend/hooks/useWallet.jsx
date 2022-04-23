@@ -22,7 +22,7 @@ export const availableNetworks = [
   {
     name: 'Rinkeby',
     chainId: '0x4',
-    contractAddress: '0xD6E1F1296B9fFFCB89994c1FA4cC54Cbd1dF556c',
+    contractAddress: '0x22df03979C519feA7bcC1113409af40FCac12378',
   },
 ];
 
