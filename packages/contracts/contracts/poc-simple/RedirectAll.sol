@@ -19,12 +19,11 @@ contract RedirectAll is SuperAppBase {
     ISuperfluid private _host; // host
     IConstantFlowAgreementV1 private _cfa; // the stored constant flow agreement class address
     ISuperToken private _acceptedToken; // accepted token
-    address public _owner;
     mapping (address => uint) public _receivers;
     address[] public _receiverAddresses;
+    int256 lastUpdateReceiverNb;
 
    constructor(
-        address owner,
         ISuperfluid host,
         ISuperToken acceptedToken
     ) {
@@ -43,7 +42,6 @@ contract RedirectAll is SuperAppBase {
             )
         );
         _acceptedToken = acceptedToken;
-        _owner = owner;
 
         cfaV1 = CFAv1Library.InitData(_host, _cfa);
 
@@ -59,6 +57,8 @@ contract RedirectAll is SuperAppBase {
     /**************************************************************************
      * Redirect Logic
      *************************************************************************/
+
+    event ReceiverChanged(address receiver); //what is this?
 
     // @dev adds a receiver to the list of receivers if not already present
     function _addReceiver(address receiver, uint256 tokenId) internal {
@@ -78,28 +78,6 @@ contract RedirectAll is SuperAppBase {
         _receiverAddresses.push(receiver);
     }
 
-    /*function currentReceiver()
-        external
-        view
-        returns (
-            uint256 startTime,
-            address receiver,
-            int96 flowRate
-        )
-    {
-        if (_receiver != address(0)) {
-            (startTime, flowRate, , ) = _cfa.getFlow(
-                _acceptedToken,
-                address(this),
-                _receiver
-            );
-            receiver = _receiver;
-        }
-    }*/
-
-    event ReceiverChanged(address receiver); //what is this?
-
-
     /// @dev If a new stream is opened, or an existing one is opened
     function _updateOutflow(bytes calldata ctx)
         private
@@ -113,66 +91,47 @@ contract RedirectAll is SuperAppBase {
             address(this),
             _receiverAddresses[0]
         ); // CHECK: unclear what happens if flow doesn't exist.
-        int96 inFlowRate = netFlowRate + outFlowRate;
-        int96 newOutFlowRate = int96(inFlowRate / int256(_receiverAddresses.length));
-        int96 restOutFlowRate = int96(inFlowRate % int256(_receiverAddresses.length));
+        int96 inFlowRate = netFlowRate + int96(int256(outFlowRate) * lastUpdateReceiverNb);
+        int96 newOutFlowRate = int96(int256(inFlowRate) / int256(_receiverAddresses.length));
 
         // @dev If inFlowRate === 0, then delete existing flow.
         if (inFlowRate == int96(0)) {
             // @dev if inFlowRate is zero, delete outflow.
-            // for loop for each element of _receiverAddresses
             for (uint256 i = 0; i < _receiverAddresses.length; i++) {
-                newCtx = cfaV1.deleteFlowWithCtx(
-                    newCtx,
-                    address(this),
-                    _receiverAddresses[i],
-                    _acceptedToken
-                );
-            }
-            if (restOutFlowRate > 0) {
-                newCtx = cfaV1.deleteFlowWithCtx(
+                if (_receivers[_receiverAddresses[i]] > 0) {
+                    newCtx = cfaV1.deleteFlowWithCtx(
                         newCtx,
                         address(this),
-                        _owner,
+                        _receiverAddresses[i],
                         _acceptedToken
                     );
+                }
             }
         } else if (outFlowRate != int96(0)) {
             for (uint256 i = 0; i < _receiverAddresses.length; i++) {
-                newCtx = cfaV1.updateFlowWithCtx(
-                    newCtx,
-                    _receiverAddresses[i],
-                    _acceptedToken,
-                    newOutFlowRate
-                );
-            }
-            if (restOutFlowRate > 0) {
-                newCtx = cfaV1.updateFlowWithCtx(
-                    newCtx,
-                    _owner,
-                    _acceptedToken,
-                    restOutFlowRate
-                );
+                if (_receivers[_receiverAddresses[i]] > 0) {
+                    newCtx = cfaV1.updateFlowWithCtx(
+                        newCtx,
+                        _receiverAddresses[i],
+                        _acceptedToken,
+                        newOutFlowRate
+                    );
+                }
             }
         } else {
             // @dev If there is no existing outflow, then create new flow to equal inflow
             for (uint256 i = 0; i < _receiverAddresses.length; i++) {
-                newCtx = cfaV1.createFlowWithCtx(
-                    newCtx,
-                    _receiverAddresses[i],
-                    _acceptedToken,
-                    newOutFlowRate
-                );
-            }
-            if (restOutFlowRate > 0) {
-                newCtx = cfaV1.createFlowWithCtx(
-                    newCtx,
-                    _owner,
-                    _acceptedToken,
-                    restOutFlowRate
-                );
+                if (_receivers[_receiverAddresses[i]] > 0) {
+                    newCtx = cfaV1.createFlowWithCtx(
+                        newCtx,
+                        _receiverAddresses[i],
+                        _acceptedToken,
+                        newOutFlowRate
+                    );
+                }
             }
         }
+        lastUpdateReceiverNb = int256(_receiverAddresses.length);
     }
 
     // @dev Change the Receiver of the total flow
