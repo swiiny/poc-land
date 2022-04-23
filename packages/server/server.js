@@ -28,7 +28,8 @@ const limiter = rateLimit({
 });
 
 const corsOptions = {
-	origin: process.env.FRONTEND_URL,
+	// origin: process.env.FRONTEND_URL,
+	origin: "*",
 	optionsSuccessStatus: 200
 };
 
@@ -44,18 +45,26 @@ app.get(`${BASE_URL_V1}/ping`, async (req, res) => {
 
 
 
-app.get(`${BASE_URL_V1}/mint`, async (req, res) => {
+app.post(`${BASE_URL_V1}/mint`, async (req, res) => {
+	res.send("pong");	
 	// read poc address and minter address from request
-	const pocAddress = req.query.pocAddress;
-	const minterAddress = req.query.minterAddress;
-	const chainID = req.query.chainID;
+	console.log(req.params)
+	console.log(req.body)
+	console.log(req.query)
+
+	/*
+	const pocAddress = "0xeD616c1bb22C80c5EB35c492a992f3CDFD4098b0";
+	const minterAddress = "0x77768f90098c9A13c94060408A2943B9a2100f74";
+	const chainID = 137;
 	const providerURL = chainIDToProvider(chainID)
 	const provider = new ethers.providers.JsonRpcProvider(providerURL)
 	// now attach to the poc contract using ethers
 	const pocContract = new ethers.Contract(pocAddress, pocAbi, provider);
 	// instantiate signer with private key
-	const signer = new ethers.Wallet(privateKey, provider);
+	const signer = new ethers.Wallet(process.env.SK, provider);
 	await pocContract.connect(signer).safeMint(minterAddress);
+	*/
+	
 });
 
 // launch server on port 3000
@@ -67,5 +76,10 @@ app.listen(3000, () => {
 	const provider = new ethers.providers.JsonRpcProvider(providerURL)
 	const signer = new ethers.Wallet(process.env.SK, provider);
 	console.log(`The signer address is ${signer.address}`);
+	// cors allow all
+	const corsOptions = {
+		origin: process.env.FRONTEND_URL,
+		optionsSuccessStatus: 200
+	};
 })
 
