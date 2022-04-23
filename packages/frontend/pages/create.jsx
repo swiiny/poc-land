@@ -110,6 +110,13 @@ const Create = () => {
         // frontend : display as a QR code
         // 0x326162D47d7274f6602e08D5860A5634B8eA4182
         // const tx = ethers.getTr
+
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+        const tx = await provider.getTransactionReceipt(txHash);
+
+        console.log('tx', tx);
+
         setUploadState(UPLOAD_STATE.success);
       } catch (err) {
         console.error('Error creating POC: ', err);
