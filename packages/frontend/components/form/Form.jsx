@@ -21,6 +21,10 @@ export const StyledFormItem = styled.div`
         opacity: 0.0;
         z-index: 0;
     `)}
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+        top: 30%;
+    }
 `;
 
 export const StyledFileInput = styled.label`
@@ -110,5 +114,8 @@ export const StyledForm = styled.form`
 
     @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
         width: 100%;
+        height: 300px;
+        align-items: flex-start;
+        justify-content: flex-start;
     }
 `;

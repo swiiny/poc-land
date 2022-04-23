@@ -7,38 +7,38 @@ import { StyledHeadingOne } from '../styles/GlobalComponents';
 
 const DEV_DATA = [
   {
-    name: 'POC 1',
-    description: 'This is a description for POC 1',
+    name: 'PoC 1',
+    description: 'This is a description for PoC 1',
     src: 'https://picsum.photos/150/150',
   },
   {
-    name: 'POC 2',
-    description: 'This is a description for POC *',
+    name: 'PoC 2',
+    description: 'This is a description for PoC *',
     src: 'https://picsum.photos/150/150',
   },
   {
-    name: 'POC 3',
-    description: 'This is a description for POC 3',
+    name: 'PoC 3',
+    description: 'This is a description for PoC 3',
     src: 'https://picsum.photos/150/150',
   },
   {
-    name: 'POC 4',
-    description: 'This is a description for POC 4',
+    name: 'PoC 4',
+    description: 'This is a description for PoC 4',
     src: 'https://picsum.photos/150/150',
   },
   {
-    name: 'POC 5',
-    description: 'This is a description for POC 5',
+    name: 'PoC 5',
+    description: 'This is a description for PoC 5',
     src: 'https://picsum.photos/150/150',
   },
   {
-    name: 'POC 6',
-    description: 'This is a description for POC 6',
+    name: 'PoC 6',
+    description: 'This is a description for PoC 6',
     src: 'https://picsum.photos/150/150',
   },
   {
-    name: 'POC 7',
-    description: 'This is a description for POC 7',
+    name: 'PoC 7',
+    description: 'This is a description for PoC 7',
     src: 'https://picsum.photos/150/150',
   },
 ];
@@ -50,7 +50,7 @@ const Gallery = () => {
 
   const fetchPocForAccount = (a) => {
     try {
-      // TODO : fetch user's POCs
+      // TODO : fetch user's PoCs
     } catch (err) {
       console.error('Error fetching poc for account: ', err);
     }
@@ -105,7 +105,12 @@ const StyledContainer = styled.div`
     z-index: 2;
 
     min-height: 100vh;
+    
     padding-top: ${({ theme }) => theme.spacing['3xl']};
+
+    @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+      padding-top: ${({ theme }) => theme.spacing.xl};
+    }
 `;
 
 export default Gallery;
