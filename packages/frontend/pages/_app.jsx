@@ -24,6 +24,7 @@ const darkTheme = {
     '2xl': '64px',
     '3xl': '80px',
     '4xl': '100px',
+    '5xl': '128px',
   },
   breakpoints: {
     sm: '600px',
