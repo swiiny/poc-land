@@ -6,8 +6,6 @@
 const hre = require("hardhat");
 
 async function main() {
-  const accounts = await hre.ethers.getSigners();
-  // console.log("Address", accounts[0].address);
   // We get the contract to deploy
   const PocFactory = await hre.ethers.getContractFactory("PocFactory");
   const popfactory = await PocFactory.deploy();

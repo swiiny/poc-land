@@ -6,8 +6,12 @@
 const hre = require("hardhat");
 
 async function main() {
+  const host = "0x22ff293e14F1EC3A09B137e9e06084AFd63adDF9";
+  const fDAIx = "0xF2d68898557cCb2Cf4C10c3Ef2B034b2a69DAD00";
+
   const accounts = await hre.ethers.getSigners();
-  console.log("Address?", accounts[0].address);
+  const firstReceiver = accounts[0];
+  console.log("Address?", firstReceiver.address);
   const name = "poc";
   const symbol = "POC";
   const maxPocAmount = 1;
@@ -16,11 +20,19 @@ async function main() {
 
   // We get the contract to deploy
   const Poc = await hre.ethers.getContractFactory("Poc");
-  const poc = await Poc.deploy(name, symbol, maxPocAmount, baseURI);
+  const poc = await Poc.deploy(
+    firstReceiver.address,
+    name,
+    symbol,
+    maxPocAmount,
+    baseURI,
+    host,
+    fDAIx
+  );
 
   console.log("Poc deployed to:", poc.address);
 
-  poc.safeMint(accounts[0].address);
+  poc.safeMint(firstReceiver.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
