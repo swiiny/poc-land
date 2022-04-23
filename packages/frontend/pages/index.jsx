@@ -27,7 +27,6 @@ export default function Home() {
           <Button
             onClick={() => router.push(LINKS.create)}
             secondary
-            style={{ marginRight: '16px' }}
             size={Size.l}
           >
             Create PoC
@@ -52,6 +51,26 @@ const CTAContainer = styled.div`
   width: 100%;
 
   margin-top: 64px;
+
+  & > button:nth-child(1) {
+    margin-right: 16px;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    flex-direction: column;
+    
+    button {
+      width: 100%;
+      
+      &:nth-child(1) {
+        margin-right: 0px;
+      }
+      
+      & + button {
+        margin-top: 16px;
+      }
+    }
+  }
 `;
 
 const StyledTextContainer = styled.div`
