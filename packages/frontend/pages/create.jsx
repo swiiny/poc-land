@@ -4,7 +4,6 @@ import styled, { css } from 'styled-components';
 import { ethers } from 'ethers';
 import Page from '../components/utils/Page';
 import { Button, StyledHeadingOne } from '../styles/GlobalComponents';
-import addDefaultSrc from '../utils/functions';
 import { uploadPocDataToIPFS } from '../utils/ipfs';
 import pocFactoryAbi from '../utils/pocFactoryAbi.js';
 
@@ -85,7 +84,6 @@ const Create = () => {
             >
               <StyledPocImage
                 src={pocImage}
-                onError={(e) => addDefaultSrc(e)}
               />
             </StyledImgContainer>
 

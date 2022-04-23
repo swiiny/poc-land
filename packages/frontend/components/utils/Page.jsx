@@ -23,8 +23,21 @@ const Page = ({ title = '', description = '', children }) => (
 );
 
 const StyledPage = styled.div`
-  padding: 0 20px;
+  padding: 0 5%;
+
   background-color: ${({ theme }) => theme.colors.bg};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
+      padding: 0 5%;
+  }
+    
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+      padding: 0 5%;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+      padding: 0 15px;
+  }
 `;
 
 export default Page;

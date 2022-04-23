@@ -76,6 +76,20 @@ export const StyledHeadingTwo = styled.h2`
     margin: 0;
 `;
 
+export const StyledHeadingThree = styled.h3`
+    font-size: 36px;
+    font-weight: bold;
+    font-weight: normal;
+
+    letter-spacing: -0.02em;
+
+    color: ${({ theme }) => theme.colors.typo};
+
+    line-height: 1.5;
+
+    margin: 0;
+`;
+
 export const StyledText = styled.p`
     font-size: 16px;
     font-weight: normal;
