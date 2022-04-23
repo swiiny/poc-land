@@ -1,11 +1,12 @@
-import express from "express";
-import helmet from "helmet";
-import rateLimit from "express-rate-limit";
+import bodyParser from 'body-parser';
 import cors from "cors";
-import ethers from "ethers";
 import dotenv from "dotenv";
-import pocAbi from "./pocAbi.js"
-import bodyParser from 'body-parser'
+import ethers from "ethers";
+import express from "express";
+import rateLimit from "express-rate-limit";
+import helmet from "helmet";
+import serverdbPoolPromise from "./dbPool.js";
+import pocAbi from "./pocAbi.js";
 
 
 function chainIDToProvider(chainID) {
@@ -18,6 +19,8 @@ function chainIDToProvider(chainID) {
         return 'https://rinkeby.infura.io/v3/64ccd977c19d4730b461d2de8147dd1e';
     }
 }
+
+let pool;
 
 // API v1 url prefix
 const BASE_URL_V1 = "/v1/server";
@@ -49,6 +52,29 @@ app.get(`${BASE_URL_V1}/ping`, async (req, res) => {
 	res.send("pong");
 });
 
+app.get(`${BASE_URL_V1}/userPocs`, async (req, res) => {
+	try {
+		const { userAddr, chainId } = req.query;
+		const query = await pool.query('SELECT poc_address FROM userPocs WHERE user_address = ? AND chain_id = ?', [userAddr, chainId]);
+		const pocs = query[0].map((e) => e.poc_address);
+		res.send(pocs);
+	} catch (err) {
+		console.log(err);
+		res.status(500).send(err);
+	}
+});
+
+app.get(`${BASE_URL_V1}/allPocs`, async (req, res) => {
+	try {
+		const query = await pool.query('SELECT DISTINCT poc_address FROM userPocs');
+		const pocs = query[0].map((e) => e.poc_address);
+		res.send(pocs);
+	} catch (err) {
+		console.log(err);
+		res.status(500).send(err);
+	}
+});
+
 
 
 app.post(`${BASE_URL_V1}/mint`, jsonParser, async (req, res) => {
@@ -76,8 +102,11 @@ app.post(`${BASE_URL_V1}/mint`, jsonParser, async (req, res) => {
 });
 
 // launch server on port 3000
-app.listen(3000, () => {
+app.listen(3000, async () => {
 	dotenv.config();
+
+	pool = await serverdbPoolPromise();
+
 	console.log(`Your port is ${process.env.SERVER_PORT}`);
 	const providerURL = chainIDToProvider(10)
 	console.log(`Your provider is ${providerURL}`);
