@@ -59,6 +59,8 @@ export const Button = styled.button`
         color: ${({ theme }) => `${theme.colors.typo}60`};
         background-color: ${({ theme }) => `${theme.colors.typo}50`};
     ` : 'cursor: pointer;')}
+
+    transition: all 0.4s ease-in-out;
 `;
 
 export const StyledTextButton = styled.button`
@@ -149,7 +151,23 @@ export const StyledText = styled.p`
 
     line-height: 1.5;
 
-    color: ${({ theme }) => theme.colors.typo};
+    transition: all 0.4s ease-in-out;
+
+    ${(props) => (props.isVisible ? css`
+        opacity: 1.0;
+        max-height: fit-content;
+    ` : css`
+        opacity: 0.0;
+        max-height: 0;
+    `)}
+
+    ${(props) => (props.negative ? css`
+        color: ${({ theme }) => theme.colors.negative};
+    ` : props.positive ? css`
+        color: ${({ theme }) => theme.colors.accent};
+    ` : css`
+        color: ${({ theme }) => theme.colors.typo};
+    `)}
 
     @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
         font-size: 16px;

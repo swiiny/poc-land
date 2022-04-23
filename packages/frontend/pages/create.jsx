@@ -1,18 +1,39 @@
-import ethers from 'ethers';
-import { Upload } from 'heroicons-react';
+import { ethers } from 'ethers';
+import { ArrowLeft, ArrowRight, Upload } from 'heroicons-react';
 import React, { useEffect, useMemo, useState } from 'react';
 import styled, { css } from 'styled-components';
-// import pkg from 'rabin-wasm';
 import {
   StyledFileInput, StyledForm, StyledFormItem, StyledInput, StyledLabel, StyledTextArea,
 } from '../components/form/Form';
 import Page from '../components/utils/Page';
 import useWallet, { availableNetworks } from '../hooks/useWallet';
-import { Button, StyledHeadingOne } from '../styles/GlobalComponents';
-import uploadPocDataToIPFS from '../utils/ipfs';
+import { Button, StyledHeadingOne, StyledText } from '../styles/GlobalComponents';
+import { uploadPocDataToIPFS } from '../utils/ipfs';
 import pocFactoryAbi from '../utils/pocFactoryAbi';
 
 // const { create } = pkg;
+
+const UPLOAD_STATE = {
+  unset: 'unset',
+  uploadToIPFS: 'uploadToIPFS',
+  waitingForMMAction: 'waitingForMMAction',
+  success: 'success',
+  denied: 'denied',
+  txError: 'txError',
+  txWaiting: 'txWaiting',
+};
+
+const CREATION_STATE = {
+  unset: 'unset',
+  setImage: 'setImage',
+  setDescription: 'setDescription',
+  setName: 'setName',
+  setCount: 'setCount',
+  validation: 'validating',
+  deploying: 'deploying',
+  success: 'success',
+  error: 'error',
+};
 
 const Create = () => {
   const [pocName, setPocName] = useState('');
@@ -20,6 +41,10 @@ const Create = () => {
   const [pocFile, setPocFile] = useState({});
   const [pocDescription, setPocDescription] = useState('');
   const [pocCount, setPocCount] = useState(100);
+
+  const [creationState, setCreationState] = useState(CREATION_STATE.setImage);
+
+  const [uploadState, setUploadState] = useState(UPLOAD_STATE.unset);
 
   const { account, isWrongNetwork, currentChainId } = useWallet();
 
@@ -50,14 +75,21 @@ const Create = () => {
     return dnpContract;
   }
 
-  // DNP SELF BOUNTIES STATE CHANGE CALLS
+  async function getPocWithEventAndCreator(ethereumProvider, name) {
+    const pocFactoryContract = await getPocFactoryContract(ethereumProvider);
+    const pocAddress = await pocFactoryContract.getLastPocCreatedByCreator(account);
+    console.log('poc address?', pocAddress);
+    return pocAddress;
+  }
+
   async function createPocContract(ethereumProvider, metadataURI, name, count) {
     console.log('Creating POC contract...', account);
+
     const pf = await getPocFactoryContract(ethereumProvider);
     const res = await pf.populateTransaction.createPoc(account, name, 'PoC', count, metadataURI);
+
     res.from = account;
-    // Rinkeby : make this cleaner
-    // res.chainId = parseInt(4, 4)
+
     const txHash = await ethereumProvider.request({
       method: 'eth_sendTransaction',
       params: [res],
@@ -78,10 +110,81 @@ const Create = () => {
 
       // TODO : submit to ipfs here
       console.log('file: ', pocFile);
+
+      setUploadState(UPLOAD_STATE.uploadToIPFS);
+
       const murl = await uploadPocDataToIPFS([pocFile], pocName, pocDescription);
       console.log('metadata url', murl);
-      const res = await createPocContract(window.ethereum, murl, pocName, pocCount);
-      console.log('res', res);
+      setUploadState(UPLOAD_STATE.waitingForMMAction);
+
+      try {
+        const res = await createPocContract(window.ethereum, murl, pocName, pocCount);
+        const txHash = res;
+        const pocAddress = await getPocWithEventAndCreator(window.ethereum, pocName);
+        console.log('poc address?', pocAddress);
+        // TODO
+        // backend : save pocAddress, accountAddress (creator address) and chainID!
+        // frontend : display as a QR code
+        // 0x326162D47d7274f6602e08D5860A5634B8eA4182
+        // const tx = ethers.getTr
+
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+        setUploadState(UPLOAD_STATE.txWaiting);
+
+        const tx = await (await provider.getTransaction(txHash)).wait();
+
+        if (tx.status === 1) {
+          setUploadState(UPLOAD_STATE.success);
+        } else {
+          setUploadState(UPLOAD_STATE.txError);
+        }
+
+        setUploadState(UPLOAD_STATE.success);
+      } catch (err) {
+        console.error('Error creating POC: ', err);
+        setUploadState(UPLOAD_STATE.denied);
+      }
+    }
+  };
+
+  const previousCreationState = () => {
+    switch (creationState) {
+      case CREATION_STATE.setDescription:
+        setCreationState(CREATION_STATE.setName);
+        break;
+      case CREATION_STATE.setName:
+        setCreationState(CREATION_STATE.setImage);
+        break;
+      case CREATION_STATE.setCount:
+        setCreationState(CREATION_STATE.setDescription);
+        break;
+      case CREATION_STATE.validation:
+        setCreationState(CREATION_STATE.setCount);
+        break;
+      default:
+        setCreationState(CREATION_STATE.setImage);
+        break;
+    }
+  };
+
+  const nextCreationState = () => {
+    switch (creationState) {
+      case CREATION_STATE.setImage:
+        setCreationState(CREATION_STATE.setName);
+        break;
+      case CREATION_STATE.setName:
+        setCreationState(CREATION_STATE.setDescription);
+        break;
+      case CREATION_STATE.setDescription:
+        setCreationState(CREATION_STATE.setCount);
+        break;
+      case CREATION_STATE.setCount:
+        setCreationState(CREATION_STATE.validation);
+        break;
+      default:
+        setCreationState(CREATION_STATE.setName);
+        break;
     }
   };
 
@@ -93,85 +196,154 @@ const Create = () => {
             Create POC
           </StyledHeadingOne>
 
-          <StyledForm>
-            <StyledFormItem>
-              <StyledLabel>
-                Select an Image
-              </StyledLabel>
-
-              <StyledImgContainer
-                isVisible={pocImage?.length}
+          <StyledFormContainer>
+            <StyledForm>
+              <StyledFormItem
+                isVisible={creationState === CREATION_STATE.setImage}
               >
-                <StyledPocImage
-                  src={pocImage}
+                <StyledLabel>
+                  Select an Image
+                </StyledLabel>
+
+                <StyledImgContainer
+                  isVisible={pocImage?.length}
+                >
+                  <StyledPocImage
+                    src={pocImage}
+                  />
+                </StyledImgContainer>
+
+                <StyledFileInput
+                  for="input-file"
+                  secondary
+                >
+                  {pocImage.length === 0 ? 'Upload Image' : 'Update Image'}
+
+                  <Upload size={20} />
+
+                  <input id="input-file" type="file" accept="image/*" onChange={importImage} />
+                </StyledFileInput>
+              </StyledFormItem>
+
+              <StyledFormItem isVisible={creationState === CREATION_STATE.setCount}>
+                <StyledLabel>
+                  How many PoC do you want to create?
+                </StyledLabel>
+                <StyledInput
+                  type="number"
+                  step="20"
+                  min="1"
+                  max="10000"
+                  placeholder="100"
+                  value={pocCount}
+                  onChange={(e) => setPocCount(e.target.value)}
                 />
-              </StyledImgContainer>
+              </StyledFormItem>
 
-              <StyledFileInput
-                for="input-file"
-                secondary
+              <StyledFormItem isVisible={creationState === CREATION_STATE.setName}>
+                <StyledLabel>
+                  Name your POC
+                </StyledLabel>
+                <StyledInput
+                  type="text"
+                  placeholder="Name"
+                  value={pocName}
+                  onChange={(e) => setPocName(e.target.value)}
+                />
+              </StyledFormItem>
+
+              <StyledFormItem isVisible={creationState === CREATION_STATE.setDescription}>
+                <StyledLabel>
+                  Add a short description
+                </StyledLabel>
+                <StyledTextArea
+                  placeholder="My POC is..."
+                  value={pocDescription}
+                  onChange={(e) => setPocDescription(e.target.value)}
+                />
+              </StyledFormItem>
+
+              <StyledText
+                isVisible={creationState === CREATION_STATE.deploying}
+                negative={uploadState === UPLOAD_STATE.denied || uploadState === UPLOAD_STATE.txError}
+                positive={uploadState === UPLOAD_STATE.success}
               >
-                {pocImage.length === 0 ? 'Upload Image' : 'Update Image'}
+                {uploadState === UPLOAD_STATE.uploadToIPFS && 'Uploading to IPFS...'}
+                {uploadState === UPLOAD_STATE.waitingForMMAction && 'Waiting for User Wallet Action...'}
+                {uploadState === UPLOAD_STATE.success && 'PoC Successfully Created'}
+                {uploadState === UPLOAD_STATE.denied && 'Wallet Action Denied'}
+                {uploadState === UPLOAD_STATE.txError && 'Transaction Error'}
+                {uploadState === UPLOAD_STATE.txWaiting && 'Waiting for Transaction to be mined...'}
+              </StyledText>
 
-                <Upload size={20} />
+              <StyledFormItem isVisible={creationState === CREATION_STATE.validation}>
+                <StyledLabel>
+                  Are you ready to create your PoC ?
+                </StyledLabel>
+                <Button
+                  style={{ width: '100%' }}
+                  type="submit"
+                  onClick={(e) => createPoc(e)}
+                  disabled={!isDataValid}
+                  id="submit-poc"
+                >
+                  {isWrongNetwork ? 'Wrong Network' : 'Save and Continue'}
+                </Button>
+              </StyledFormItem>
+            </StyledForm>
 
-                <input id="input-file" type="file" accept="image/*" onChange={importImage} />
-              </StyledFileInput>
-            </StyledFormItem>
-
-            <StyledFormItem>
-              <StyledLabel>
-                How many PoC do you want to create?
-              </StyledLabel>
-              <StyledInput
-                type="number"
-                step="20"
-                min="1"
-                max="10000"
-                placeholder="100"
-                value={pocCount}
-                onChange={(e) => setPocCount(e.target.value)}
-              />
-            </StyledFormItem>
-
-            <StyledFormItem>
-              <StyledLabel>
-                Name your POC
-              </StyledLabel>
-              <StyledInput
-                type="text"
-                placeholder="Name"
-                value={pocName}
-                onChange={(e) => setPocName(e.target.value)}
-              />
-            </StyledFormItem>
-
-            <StyledFormItem>
-              <StyledLabel>
-                Add a short description
-              </StyledLabel>
-              <StyledTextArea
-                placeholder="My POC is..."
-                value={pocDescription}
-                onChange={(e) => setPocDescription(e.target.value)}
-              />
-            </StyledFormItem>
-
-            <Button
-              style={{ width: '100%' }}
-              type="submit"
-              onClick={(e) => createPoc(e)}
-              disabled={!isDataValid}
-              id="submit-poc"
-            >
-              {isWrongNetwork ? 'Wrong Network' : 'Save and Continue'}
-            </Button>
-          </StyledForm>
+            <ArrowContainer>
+              <StyledButton
+                onClick={() => previousCreationState()}
+                style={{ marginRight: '32px' }}
+              >
+                <ArrowLeft size={28} />
+              </StyledButton>
+              <StyledButton onClick={() => nextCreationState()}>
+                <ArrowRight size={28} />
+              </StyledButton>
+            </ArrowContainer>
+          </StyledFormContainer>
         </StyledContainer>
       </Page>
     </>
   );
 };
+
+const StyledButton = styled.button`
+  border: none;
+  background: none;
+  color: ${({ theme }) => theme.colors.typo};
+
+  width: 50px;
+  height: 50px;
+
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  border: 1px solid ${({ theme }) => theme.colors.typo};
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const StyledFormContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  flex-direction: column;
+`;
+
+const ArrowContainer = styled.div`
+  margin-top: 64px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const StyledImgContainer = styled.div`
     transition: all 0.4s ease-in-out;

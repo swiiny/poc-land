@@ -2,12 +2,14 @@ import axios from 'axios';
 import { isAddress } from 'ethers/lib/utils';
 import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
+import { ethers } from 'ethers';
 import {
   StyledForm, StyledFormItem, StyledInput, StyledLabel,
 } from '../components/form/Form';
 import Page from '../components/utils/Page';
 import useWallet from '../hooks/useWallet';
 import { Button, StyledHeadingOne } from '../styles/GlobalComponents';
+import pocAbi from '../utils/pocAbi';
 
 const Claim = () => {
   const [recipient, setRecipient] = useState('');
@@ -24,6 +26,22 @@ const Claim = () => {
     // TODO : udpate when pocId will be a real id (not an address)
     return isAddress(pocId);
   }, [pocId]);
+
+  async function getPocContract(ethereumProvider, pocAddress) {
+    // const contractAddress = availableNetworks.find((net) => net.chainId === currentChainId)?.contractAddress;
+    const provider = new ethers.providers.Web3Provider(ethereumProvider);
+    const dnpContract = new ethers.Contract(pocAddress, pocAbi, provider);
+    return dnpContract;
+  }
+
+  const getPocMetadata = async (e) => {
+    // TODO
+    const pocAddress = '0x326162D47d7274f6602e08D5860A5634B8eA4182';
+    const poc = await getPocContract(window.ethereum, pocAddress);
+    poc.callStatic('tokenURI').then((metadata) => {
+      console.log('metadata', metadata);
+    });
+  };
 
   const claimPoc = async (e) => {
     e.preventDefault();
@@ -61,18 +79,6 @@ const Claim = () => {
 
           <StyledFormItem>
             <StyledLabel>
-              Set the POC Secret
-            </StyledLabel>
-            <StyledInput
-              type="text"
-              placeholder="Name"
-              value={pocId}
-              onChange={(e) => setPocId(e.target.value)}
-            />
-          </StyledFormItem>
-
-          <StyledFormItem>
-            <StyledLabel>
               Set your Address
             </StyledLabel>
             <StyledInput
@@ -91,6 +97,7 @@ const Claim = () => {
             {/* // disabled= {!isDataValid || !isPocIdValid} */}
             Claim
           </Button>
+
         </StyledForm>
 
       </StyledContainer>
