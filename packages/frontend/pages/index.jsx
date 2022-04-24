@@ -67,7 +67,7 @@ export default function Home() {
 
         <StyledPocList>
           {demoPocs.slice(0, demoCardCount).map((p) => (
-            <PocItem key={p.name + p.src} poc={p} />
+            <PocItem key={p.name + p.src} poc={p} demo />
           ))}
         </StyledPocList>
 

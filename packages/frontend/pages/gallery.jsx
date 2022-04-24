@@ -30,6 +30,7 @@ const Gallery = () => {
             name: result.data.name,
             description: result.data.description,
             src: imageLinkIpfs,
+            address,
           };
         });
       });
