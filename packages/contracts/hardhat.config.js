@@ -79,8 +79,7 @@ module.exports = {
     polygon: {
       url: "https://polygon-mainnet.g.alchemy.com/v2/T5feScSf_Edl3Rwxel0ygxWceNyDV8kV",
       accounts: [process.env.KEY],
-      // gas: 800000,
-      // gasPrice: 100000000000,
+      gasLimit: 3000000,
       settings: {
         optimizer: {
           enabled: true,
