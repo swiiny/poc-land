@@ -16,7 +16,8 @@ import {
   Button, Size, StyledHeadingOne, StyledText,
 } from '../styles/GlobalComponents';
 import { uploadPocDataToIPFS } from '../utils/ipfs';
-import pocFactoryAbi from '../utils/pocFactoryAbi';
+// import pocAbi from '../utils/pocAbi';
+import pocBytecode from '../utils/pocBytecode';
 
 const UPLOAD_STATE = {
   unset: 'unset',
@@ -74,24 +75,20 @@ const Create = () => {
     }
   };
 
-  async function getPocFactoryContract(ethereumProvider) {
-    const contractAddress = availableNetworks.find((net) => net.chainId === currentChainId)?.contractAddress;
-    const pocFactoryAddress = contractAddress;
+  async function getPocContract(ethereumProvider, pocAddress) {
     const provider = new ethers.providers.Web3Provider(ethereumProvider);
-    const dnpContract = new ethers.Contract(pocFactoryAddress, pocFactoryAbi, provider);
+    const dnpContract = new ethers.Contract(pocAddress, pocAbi, provider);
     return dnpContract;
   }
 
-  async function getPocWithEventAndCreator(ethereumProvider) {
-    const pocFactoryContract = await getPocFactoryContract(ethereumProvider);
-    const index = await pocFactoryContract.getLastPocCreatorIndex(account);
-    const pocAddress = await pocFactoryContract.getPocWithCreatorIndex(account, index.sub(1));
-    return pocAddress;
-  }
-
   async function createPocContract(ethereumProvider, metadataURI, name, count) {
-    const pf = await getPocFactoryContract(ethereumProvider);
-    const res = await pf.populateTransaction.createPoc(account, name, 'PoC', count, metadataURI);
+    const pf = await getPocContract(ethereumProvider);
+
+    const gasLessMinter = '0xE84132Be566a83988501a1eA134DeC5992ea0aaE';
+    const hostRinkeby = '0xeD5B5b32110c3Ded02a07c8b8e97513FAfb883B6';
+    const acceptedTokenRinkeby = '0x745861AeD1EEe363b4AaA5F1994Be40b1e05Ff90';
+
+    const res = await pf.populateTransaction.createPoc(gasLessMinter, name, 'PoC', metadataURI, hostRinkeby, acceptedTokenRinkeby);
 
     res.from = account;
 
@@ -117,18 +114,658 @@ const Create = () => {
       setUploadState(UPLOAD_STATE.waitingForMMAction);
 
       try {
-        const res = await createPocContract(window.ethereum, murl, brandedName, pocCount);
-        const txHash = res;
+        // const res = await createPocContract(window.ethereum, murl, brandedName, pocCount);
+        // const txHash = res;
 
         const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-        setUploadState(UPLOAD_STATE.txWaiting);
+        // setUploadState(UPLOAD_STATE.txWaiting);
 
-        const tx = await (await provider.getTransaction(txHash)).wait();
+        const gasLessMinter = '0xE84132Be566a83988501a1eA134DeC5992ea0aaE';
+        const hostRinkeby = '0xeD5B5b32110c3Ded02a07c8b8e97513FAfb883B6';
+        const acceptedTokenRinkeby = '0x745861AeD1EEe363b4AaA5F1994Be40b1e05Ff90';
 
-        const pocAddress = await getPocWithEventAndCreator(window.ethereum, brandedName);
+        const pocAbi = [
+          {
+            inputs: [
+              {
+                internalType: 'address',
+                name: '_gasLessMinter',
+                type: 'address',
+              },
+              {
+                internalType: 'string',
+                name: '_name',
+                type: 'string',
+              },
+              {
+                internalType: 'string',
+                name: '_symbol',
+                type: 'string',
+              },
+              {
+                internalType: 'string',
+                name: '_baseURI',
+                type: 'string',
+              },
+              {
+                internalType: 'contract ISuperfluid',
+                name: 'host',
+                type: 'address',
+              },
+              {
+                internalType: 'contract ISuperToken',
+                name: 'acceptedToken',
+                type: 'address',
+              },
+            ],
+            stateMutability: 'nonpayable',
+            type: 'constructor',
+          },
+          {
+            anonymous: false,
+            inputs: [
+              {
+                indexed: true,
+                internalType: 'address',
+                name: 'owner',
+                type: 'address',
+              },
+              {
+                indexed: true,
+                internalType: 'address',
+                name: 'approved',
+                type: 'address',
+              },
+              {
+                indexed: true,
+                internalType: 'uint256',
+                name: 'tokenId',
+                type: 'uint256',
+              },
+            ],
+            name: 'Approval',
+            type: 'event',
+          },
+          {
+            anonymous: false,
+            inputs: [
+              {
+                indexed: true,
+                internalType: 'address',
+                name: 'owner',
+                type: 'address',
+              },
+              {
+                indexed: true,
+                internalType: 'address',
+                name: 'operator',
+                type: 'address',
+              },
+              {
+                indexed: false,
+                internalType: 'bool',
+                name: 'approved',
+                type: 'bool',
+              },
+            ],
+            name: 'ApprovalForAll',
+            type: 'event',
+          },
+          {
+            anonymous: false,
+            inputs: [
+              {
+                indexed: true,
+                internalType: 'address',
+                name: 'from',
+                type: 'address',
+              },
+              {
+                indexed: true,
+                internalType: 'address',
+                name: 'to',
+                type: 'address',
+              },
+              {
+                indexed: true,
+                internalType: 'uint256',
+                name: 'tokenId',
+                type: 'uint256',
+              },
+            ],
+            name: 'Transfer',
+            type: 'event',
+          },
+          {
+            inputs: [
+              {
+                internalType: 'contract ISuperToken',
+                name: '_superToken',
+                type: 'address',
+              },
+              {
+                internalType: 'address',
+                name: '_agreementClass',
+                type: 'address',
+              },
+              {
+                internalType: 'bytes32',
+                name: '',
+                type: 'bytes32',
+              },
+              {
+                internalType: 'bytes',
+                name: '',
+                type: 'bytes',
+              },
+              {
+                internalType: 'bytes',
+                name: '',
+                type: 'bytes',
+              },
+              {
+                internalType: 'bytes',
+                name: '_ctx',
+                type: 'bytes',
+              },
+            ],
+            name: 'afterAgreementCreated',
+            outputs: [
+              {
+                internalType: 'bytes',
+                name: 'newCtx',
+                type: 'bytes',
+              },
+            ],
+            stateMutability: 'nonpayable',
+            type: 'function',
+          },
+          {
+            inputs: [
+              {
+                internalType: 'contract ISuperToken',
+                name: '_superToken',
+                type: 'address',
+              },
+              {
+                internalType: 'address',
+                name: '_agreementClass',
+                type: 'address',
+              },
+              {
+                internalType: 'bytes32',
+                name: '',
+                type: 'bytes32',
+              },
+              {
+                internalType: 'bytes',
+                name: '',
+                type: 'bytes',
+              },
+              {
+                internalType: 'bytes',
+                name: '',
+                type: 'bytes',
+              },
+              {
+                internalType: 'bytes',
+                name: '_ctx',
+                type: 'bytes',
+              },
+            ],
+            name: 'afterAgreementTerminated',
+            outputs: [
+              {
+                internalType: 'bytes',
+                name: 'newCtx',
+                type: 'bytes',
+              },
+            ],
+            stateMutability: 'nonpayable',
+            type: 'function',
+          },
+          {
+            inputs: [
+              {
+                internalType: 'contract ISuperToken',
+                name: '_superToken',
+                type: 'address',
+              },
+              {
+                internalType: 'address',
+                name: '_agreementClass',
+                type: 'address',
+              },
+              {
+                internalType: 'bytes32',
+                name: '',
+                type: 'bytes32',
+              },
+              {
+                internalType: 'bytes',
+                name: '',
+                type: 'bytes',
+              },
+              {
+                internalType: 'bytes',
+                name: '',
+                type: 'bytes',
+              },
+              {
+                internalType: 'bytes',
+                name: '_ctx',
+                type: 'bytes',
+              },
+            ],
+            name: 'afterAgreementUpdated',
+            outputs: [
+              {
+                internalType: 'bytes',
+                name: 'newCtx',
+                type: 'bytes',
+              },
+            ],
+            stateMutability: 'nonpayable',
+            type: 'function',
+          },
+          {
+            inputs: [
+              {
+                internalType: 'address',
+                name: 'to',
+                type: 'address',
+              },
+              {
+                internalType: 'uint256',
+                name: 'tokenId',
+                type: 'uint256',
+              },
+            ],
+            name: 'approve',
+            outputs: [],
+            stateMutability: 'nonpayable',
+            type: 'function',
+          },
+          {
+            inputs: [
+              {
+                internalType: 'address',
+                name: 'owner',
+                type: 'address',
+              },
+            ],
+            name: 'balanceOf',
+            outputs: [
+              {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256',
+              },
+            ],
+            stateMutability: 'view',
+            type: 'function',
+          },
+          {
+            inputs: [
+              {
+                internalType: 'contract ISuperToken',
+                name: '',
+                type: 'address',
+              },
+              {
+                internalType: 'address',
+                name: '',
+                type: 'address',
+              },
+              {
+                internalType: 'bytes32',
+                name: '',
+                type: 'bytes32',
+              },
+              {
+                internalType: 'bytes',
+                name: '',
+                type: 'bytes',
+              },
+              {
+                internalType: 'bytes',
+                name: '',
+                type: 'bytes',
+              },
+            ],
+            name: 'beforeAgreementCreated',
+            outputs: [
+              {
+                internalType: 'bytes',
+                name: '',
+                type: 'bytes',
+              },
+            ],
+            stateMutability: 'view',
+            type: 'function',
+          },
+          {
+            inputs: [
+              {
+                internalType: 'contract ISuperToken',
+                name: '',
+                type: 'address',
+              },
+              {
+                internalType: 'address',
+                name: '',
+                type: 'address',
+              },
+              {
+                internalType: 'bytes32',
+                name: '',
+                type: 'bytes32',
+              },
+              {
+                internalType: 'bytes',
+                name: '',
+                type: 'bytes',
+              },
+              {
+                internalType: 'bytes',
+                name: '',
+                type: 'bytes',
+              },
+            ],
+            name: 'beforeAgreementTerminated',
+            outputs: [
+              {
+                internalType: 'bytes',
+                name: '',
+                type: 'bytes',
+              },
+            ],
+            stateMutability: 'view',
+            type: 'function',
+          },
+          {
+            inputs: [
+              {
+                internalType: 'contract ISuperToken',
+                name: '',
+                type: 'address',
+              },
+              {
+                internalType: 'address',
+                name: '',
+                type: 'address',
+              },
+              {
+                internalType: 'bytes32',
+                name: '',
+                type: 'bytes32',
+              },
+              {
+                internalType: 'bytes',
+                name: '',
+                type: 'bytes',
+              },
+              {
+                internalType: 'bytes',
+                name: '',
+                type: 'bytes',
+              },
+            ],
+            name: 'beforeAgreementUpdated',
+            outputs: [
+              {
+                internalType: 'bytes',
+                name: '',
+                type: 'bytes',
+              },
+            ],
+            stateMutability: 'view',
+            type: 'function',
+          },
+          {
+            inputs: [
+              {
+                internalType: 'uint256',
+                name: 'tokenId',
+                type: 'uint256',
+              },
+            ],
+            name: 'getApproved',
+            outputs: [
+              {
+                internalType: 'address',
+                name: '',
+                type: 'address',
+              },
+            ],
+            stateMutability: 'view',
+            type: 'function',
+          },
+          {
+            inputs: [
+              {
+                internalType: 'address',
+                name: 'owner',
+                type: 'address',
+              },
+              {
+                internalType: 'address',
+                name: 'operator',
+                type: 'address',
+              },
+            ],
+            name: 'isApprovedForAll',
+            outputs: [
+              {
+                internalType: 'bool',
+                name: '',
+                type: 'bool',
+              },
+            ],
+            stateMutability: 'view',
+            type: 'function',
+          },
+          {
+            inputs: [],
+            name: 'name',
+            outputs: [
+              {
+                internalType: 'string',
+                name: '',
+                type: 'string',
+              },
+            ],
+            stateMutability: 'view',
+            type: 'function',
+          },
+          {
+            inputs: [
+              {
+                internalType: 'uint256',
+                name: 'tokenId',
+                type: 'uint256',
+              },
+            ],
+            name: 'ownerOf',
+            outputs: [
+              {
+                internalType: 'address',
+                name: '',
+                type: 'address',
+              },
+            ],
+            stateMutability: 'view',
+            type: 'function',
+          },
+          {
+            inputs: [
+              {
+                internalType: 'address',
+                name: 'to',
+                type: 'address',
+              },
+            ],
+            name: 'safeMint',
+            outputs: [],
+            stateMutability: 'nonpayable',
+            type: 'function',
+          },
+          {
+            inputs: [
+              {
+                internalType: 'address',
+                name: 'from',
+                type: 'address',
+              },
+              {
+                internalType: 'address',
+                name: 'to',
+                type: 'address',
+              },
+              {
+                internalType: 'uint256',
+                name: 'tokenId',
+                type: 'uint256',
+              },
+            ],
+            name: 'safeTransferFrom',
+            outputs: [],
+            stateMutability: 'nonpayable',
+            type: 'function',
+          },
+          {
+            inputs: [
+              {
+                internalType: 'address',
+                name: 'from',
+                type: 'address',
+              },
+              {
+                internalType: 'address',
+                name: 'to',
+                type: 'address',
+              },
+              {
+                internalType: 'uint256',
+                name: 'tokenId',
+                type: 'uint256',
+              },
+              {
+                internalType: 'bytes',
+                name: '_data',
+                type: 'bytes',
+              },
+            ],
+            name: 'safeTransferFrom',
+            outputs: [],
+            stateMutability: 'nonpayable',
+            type: 'function',
+          },
+          {
+            inputs: [
+              {
+                internalType: 'address',
+                name: 'operator',
+                type: 'address',
+              },
+              {
+                internalType: 'bool',
+                name: 'approved',
+                type: 'bool',
+              },
+            ],
+            name: 'setApprovalForAll',
+            outputs: [],
+            stateMutability: 'nonpayable',
+            type: 'function',
+          },
+          {
+            inputs: [
+              {
+                internalType: 'bytes4',
+                name: 'interfaceId',
+                type: 'bytes4',
+              },
+            ],
+            name: 'supportsInterface',
+            outputs: [
+              {
+                internalType: 'bool',
+                name: '',
+                type: 'bool',
+              },
+            ],
+            stateMutability: 'view',
+            type: 'function',
+          },
+          {
+            inputs: [],
+            name: 'symbol',
+            outputs: [
+              {
+                internalType: 'string',
+                name: '',
+                type: 'string',
+              },
+            ],
+            stateMutability: 'view',
+            type: 'function',
+          },
+          {
+            inputs: [
+              {
+                internalType: 'uint256',
+                name: '_tokenId',
+                type: 'uint256',
+              },
+            ],
+            name: 'tokenURI',
+            outputs: [
+              {
+                internalType: 'string',
+                name: '',
+                type: 'string',
+              },
+            ],
+            stateMutability: 'view',
+            type: 'function',
+          },
+          {
+            inputs: [
+              {
+                internalType: 'address',
+                name: 'from',
+                type: 'address',
+              },
+              {
+                internalType: 'address',
+                name: 'to',
+                type: 'address',
+              },
+              {
+                internalType: 'uint256',
+                name: 'tokenId',
+                type: 'uint256',
+              },
+            ],
+            name: 'transferFrom',
+            outputs: [],
+            stateMutability: 'nonpayable',
+            type: 'function',
+          },
+        ];
 
-        if (tx.status === 1) {
+        const poc = new ethers.ContractFactory(pocAbi, pocBytecode, provider.getSigner());
+        const pocContract = await poc.deploy(gasLessMinter, brandedName, 'PoC', murl, hostRinkeby, acceptedTokenRinkeby);
+        console.log('good?', pocContract.address);
+        const pocAddress = pocContract.address;
+
+        // const tx = await (await provider.getTransaction(txHash)).wait();
+
+        // const pocAddress = await getPocWithEventAndCreator(window.ethereum, brandedName);
+
+        if (pocContract.address) {
           setUploadState(UPLOAD_STATE.success);
 
           setPocLink(`${process.env.FRONTEND_URL}${LINKS.redeem}?poc=${pocAddress}`);

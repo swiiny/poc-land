@@ -1,9 +1,9 @@
-const abi = [
+const pocAbi = [
   {
     inputs: [
       {
         internalType: 'address',
-        name: '_creator',
+        name: '_gasLessMinter',
         type: 'address',
       },
       {
@@ -17,14 +17,19 @@ const abi = [
         type: 'string',
       },
       {
-        internalType: 'uint256',
-        name: '_maxPocAmount',
-        type: 'uint256',
-      },
-      {
         internalType: 'string',
         name: '_baseURI',
         type: 'string',
+      },
+      {
+        internalType: 'contract ISuperfluid',
+        name: 'host',
+        type: 'address',
+      },
+      {
+        internalType: 'contract ISuperToken',
+        name: 'acceptedToken',
+        type: 'address',
       },
     ],
     stateMutability: 'nonpayable',
@@ -86,25 +91,6 @@ const abi = [
       {
         indexed: true,
         internalType: 'address',
-        name: 'previousOwner',
-        type: 'address',
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'newOwner',
-        type: 'address',
-      },
-    ],
-    name: 'OwnershipTransferred',
-    type: 'event',
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
         name: 'from',
         type: 'address',
       },
@@ -123,6 +109,138 @@ const abi = [
     ],
     name: 'Transfer',
     type: 'event',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'contract ISuperToken',
+        name: '_superToken',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_agreementClass',
+        type: 'address',
+      },
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes',
+      },
+      {
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes',
+      },
+      {
+        internalType: 'bytes',
+        name: '_ctx',
+        type: 'bytes',
+      },
+    ],
+    name: 'afterAgreementCreated',
+    outputs: [
+      {
+        internalType: 'bytes',
+        name: 'newCtx',
+        type: 'bytes',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'contract ISuperToken',
+        name: '_superToken',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_agreementClass',
+        type: 'address',
+      },
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes',
+      },
+      {
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes',
+      },
+      {
+        internalType: 'bytes',
+        name: '_ctx',
+        type: 'bytes',
+      },
+    ],
+    name: 'afterAgreementTerminated',
+    outputs: [
+      {
+        internalType: 'bytes',
+        name: 'newCtx',
+        type: 'bytes',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'contract ISuperToken',
+        name: '_superToken',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '_agreementClass',
+        type: 'address',
+      },
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes',
+      },
+      {
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes',
+      },
+      {
+        internalType: 'bytes',
+        name: '_ctx',
+        type: 'bytes',
+      },
+    ],
+    name: 'afterAgreementUpdated',
+    outputs: [
+      {
+        internalType: 'bytes',
+        name: 'newCtx',
+        type: 'bytes',
+      },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'function',
   },
   {
     inputs: [
@@ -162,26 +280,117 @@ const abi = [
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'baseURI',
+    inputs: [
+      {
+        internalType: 'contract ISuperToken',
+        name: '',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes',
+      },
+      {
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes',
+      },
+    ],
+    name: 'beforeAgreementCreated',
     outputs: [
       {
-        internalType: 'string',
+        internalType: 'bytes',
         name: '',
-        type: 'string',
+        type: 'bytes',
       },
     ],
     stateMutability: 'view',
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'creator',
-    outputs: [
+    inputs: [
+      {
+        internalType: 'contract ISuperToken',
+        name: '',
+        type: 'address',
+      },
       {
         internalType: 'address',
         name: '',
         type: 'address',
+      },
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes',
+      },
+      {
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes',
+      },
+    ],
+    name: 'beforeAgreementTerminated',
+    outputs: [
+      {
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'contract ISuperToken',
+        name: '',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
+      },
+      {
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes',
+      },
+      {
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes',
+      },
+    ],
+    name: 'beforeAgreementUpdated',
+    outputs: [
+      {
+        internalType: 'bytes',
+        name: '',
+        type: 'bytes',
       },
     ],
     stateMutability: 'view',
@@ -232,38 +441,12 @@ const abi = [
   },
   {
     inputs: [],
-    name: 'maxPocAmount',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
     name: 'name',
     outputs: [
       {
         internalType: 'string',
         name: '',
         type: 'string',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'owner',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
       },
     ],
     stateMutability: 'view',
@@ -286,13 +469,6 @@ const abi = [
       },
     ],
     stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'renounceOwnership',
-    outputs: [],
-    stateMutability: 'nonpayable',
     type: 'function',
   },
   {
@@ -413,49 +589,6 @@ const abi = [
     inputs: [
       {
         internalType: 'uint256',
-        name: 'index',
-        type: 'uint256',
-      },
-    ],
-    name: 'tokenByIndex',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'owner',
-        type: 'address',
-      },
-      {
-        internalType: 'uint256',
-        name: 'index',
-        type: 'uint256',
-      },
-    ],
-    name: 'tokenOfOwnerByIndex',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
         name: '_tokenId',
         type: 'uint256',
       },
@@ -466,19 +599,6 @@ const abi = [
         internalType: 'string',
         name: '',
         type: 'string',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
-    name: 'totalSupply',
-    outputs: [
-      {
-        internalType: 'uint256',
-        name: '',
-        type: 'uint256',
       },
     ],
     stateMutability: 'view',
@@ -507,18 +627,4 @@ const abi = [
     stateMutability: 'nonpayable',
     type: 'function',
   },
-  {
-    inputs: [
-      {
-        internalType: 'address',
-        name: 'newOwner',
-        type: 'address',
-      },
-    ],
-    name: 'transferOwnership',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
 ];
-export default abi;

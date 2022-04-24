@@ -6,8 +6,8 @@
 const hre = require("hardhat");
 
 async function main() {
-  const host = "0x3E14dC1b13c488a8d5D310918780c983bD5982E7";
-  const DAIx = "0x1305F6B6Df9Dc47159D12Eb7aC2804d4A33173c2";
+  const host = "0xeD5B5b32110c3Ded02a07c8b8e97513FAfb883B6";
+  const DAIx = "0x745861AeD1EEe363b4AaA5F1994Be40b1e05Ff90";
 
   const accounts = await hre.ethers.getSigners();
   const firstReceiver = accounts[0];
