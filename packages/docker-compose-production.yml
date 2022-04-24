@@ -1,0 +1,38 @@
+version: '3.1'
+
+services:
+  frontend:
+    container_name: frontend
+    ports:
+      - $FRONTEND_PORT:$FRONTEND_PORT
+    image: pocland-frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: Prod.dockerfile
+    env_file:
+      - .env
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    stdin_open: true
+    tty: true
+    command: npm start
+    restart: always
+
+  server:
+    container_name: server
+    image: pocland-server:latest
+    build:
+      context: ./server
+      dockerfile: Prod.dockerfile
+    env_file:
+      - .env
+    environment:
+      PORT: $SERVER_PORT
+    ports:
+      - $SERVER_PORT:$SERVER_PORT
+    restart: always
+
+volumes:
+  my-db:
