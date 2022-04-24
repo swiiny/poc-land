@@ -1,13 +1,14 @@
 import { ChevronDownOutline } from 'heroicons-react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 import Logo from '../../assets/img/logo.svg';
 import useResponsive from '../../hooks/useResponsive';
 import useWallet from '../../hooks/useWallet';
 import { Button, Size, StyledTag } from '../../styles/GlobalComponents';
 import { formatAddress } from '../../utils/functions';
+import WalletPopup from '../popups/WalletPopup';
 import NetworkSelector from './NetworkSelector';
 import Portal from './Portal';
 
@@ -46,12 +47,28 @@ export const LINKS = {
 const Navbar = () => {
   const [isNetworksSelectorVisible, setIsNetworksSelectorVisible] = useState(false);
   const [mobileNavbarVisible, setMobileNavbarVisible] = useState(false);
+  const [isWalletPopupVisible, setIsWalletPopupVisible] = useState(false);
 
   const { connectToWallet, account, isWrongNetwork } = useWallet();
   const { isSmallerThanMd } = useResponsive();
 
   const Router = useRouter();
   const { pathname } = Router;
+
+  const closePopup = () => {
+    console.log('close called');
+    setIsWalletPopupVisible(false);
+  };
+
+  useEffect(() => {
+    if (account) {
+      setIsWalletPopupVisible(false);
+    }
+  }, [account]);
+
+  useEffect(() => {
+    console.log('isWalletPopupVisible', isWalletPopupVisible);
+  }, [isWalletPopupVisible]);
 
   return (
     <>
@@ -60,6 +77,8 @@ const Navbar = () => {
         relativeTo={isWrongNetwork ? '#switch-button' : null}
         onClose={() => setIsNetworksSelectorVisible(false)}
       />
+
+      <WalletPopup isVisible={isWalletPopupVisible} onClose={() => closePopup()} />
 
       {isSmallerThanMd && (
       <StyledMobileNavbar>
@@ -119,7 +138,7 @@ const Navbar = () => {
           ) : (
             <Button
               size={Size.s}
-              onClick={() => connectToWallet()}
+              onClick={() => setIsWalletPopupVisible(true)}
             >
               Connect Wallet
             </Button>

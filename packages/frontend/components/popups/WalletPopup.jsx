@@ -1,23 +1,70 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import useWallet, { walletProvider } from '../../hooks/useWallet';
 import { Button } from '../../styles/GlobalComponents';
 import Portal from '../utils/Portal';
 
-const WalletPopup = ({ onClose, isVisible = false }) => (
-  <Portal selector="body">
-    <StyledBg onClick={onClose} />
-    <StyledPopupContainer>
-      <StyledPopup isVisible={isVisible}>
-        <Button>
-          MetaMask
-        </Button>
-        <Button>
-          WalletConnect
-        </Button>
-      </StyledPopup>
-    </StyledPopupContainer>
-  </Portal>
-);
+const WalletPopup = ({ onClose, isVisible = false }) => {
+  const {
+    setPreferedWallet, preferedWallet, initWeb3, initWalletConnect,
+  } = useWallet();
+
+  useEffect(() => {
+    if (preferedWallet !== walletProvider.unset) {
+      onClose();
+    }
+  }, [preferedWallet]);
+
+  if (!isVisible) {
+    return <></>;
+  }
+
+  return (
+    <Portal selector="body">
+      <StyledBg onClick={onClose} />
+      <StyledPopupContainer>
+        <StyledPopup isVisible={isVisible}>
+          <StyledButtonContainer>
+            <Button
+              onClick={() => initWeb3()}
+            >
+              MetaMask
+            </Button>
+            <Button
+              onClick={() => initWalletConnect()}
+            >
+              WalletConnect
+            </Button>
+          </StyledButtonContainer>
+        </StyledPopup>
+      </StyledPopupContainer>
+    </Portal>
+  );
+};
+
+const StyledButtonContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 32px;
+
+    background-color: ${({ theme }) => theme.colors.typo};
+
+    padding: 16px;
+    border-radius: 8px;
+
+    border: 1px solid ${({ theme }) => theme.colors.gradient};
+
+    & > button {
+        width: 100%;
+    }
+    
+    & > button + button {
+        margin-top: 12px;
+    }
+`;
 
 const StyledBg = styled.div`
     position: fixed;
@@ -45,3 +92,5 @@ const StyledPopupContainer = styled.div`
 const StyledPopup = styled.div`
     position: absolute;
 `;
+
+export default WalletPopup;
