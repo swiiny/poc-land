@@ -6,7 +6,7 @@ import { RedirectAll, ISuperToken, ISuperfluid } from "./RedirectAll.sol";
 
 contract Poc is ERC721, RedirectAll {
 
-    address private gasLessMinter = 0xE84132Be566a83988501a1eA134DeC5992ea0aaE;
+    address private gasLessMinter;
     uint256 private maxPocAmount = 50;
     uint256 private _tokenIdCounter;
     string private baseURI;
@@ -14,6 +14,7 @@ contract Poc is ERC721, RedirectAll {
     mapping(address => bool) private hasAPoc;
 
     constructor (
+        address _gasLessMinter,
         string memory _name,
         string memory _symbol,
         string memory _baseURI,
@@ -23,6 +24,7 @@ contract Poc is ERC721, RedirectAll {
         ERC721(_name, _symbol)
         RedirectAll (host, acceptedToken)
     {
+        gasLessMinter = _gasLessMinter;
         baseURI = _baseURI;
         _tokenIdCounter = 1;
     }
@@ -30,7 +32,7 @@ contract Poc is ERC721, RedirectAll {
     function _beforeTokenTransfer(
         address from,
         address to,
-        uint256 /*tokenId*/
+        uint256
     ) internal override {
         _changeReceiver(from, to);
     }

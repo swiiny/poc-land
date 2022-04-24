@@ -6,27 +6,31 @@
 const hre = require("hardhat");
 
 async function main() {
-  const host = "0x22ff293e14F1EC3A09B137e9e06084AFd63adDF9";
-  const fDAIx = "0xF2d68898557cCb2Cf4C10c3Ef2B034b2a69DAD00";
+  const host = "0x3E14dC1b13c488a8d5D310918780c983bD5982E7";
+  const DAIx = "0x1305F6B6Df9Dc47159D12Eb7aC2804d4A33173c2";
 
   const accounts = await hre.ethers.getSigners();
-  const provider = hre.ethers.provider;
-  const gasPrice = await provider.getGasPrice();
+  // const provider = hre.ethers.provider;
+  // const gasPrice = await provider.getGasPrice();
   const firstReceiver = accounts[0];
   console.log("Address?", firstReceiver.address);
   const name = "poc";
   const symbol = "POC";
-  const baseURI =
-    "https://bafybeihpjhkeuiq3k6nqa3fkgeigeri7iebtrsuyuey5y6vy36n345xmbi.ipfs.dweb.link/1256";
+  const baseURI = "https://google.com";
 
   // We get the contract to deploy
   const Poc = await hre.ethers.getContractFactory("Poc");
-  const poc = await Poc.deploy(name, symbol, baseURI, host, fDAIx);
-  await poc.deployed();
-
+  const poc = await Poc.deploy(
+    firstReceiver.address,
+    name,
+    symbol,
+    baseURI,
+    host,
+    DAIx
+  );
   console.log("Poc deployed to:", poc.address);
 
-  poc.safeMint(firstReceiver.address, { gasPrice, gasLimit: 210000 });
+  // poc.safeMint(firstReceiver.address, { gasPrice, gasLimit: 210000 });
 }
 
 // We recommend this pattern to be able to use async/await everywhere
