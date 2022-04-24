@@ -1,42 +1,32 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.13;
+pragma solidity 0.8.13;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import { RedirectAll, ISuperToken, ISuperfluid } from "./RedirectAll.sol";
 
 contract Poc is ERC721, RedirectAll {
 
-    address private gasLessMinter;
+    address private gasLessMinter = 0xE84132Be566a83988501a1eA134DeC5992ea0aaE;
     address private creator;
+    uint256 private maxPocAmount = 50;
     uint256 private _tokenIdCounter;
-    uint256 private maxPocAmount;
     string private baseURI;
 
     mapping(address => bool) private hasAPoc;
 
+    ISuperfluid host;
+    ISuperToken acceptedToken;
+
     constructor (
-        address _gasLessMinter,
-        address _creator,
         string memory _name,
         string memory _symbol,
-        uint256 _maxPocAmount,
-        string memory _baseURI,
-        ISuperfluid host,
-        ISuperToken acceptedToken
+        string memory _baseURI
     )
         ERC721(_name, _symbol)
         RedirectAll (host, acceptedToken)
     {
-        gasLessMinter = _gasLessMinter;
-        creator = _creator;
-        maxPocAmount = _maxPocAmount;
         baseURI = _baseURI;
         _tokenIdCounter = 1;
-    }
-
-    function setGasLessMinter(address _gasLessMinter) public {
-        require(msg.sender == gasLessMinter);
-        gasLessMinter = _gasLessMinter;
     }
 
     function _beforeTokenTransfer(
@@ -48,12 +38,12 @@ contract Poc is ERC721, RedirectAll {
     }
 
     function safeMint(address to) public {
-        require(msg.sender == gasLessMinter);
-        require(hasAPoc[to] == false, "This address already has a Poc");
-        require(_tokenIdCounter < maxPocAmount, "Max Poc amount reached");
+        require(msg.sender == gasLessMinter, "401");
+        require(!hasAPoc[to], "hasAPoc");
+        require(_tokenIdCounter < maxPocAmount, "maxPoc");
         _safeMint(to, _tokenIdCounter);
         _addReceiver(to, _tokenIdCounter);
-        _tokenIdCounter++;
+        _tokenIdCounter = _tokenIdCounter+1;
         hasAPoc[to] = true;
     }
 

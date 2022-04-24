@@ -168,7 +168,7 @@ contract RedirectAll is SuperAppBase {
     function afterAgreementCreated(
         ISuperToken _superToken,
         address _agreementClass,
-        bytes32, 
+        bytes32,
         bytes calldata,
         bytes calldata,
         bytes calldata _ctx
@@ -187,7 +187,7 @@ contract RedirectAll is SuperAppBase {
         address _agreementClass,
         bytes32,
         bytes calldata,
-        bytes calldata, 
+        bytes calldata,
         bytes calldata _ctx
     )
         external
