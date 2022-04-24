@@ -7,7 +7,6 @@ import { RedirectAll, ISuperToken, ISuperfluid } from "./RedirectAll.sol";
 contract Poc is ERC721, RedirectAll {
 
     address private gasLessMinter;
-    uint256 private maxPocAmount = 50;
     uint256 private _tokenIdCounter;
     string private baseURI;
 
@@ -32,9 +31,9 @@ contract Poc is ERC721, RedirectAll {
     function _beforeTokenTransfer(
         address from,
         address to,
-        uint256
+        uint256 tokenId
     ) internal override {
-        _changeReceiver(from, to);
+        _changeReceiver(from, to, tokenId);
     }
 
     function safeMint(address to) public {

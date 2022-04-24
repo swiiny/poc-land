@@ -17,8 +17,9 @@ contract RedirectAll is SuperAppBase {
     IConstantFlowAgreementV1 private _cfa; // the stored constant flow agreement class address
     ISuperToken private _acceptedToken; // accepted token
     mapping (address => int256) private _receivers;
-    address[] private _receiverAddresses;
-    int256 lastUpdateReceiverNb;
+    uint256 constant internal maxPocAmount = 20;
+    address[maxPocAmount] private _receiverAddresses;
+    int256 private lastUpdateReceiverNb;
 
    constructor(
         ISuperfluid host,
@@ -57,9 +58,8 @@ contract RedirectAll is SuperAppBase {
     // @dev adds a receiver to the list of receivers if not already present
     function _addReceiver(address receiver, uint256 tokenId) internal {
         // check if receiver is already in the list
-        if (_receivers[receiver] > 0) {
-            return;
-        }
+        // require(_receivers[receiver] != 0 || _receiverAddresses[tokenId-1] == address(0));
+        require(_receiverAddresses[tokenId-1] == address(0));
         // create flow for this user
         require(receiver != address(0), "New receiver is zero address");
         // @dev because our app is registered as final, we can't take downstream apps
@@ -67,10 +67,7 @@ contract RedirectAll is SuperAppBase {
             !_host.isApp(ISuperApp(receiver)),
             "New receiver can not be a superApp"
         );
-        if (_receivers[receiver] == 0) {
-            _receiverAddresses.push(receiver);
-        }
-        _receivers[receiver] = int256(tokenId);
+        _receiverAddresses[tokenId-1] = receiver;
     }
 
     /// @dev If a new stream is opened, or an existing one is opened
@@ -78,7 +75,7 @@ contract RedirectAll is SuperAppBase {
         private
         returns (bytes memory newCtx)
     {
-        require(_receiverAddresses.length > 0, "No receiver to redirect to");
+        require(_receiverAddresses[0] != address(0), "No receiver to redirect to");
         newCtx = ctx;
         // @dev This will give me the new flowRate, as it is called in after callbacks
         int96 netFlowRate = _cfa.getNetFlow(_acceptedToken, address(this));
@@ -88,61 +85,73 @@ contract RedirectAll is SuperAppBase {
             _receiverAddresses[0]
         ); // CHECK: unclear what happens if flow doesn't exist.
         int96 inFlowRate = netFlowRate + int96(int256(outFlowRate) * lastUpdateReceiverNb);
-        int96 newOutFlowRate = int96(int256(inFlowRate) / int256(_receiverAddresses.length));
+
+        int256 newReceiverNb = lastUpdateReceiverNb;
+        for (uint256 i = uint256(lastUpdateReceiverNb); i < _receiverAddresses.length; i++) {
+          if (_receiverAddresses[i] == address(0)) {
+            break; 
+          }
+          newReceiverNb++;
+        }
+        
+        int96 newOutFlowRate = int96(int256(inFlowRate) / newReceiverNb);
 
         // @dev If inFlowRate === 0, then delete existing flow.
         if (inFlowRate == int96(0)) {
             // @dev if inFlowRate is zero, delete outflow.
             for (uint256 i = 0; i < _receiverAddresses.length; i++) {
-                if (_receivers[_receiverAddresses[i]] > 0) {
-                    newCtx = cfaV1.deleteFlowWithCtx(
-                        newCtx,
-                        address(this),
-                        _receiverAddresses[i],
-                        _acceptedToken
-                    );
+                if (_receiverAddresses[i] == address(0)) {
+                    break;
                 }
+                newCtx = cfaV1.deleteFlowWithCtx(
+                            newCtx,
+                            address(this),
+                            _receiverAddresses[i],
+                            _acceptedToken
+                        );
             }
         } else if (outFlowRate != int96(0)) {
             for (uint256 i = 0; i < _receiverAddresses.length; i++) {
-                if (_receivers[_receiverAddresses[i]] > 0) {
-                    newCtx = cfaV1.updateFlowWithCtx(
-                        newCtx,
-                        _receiverAddresses[i],
-                        _acceptedToken,
-                        newOutFlowRate
-                    );
+                if (_receiverAddresses[i] == address(0)) {
+                    break;
                 }
+                newCtx = cfaV1.updateFlowWithCtx(
+                            newCtx,
+                            _receiverAddresses[i],
+                            _acceptedToken,
+                            newOutFlowRate
+                        );
             }
         } else {
             // @dev If there is no existing outflow, then create new flow to equal inflow
             for (uint256 i = 0; i < _receiverAddresses.length; i++) {
-                if (_receivers[_receiverAddresses[i]] > 0) {
-                    newCtx = cfaV1.createFlowWithCtx(
-                        newCtx,
-                        _receiverAddresses[i],
-                        _acceptedToken,
-                        newOutFlowRate
-                    );
+                if (_receiverAddresses[i] == address(0)) {
+                    break;
                 }
+                newCtx = cfaV1.createFlowWithCtx(
+                            newCtx,
+                            _receiverAddresses[i],
+                            _acceptedToken,
+                            newOutFlowRate
+                        );
             }
         }
-        lastUpdateReceiverNb = int256(_receiverAddresses.length);
+        lastUpdateReceiverNb = newReceiverNb;
     }
 
     // @dev Change the Receiver of the total flow
-    function _changeReceiver(address oldReceiver, address newReceiver) internal {
+    function _changeReceiver(address oldReceiver, address newReceiver, uint256 tokenId) internal {
+        if (_receiverAddresses[tokenId-1] == address(0)) {
+            return;
+        }
+        require(_receiverAddresses[tokenId-1] == oldReceiver);
         require(newReceiver != address(0), "New receiver is zero address");
         // @dev because our app is registered as final, we can't take downstream apps
         require(
             !_host.isApp(ISuperApp(newReceiver)),
             "New receiver can not be a superApp"
         );
-
         if (newReceiver == oldReceiver) return;
-        if (_receivers[oldReceiver] == 0 || _receivers[newReceiver] > 0) {
-            return;
-        }
 
         // @dev delete flow to old receiver
         (, int96 outFlowRate, , ) = _cfa.getFlow(
@@ -160,11 +169,7 @@ contract RedirectAll is SuperAppBase {
             );
         }
 
-        if (_receivers[newReceiver] == 0) {
-            _receiverAddresses.push(newReceiver);
-        }
-        _receivers[newReceiver] = _receivers[oldReceiver];
-        _receivers[oldReceiver] = -1;
+        _receiverAddresses[tokenId-1] = newReceiver;
     }
 
     /**************************************************************************
