@@ -13,6 +13,8 @@ function chainIDToProvider(chainID) {
     switch (chainID) {
         case 10:
         return 'https://opt-mainnet.g.alchemy.com/v2/QUwxJKOtcZZY5teOJ7EMqb2RNjG-2nXE';
+		case 69:
+		return 'https://opt-kovan.g.alchemy.com/v2/QUwxJKOtcZZY5teOJ7EMqb2RNjG-2nXE'
         case 137:
         return 'https://polygon-mainnet.g.alchemy.com/v2/T5feScSf_Edl3Rwxel0ygxWceNyDV8kV';
         case 4:
