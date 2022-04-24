@@ -13,16 +13,36 @@ export const availableNetworks = [
     name: 'Polygon',
     chainId: '0x89',
     contractAddress: '0xEe1bB23886524a9fa59d01871BeFA2bb6388B1dF',
+    host: '0x',
+    cfa: '',
+  },
+  {
+    name: 'Polygon Mumbai',
+    chainId: '0x13881',
+    contractAddress: '',
+    host: '0x',
+    cfa: '',
   },
   {
     name: 'Optimism',
     chainId: '0xA',
     contractAddress: '',
+    host: '0x',
+    cfa: '',
+  },
+  {
+    name: 'Optimism Testnet',
+    chainId: '',
+    contractAddress: '',
+    host: '0x',
+    cfa: '',
   },
   {
     name: 'Rinkeby',
     chainId: '0x4',
-    contractAddress: '0x22df03979C519feA7bcC1113409af40FCac12378',
+    contractAddress: '0xA506f89339238f0F21A33932d37FDC8BFa3a9E1e',
+    host: '0x',
+    cfa: '',
   },
 ];
 

@@ -41,8 +41,8 @@ contract RedirectAll is SuperAppBase {
 
         cfaV1 = CFAv1Library.InitData(_host, _cfa);
 
-        uint256 configWord = SuperAppDefinitions.APP_LEVEL_FINAL |
-            // change from 'before agreement stuff to after agreement
+        uint256 configWord =
+            SuperAppDefinitions.APP_LEVEL_FINAL |
             SuperAppDefinitions.BEFORE_AGREEMENT_CREATED_NOOP |
             SuperAppDefinitions.BEFORE_AGREEMENT_UPDATED_NOOP |
             SuperAppDefinitions.BEFORE_AGREEMENT_TERMINATED_NOOP;
