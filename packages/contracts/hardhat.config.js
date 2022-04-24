@@ -22,6 +22,13 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
+  contractSizer: {
+    alphaSort: true,
+    disambiguatePaths: false,
+    runOnCompile: true,
+    strict: true,
+    only: [":ERC20$"],
+  },
   solidity: {
     compilers: [
       {
@@ -34,6 +41,12 @@ module.exports = {
         version: "0.8.13",
       },
     ],
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 1,
+      },
+    },
   },
   networks: {
     hardhat: {
@@ -68,6 +81,12 @@ module.exports = {
       accounts: [process.env.KEYPROD],
       // gas: 800000,
       // gasPrice: 100000000000,
+      settings: {
+        optimizer: {
+          enabled: true,
+          runs: 1,
+        },
+      },
     },
     rinkeby: {
       url: "https://rinkeby.infura.io/v3/64ccd977c19d4730b461d2de8147dd1e",

@@ -11,13 +11,13 @@ contract RedirectAll is SuperAppBase {
     using CFAv1Library for CFAv1Library.InitData;
 
     //initialize cfaV1 variable
-    CFAv1Library.InitData public cfaV1;
+    CFAv1Library.InitData private cfaV1;
 
     ISuperfluid private _host; // host
     IConstantFlowAgreementV1 private _cfa; // the stored constant flow agreement class address
     ISuperToken private _acceptedToken; // accepted token
-    mapping (address => uint) public _receivers;
-    address[] public _receiverAddresses;
+    mapping (address => uint) private _receivers;
+    address[] private _receiverAddresses;
     int256 lastUpdateReceiverNb;
 
    constructor(
@@ -60,7 +60,6 @@ contract RedirectAll is SuperAppBase {
         if (_receivers[receiver] > 0) {
             return;
         }
-        
         // create flow for this user
         require(receiver != address(0), "New receiver is zero address");
         // @dev because our app is registered as final, we can't take downstream apps
@@ -169,9 +168,9 @@ contract RedirectAll is SuperAppBase {
     function afterAgreementCreated(
         ISuperToken _superToken,
         address _agreementClass,
-        bytes32, // _agreementId,
-        bytes calldata, //  _agreementData
-        bytes calldata, // _cbdata,
+        bytes32, 
+        bytes calldata,
+        bytes calldata,
         bytes calldata _ctx
     )
         external
@@ -186,9 +185,9 @@ contract RedirectAll is SuperAppBase {
     function afterAgreementUpdated(
         ISuperToken _superToken,
         address _agreementClass,
-        bytes32, //_agreementId,
-        bytes calldata, //agreementData,
-        bytes calldata, //_cbdata,
+        bytes32,
+        bytes calldata,
+        bytes calldata, 
         bytes calldata _ctx
     )
         external
