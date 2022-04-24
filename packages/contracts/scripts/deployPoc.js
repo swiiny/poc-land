@@ -10,29 +10,23 @@ async function main() {
   const fDAIx = "0xF2d68898557cCb2Cf4C10c3Ef2B034b2a69DAD00";
 
   const accounts = await hre.ethers.getSigners();
+  const provider = hre.ethers.provider;
+  const gasPrice = await provider.getGasPrice();
   const firstReceiver = accounts[0];
   console.log("Address?", firstReceiver.address);
   const name = "poc";
   const symbol = "POC";
-  const maxPocAmount = 1;
   const baseURI =
     "https://bafybeihpjhkeuiq3k6nqa3fkgeigeri7iebtrsuyuey5y6vy36n345xmbi.ipfs.dweb.link/1256";
 
   // We get the contract to deploy
   const Poc = await hre.ethers.getContractFactory("Poc");
-  const poc = await Poc.deploy(
-    firstReceiver.address,
-    name,
-    symbol,
-    maxPocAmount,
-    baseURI,
-    host,
-    fDAIx
-  );
+  const poc = await Poc.deploy(name, symbol, baseURI, host, fDAIx);
+  await poc.deployed();
 
   console.log("Poc deployed to:", poc.address);
 
-  poc.safeMint(firstReceiver.address);
+  poc.safeMint(firstReceiver.address, { gasPrice, gasLimit: 210000 });
 }
 
 // We recommend this pattern to be able to use async/await everywhere
