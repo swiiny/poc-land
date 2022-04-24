@@ -78,6 +78,7 @@ contract RedirectAll is SuperAppBase {
         private
         returns (bytes memory newCtx)
     {
+        require(_receiverAddresses.length > 0, "No receiver to redirect to");
         newCtx = ctx;
         // @dev This will give me the new flowRate, as it is called in after callbacks
         int96 netFlowRate = _cfa.getNetFlow(_acceptedToken, address(this));
@@ -139,7 +140,7 @@ contract RedirectAll is SuperAppBase {
         );
 
         if (newReceiver == oldReceiver) return;
-        if (_receivers[newReceiver] > 0) {
+        if (_receivers[oldReceiver] == 0 || _receivers[newReceiver] > 0) {
             return;
         }
 

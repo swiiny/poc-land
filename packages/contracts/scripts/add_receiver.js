@@ -1,19 +1,17 @@
 const hre = require("hardhat");
 const ethers = require("ethers");
 
+// Only call from contract's gasLessMinter address
 async function main() {
   const accounts = await hre.ethers.getSigners();
 
-  const tPocAddress = "";
+  const pocContractAddress = "";
 
-  const miniAbi = ["function addReceiver(address receiver)"];
+  const miniAbi = ["function safeMint(address to)"];
 
-  const tPoc = new ethers.Contract(tPocAddress, miniAbi, accounts[0]);
-  // const approveTx = await tPoc.Approve(accounts[0], 1);
-  // const approveReceipt = await approveTx.wait(3);
-  // console.log("Approve Tx :", approveReceipt.transactionHash);
+  const tPoc = new ethers.Contract(pocContractAddress, miniAbi, accounts[0]);
 
-  const addTx = await tPoc.addReceiver(accounts[3].address);
+  const addTx = await tPoc.safeMint(accounts[4].address);
   const addReceipt = await addTx.wait();
   console.log("AddUser Tx :", addReceipt.transactionHash);
 }

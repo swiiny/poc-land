@@ -58,7 +58,7 @@ module.exports = {
       accounts: [process.env.KEY],
     },
     goerli: {
-      url: "https://eth-goerli.alchemyapi.io/v2/xvWNZCtF0QsihW1izifdIOqZrP66u_AJ",
+      url: "https://goerli.infura.io/v3/34cb36594e3b41699c4303a8b792dd3a",
       accounts: [
         process.env.K,
         process.env.KEY,

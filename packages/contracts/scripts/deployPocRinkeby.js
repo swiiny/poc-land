@@ -10,8 +10,8 @@ async function main() {
   const DAIx = "0x1305F6B6Df9Dc47159D12Eb7aC2804d4A33173c2";
 
   const accounts = await hre.ethers.getSigners();
-  const firstReceiver = accounts[0];
-  console.log("Address?", firstReceiver.address);
+  const gasLessMinter = accounts[0].address;
+  console.log("Address?", gasLessMinter);
   const name = "poc";
   const symbol = "POC";
   const baseURI = "https://google.com";
@@ -19,7 +19,7 @@ async function main() {
   // We get the contract to deploy
   const Poc = await hre.ethers.getContractFactory("Poc");
   const poc = await Poc.deploy(
-    firstReceiver.address,
+    gasLessMinter,
     name,
     symbol,
     baseURI,
