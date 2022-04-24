@@ -27,8 +27,8 @@ export const availableNetworks = [
     name: 'Optimism',
     chainId: '0xA',
     contractAddress: '',
-    host: '0x',
-    daix: '',
+    host: '0x567c4B141ED61923967cA25Ef4906C8781069a10',
+    daix: 'tbd',
   },
   {
     name: 'Optimism Testnet',
