@@ -46,6 +46,8 @@ INSERT INTO `pocs` (`creator_address`, `chain_id`, `poc_address`) VALUES
 INSERT INTO `user_pocs` (`user_address`, `chain_id`, `poc_address`) VALUES
 ('0x0679edaa331915cB1ea92A3de25497E75E8AC8E4', 4, '0x4f76591D9D77168d4c1A768675B2B14e891d0a21'),
 ('0xf62ada6Eb3747323CBBfa89ACb57Cb8E231Ef8F7', 4, '0x4f76591D9D77168d4c1A768675B2B14e891d0a21');
+INSERT INTO `pocs` (`creator_address`, `chain_id`, `poc_address`) VALUES
+('0xe84132be566a83988501a1ea134dec5992ea0aae', 4, '0xf1F4fD09F098f05184ab717c0520D5cf640ffFE9');
 
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

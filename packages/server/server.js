@@ -84,6 +84,14 @@ app.get(`${BASE_URL_V1}/allPocs`, async (req, res) => {
 	}
 });
 
+app.post(`${BASE_URL_V1}/getAllPocsCreatedByUser`, jsonParser, async (req, res) => {
+	// read the request data
+	console.log(req.body);
+	const { userAddr } = req.body;
+	const query = await pool.query('SELECT poc_address FROM pocs WHERE creator_address = ?', [userAddr]);
+	console.log(query[0], query[1]);
+	res.send(query[0])
+});
 
 
 app.post(`${BASE_URL_V1}/mint`, jsonParser, async (req, res) => {

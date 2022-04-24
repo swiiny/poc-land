@@ -13,22 +13,17 @@ const Gallery = () => {
   const [userPocs, setUserPocs] = useState([{ id: 'uehf43' }, { id: 'uehf44' }, { id: 'uehf45' }]);
   const { account, isWrongNetwork, currentChainId } = useWallet();
 
-  async function getPocFactoryContract(ethereumProvider) {
-    const contractAddress = availableNetworks.find((net) => net.chainId === currentChainId)?.contractAddress;
-    const pocFactoryAddress = contractAddress;
-    const provider = new ethers.providers.Web3Provider(ethereumProvider);
-    const dnpContract = new ethers.Contract(pocFactoryAddress, pocFactoryAbi, provider);
-    return dnpContract;
-  }
-
-  async function getPocWithEventAndCreator(ethereumProvider) {
-    const pocFactoryContract = await getPocFactoryContract(ethereumProvider);
-    const index = await pocFactoryContract.getLastPocCreatorIndex(account);
-    const pocAddress = await pocFactoryContract.getPocWithCreatorIndex(account, index.sub(1));
-    return pocAddress;
-  }
-
   async function getAllPocsAddressFromUser(ethereumProvider) {
+    const payload = { userAddr: account };
+    const res = await axios.post(`${process.env.SERVER_URL}/v1/server/getAllPocsCreatedByUser`, payload);
+    console.log(res.data);
+    const pocsAddresses = [];
+    res.data.forEach((element) => {
+      pocsAddresses.push(element.poc_address);
+    });
+    return pocsAddresses;
+
+    /*
     const pocFactoryContract = await getPocFactoryContract(ethereumProvider);
     const index = await pocFactoryContract.getLastPocCreatorIndex(account);
     const intIndex = parseInt(index, 16);
@@ -43,6 +38,7 @@ const Gallery = () => {
       pocsAddresses.push(pocAddress);
     }
     return pocsAddresses;
+    */
   }
 
   const getPocMetadata = async (pocAddress) => {
