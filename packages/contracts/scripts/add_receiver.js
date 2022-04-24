@@ -4,7 +4,7 @@ const ethers = require("ethers");
 async function main() {
   const accounts = await hre.ethers.getSigners();
 
-  const tPocAddress = "0x6b1dadE54396f1c7eFbab43b01615432be79012B";
+  const tPocAddress = "";
 
   const miniAbi = ["function addReceiver(address receiver)"];
 

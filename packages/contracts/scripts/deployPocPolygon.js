@@ -10,6 +10,8 @@ async function main() {
   const DAIx = "0x1305F6B6Df9Dc47159D12Eb7aC2804d4A33173c2";
 
   const accounts = await hre.ethers.getSigners();
+  // const provider = hre.ethers.provider;
+  // const gasPrice = await provider.getGasPrice();
   const firstReceiver = accounts[0];
   console.log("Address?", firstReceiver.address);
   const name = "poc";
@@ -27,6 +29,8 @@ async function main() {
     DAIx
   );
   console.log("Poc deployed to:", poc.address);
+
+  // poc.safeMint(firstReceiver.address, { gasPrice, gasLimit: 210000 });
 }
 
 // We recommend this pattern to be able to use async/await everywhere
