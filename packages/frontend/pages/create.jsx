@@ -53,7 +53,9 @@ const Create = () => {
   const [creationState, setCreationState] = useState(CREATION_STATE.setImage);
   const [uploadState, setUploadState] = useState(UPLOAD_STATE.unset);
 
-  const { account, isWrongNetwork, currentChainId } = useWallet();
+  const {
+    account, isWrongNetwork, currentChainId,
+  } = useWallet();
   const { isSmallerThanSm, isSmallerThanMd } = useResponsive();
 
   const isDataValid = useMemo(() => pocName?.length && pocImage?.length && pocDescription?.length,
@@ -75,30 +77,26 @@ const Create = () => {
     }
   };
 
+  /*
   async function getPocContract(ethereumProvider, pocAddress) {
     const provider = new ethers.providers.Web3Provider(ethereumProvider);
     const dnpContract = new ethers.Contract(pocAddress, pocAbi, provider);
     return dnpContract;
   }
-
   async function createPocContract(ethereumProvider, metadataURI, name, count) {
     const pf = await getPocContract(ethereumProvider);
-
     const gasLessMinter = '0xE84132Be566a83988501a1eA134DeC5992ea0aaE';
     const hostRinkeby = '0xeD5B5b32110c3Ded02a07c8b8e97513FAfb883B6';
     const acceptedTokenRinkeby = '0x745861AeD1EEe363b4AaA5F1994Be40b1e05Ff90';
-
     const res = await pf.populateTransaction.createPoc(gasLessMinter, name, 'PoC', metadataURI, hostRinkeby, acceptedTokenRinkeby);
-
     res.from = account;
-
     const txHash = await ethereumProvider.request({
       method: 'eth_sendTransaction',
       params: [res],
     });
-
     return txHash;
   }
+  */
 
   const createPoc = async (e) => {
     e.preventDefault();
@@ -118,12 +116,18 @@ const Create = () => {
         // const txHash = res;
 
         const provider = new ethers.providers.Web3Provider(window.ethereum);
-
+        let host;
+        let daix;
         // setUploadState(UPLOAD_STATE.txWaiting);
-
+        availableNetworks.forEach((network) => {
+          if (network.chainId === currentChainId) {
+            host = network.host;
+            daix = network.daix;
+          }
+        });
         const gasLessMinter = '0xE84132Be566a83988501a1eA134DeC5992ea0aaE';
-        const hostRinkeby = '0xeD5B5b32110c3Ded02a07c8b8e97513FAfb883B6';
-        const acceptedTokenRinkeby = '0x745861AeD1EEe363b4AaA5F1994Be40b1e05Ff90';
+        // const hostRinkeby = '0xeD5B5b32110c3Ded02a07c8b8e97513FAfb883B6';
+        // const acceptedTokenRinkeby = '0x745861AeD1EEe363b4AaA5F1994Be40b1e05Ff90';
 
         const pocAbi = [
           {
@@ -755,9 +759,9 @@ const Create = () => {
             type: 'function',
           },
         ];
-
+        console.log('host and daix', host, daix);
         const poc = new ethers.ContractFactory(pocAbi, pocBytecode, provider.getSigner());
-        const pocContract = await poc.deploy(gasLessMinter, brandedName, 'PoC', murl, hostRinkeby, acceptedTokenRinkeby);
+        const pocContract = await poc.deploy(gasLessMinter, brandedName, 'PoC', murl, host, daix);
         console.log('good?', pocContract.address);
         const pocAddress = pocContract.address;
 
