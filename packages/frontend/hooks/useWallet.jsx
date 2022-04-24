@@ -32,8 +32,8 @@ export const availableNetworks = [
   },
   {
     name: 'Optimism Testnet',
-    chainId: '0x55',
-    contractAddress: '',
+    chainId: '0x45',
+    // contractAddress: '',
     host: '0x74b57883f8ce9F2BD330286E884CfD8BB24AC4ED',
     daix: '0x04d4f73e9DE52a8fEC544087a66BBbA660A35957',
   },

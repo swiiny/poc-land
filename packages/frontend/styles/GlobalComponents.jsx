@@ -199,6 +199,18 @@ export const StyledText = styled.p`
         font-size: 14px;
     }
 
+    ${(props) => (props.size === Size.s ? css`
+        font-size: 14px;
+
+        @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+            font-size: 12px;
+        }
+        
+        @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+            font-size: 12px;
+        }
+    ` : '')}
+
     ${(props) => (props.size === Size.l ? css`
         font-size: 32px;
 

@@ -84,3 +84,20 @@ export const imgToSquare = async (img) => {
 
   return png;
 };
+
+export const copyToClipboard = (a) => {
+  try {
+    const copyText = document.createElement('input');
+    copyText.setAttribute('value', a);
+
+    /* Select the text field */
+    copyText.select();
+    copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+    /* Copy the text inside the text field */
+    navigator.clipboard.writeText(copyText.value);
+    return true;
+  } catch {
+    return false;
+  }
+};

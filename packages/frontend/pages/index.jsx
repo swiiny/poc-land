@@ -21,17 +21,17 @@ import {
 const demoPocs = [
   {
     name: 'Synthwave DAO',
-    description: 'This is a description for POC 1',
+    description: 'First test of poc for DAO members',
     src: Poc1.src,
   },
   {
     name: 'zk-PR-Creators',
-    description: 'This is a description for POC 1',
+    description: 'Streaming money to github contributors',
     src: Poc2.src,
   },
   {
     name: 'Web3 vs UX',
-    description: 'This is a description for POC 1',
+    description: 'Fun work meetup',
     src: Poc3.src,
   },
 ];
@@ -67,7 +67,7 @@ export default function Home() {
 
         <StyledPocList>
           {demoPocs.slice(0, demoCardCount).map((p) => (
-            <PocItem key={p.name + p.src} poc={p} />
+            <PocItem key={p.name + p.src} poc={p} demo />
           ))}
         </StyledPocList>
 

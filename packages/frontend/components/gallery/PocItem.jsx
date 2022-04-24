@@ -1,10 +1,14 @@
 import { Skeleton } from '@mui/material';
+import { ClipboardCopy } from 'heroicons-react';
 import React, { useMemo } from 'react';
 import Tilt from 'react-parallax-tilt';
 import styled from 'styled-components';
 import { StyledHeadingThree, StyledText } from '../../styles/GlobalComponents';
+import { copyToClipboard } from '../../utils/functions';
 
-const PocItem = ({ poc, isVisible = true, ...otherProps }) => {
+const PocItem = ({
+  poc, isVisible = true, demo = false, ...otherProps
+}) => {
   const isLoading = useMemo(() => {
     if (!poc?.name) {
       return true;
@@ -61,11 +65,59 @@ const PocItem = ({ poc, isVisible = true, ...otherProps }) => {
               <StyledText isVisible className="description">{poc.description}</StyledText>
             </>
           )}
+
+          {!demo && (
+          <>
+            <StyledAddressBtn
+              onClick={() => copyToClipboard(poc.address)}
+            >
+              <ClipboardCopy size={20} />
+            </StyledAddressBtn>
+
+            <StyledSuperfluidLink href="https://app.superfluid.finance/" target="_blank" rel="noreferrer">
+              Stream now
+            </StyledSuperfluidLink>
+          </>
+          )}
         </div>
       </Tilt>
     </StyledPocItem>
   );
 };
+
+const StyledAddressBtn = styled.button`
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+
+  background-color: transparent;
+  border: none;
+  color: ${({ theme }) => theme.colors.typo};
+
+  cursor: pointer;
+`;
+
+const StyledSuperfluidLink = styled.a`
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: ${({ theme }) => theme.colors.gradient};
+
+  border-radius: 15px;
+
+  height: 30px;
+  width: 120px;
+
+  color: ${({ theme }) => theme.colors.typo};
+
+  font-size: 14px;
+  font-weight: bold;
+`;
 
 const StyledPocItem = styled.li`
     list-style: none;
