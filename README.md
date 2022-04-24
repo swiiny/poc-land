@@ -7,19 +7,19 @@ DeFi enabled, censorship resistant multi chain poaps. Built with Superfluid, IPF
 
 ## Frontend
 ### homepage 
-- [ ] make it cleaner/more beautiful
+- [x] make it cleaner/more beautiful
 ### create
 - [x] add count + price estimation..
 - [x] create function to get the created contract address
 - [x] save in db address of poc with creator and chain id
-- [ ] should display QR code for the poc
+- [x] should display QR code for the poc
 - [ ] reaccess this page?
 ### redeem 
 - [x] check on which network the poap is ? 
-- [ ] save in db if successful server side
+- [x] save in db if successful server side
 - [x] fetch metadata to display poc being claimed
 ### gallery
-- [ ] use db to get all pocs related to a user
+- [x] use db to get all pocs related to a user
 - [ ] flow visulisation
 ### My Collections
 - [ ] When Gallery is finished, copy past the page and change the fetch addresses endpoint url
@@ -37,12 +37,12 @@ DeFi enabled, censorship resistant multi chain poaps. Built with Superfluid, IPF
 
 ## Production & Contest
 - [x] Buy poc.land
-- [ ] Create server & deploy
-- [ ] Deploy contracts on the chains
-- [ ] Create slides
-- [ ] Create video
-- [ ] Create logo
-- [ ] Register on hacker dashboard
+- [x] Create server & deploy
+- [x] Deploy contracts on the chains
+- [x] Create slides
+- [x] Create video
+- [x] Create logo
+- [x] Register on hacker dashboard
 
 
 Verification of contracts : 
