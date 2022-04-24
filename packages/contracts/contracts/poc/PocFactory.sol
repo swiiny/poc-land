@@ -12,9 +12,11 @@ contract PocFactory {
         address _creator,
         string memory _name,
         string memory _symbol,
-        string memory _baseURI
+        string memory _baseURI,
+        ISuperfluid host,
+        ISuperToken acceptedToken
     ) public {
-        Poc poc = new Poc(_name, _symbol, _baseURI);
+        Poc poc = new Poc(_name, _symbol, _baseURI, host, acceptedToken);
         emit NewPoc(_creator, _name, address(poc));
     }
 

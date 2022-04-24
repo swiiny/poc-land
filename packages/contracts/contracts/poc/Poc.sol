@@ -7,20 +7,18 @@ import { RedirectAll, ISuperToken, ISuperfluid } from "./RedirectAll.sol";
 contract Poc is ERC721, RedirectAll {
 
     address private gasLessMinter = 0xE84132Be566a83988501a1eA134DeC5992ea0aaE;
-    address private creator;
     uint256 private maxPocAmount = 50;
     uint256 private _tokenIdCounter;
     string private baseURI;
 
     mapping(address => bool) private hasAPoc;
 
-    ISuperfluid host;
-    ISuperToken acceptedToken;
-
     constructor (
         string memory _name,
         string memory _symbol,
-        string memory _baseURI
+        string memory _baseURI,
+        ISuperfluid host,
+        ISuperToken acceptedToken
     )
         ERC721(_name, _symbol)
         RedirectAll (host, acceptedToken)

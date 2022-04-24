@@ -16,7 +16,7 @@ contract RedirectAll is SuperAppBase {
     ISuperfluid private _host; // host
     IConstantFlowAgreementV1 private _cfa; // the stored constant flow agreement class address
     ISuperToken private _acceptedToken; // accepted token
-    mapping (address => uint) private _receivers;
+    mapping (address => int256) private _receivers;
     address[] private _receiverAddresses;
     int256 lastUpdateReceiverNb;
 
@@ -67,8 +67,10 @@ contract RedirectAll is SuperAppBase {
             !_host.isApp(ISuperApp(receiver)),
             "New receiver can not be a superApp"
         );
-        _receivers[receiver] = tokenId;
-        _receiverAddresses.push(receiver);
+        if (_receivers[receiver] == 0) {
+            _receiverAddresses.push(receiver);
+        }
+        _receivers[receiver] = int256(tokenId);
     }
 
     /// @dev If a new stream is opened, or an existing one is opened
@@ -157,8 +159,11 @@ contract RedirectAll is SuperAppBase {
             );
         }
 
+        if (_receivers[newReceiver] == 0) {
+            _receiverAddresses.push(newReceiver);
+        }
         _receivers[newReceiver] = _receivers[oldReceiver];
-        delete _receivers[oldReceiver];
+        _receivers[oldReceiver] = -1;
     }
 
     /**************************************************************************
