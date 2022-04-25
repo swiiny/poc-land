@@ -77,7 +77,7 @@ jobs:
         username: ${{ secrets.DEPLOY_USER_PROD }}
         key: ${{ secrets.SSH_KEY_PROD }}
         port: ${{ secrets.DEPLOY_PORT_PROD }}
-        script: cd ondefy/packages/frontend && docker build -f Prod.dockerfile -t odynext .
+        script: cd poc-land/packages/frontend && docker build -f Prod.dockerfile -t pocland-frontend .
 
   build-server: 
     needs: [send-files-to-distant-server]
@@ -91,7 +91,7 @@ jobs:
         username: ${{ secrets.DEPLOY_USER_PROD }}
         key: ${{ secrets.SSH_KEY_PROD }}
         port: ${{ secrets.DEPLOY_PORT_PROD }}
-        script: cd ondefy/packages/server && docker build -f Prod.dockerfile -t odytokenserver .
+        script: cd poc-land/packages/server && docker build -f Prod.dockerfile -t pocland-server .
 
   run-container: 
     needs: [build-frontend, build-server]
