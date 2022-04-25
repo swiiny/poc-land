@@ -2,7 +2,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import useWallet, { availableNetworks } from '../../hooks/useWallet';
 import { StyledTextButton } from '../../styles/GlobalComponents';
-import Portal from './Portal';
+import Portal from './gallery/Portal';
 
 const NetworkSelector = ({ relativeTo, isVisible = false, onClose = () => {} }) => {
   const { switchNetwork } = useWallet();

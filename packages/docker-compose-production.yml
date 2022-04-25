@@ -1,6 +1,26 @@
-version: '3.1'
+version: '3.7'
+
+networks:
+  web:
+      external: true
+  internal:
+      external: false
+      driver: bridge   
 
 services:
+  caddy:
+      image: caddy:2-alpine
+      restart: unless-stopped
+      ports:
+              - "80:80"
+              - "443:443"
+      volumes:
+              - caddy/Caddyfile:/etc/caddy/Caddyfile
+              - caddy/data:/data # Optional
+              - caddy/config:/config # Optional
+      networks:
+              - web
+              - internal
   frontend:
     container_name: frontend
     ports:

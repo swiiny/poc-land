@@ -1,0 +1,129 @@
+name: Release app on prod server
+
+on: 
+  push:
+    branches: [ production ]
+
+jobs:
+  frontend-linter:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: prepare job
+      working-directory: packages/frontend
+      run: npm install
+
+    - name: JS Linter
+      working-directory: packages/frontend
+      run: npm run lint
+  
+  server-linter:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: prepare job
+      working-directory: packages/server
+      run: npm install
+
+    - name: JS Linter
+      working-directory: packages/server
+      run: npm run lint
+
+  send-files-to-distant-server:
+    needs: [frontend-linter, server-linter]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Create .env file
+      working-directory: packages
+      run: |
+            touch .env
+            echo DB_IP=${{ secrets.DB_IP_PROD }} >> .env
+            echo DB_USER=${{ secrets.DB_USER_PROD }} >> .env
+            echo DB_PASSWORD=${{ secrets.DB_PASSWORD_PROD }} >> .env
+            echo DB_NAME=${{ secrets.DB_NAME_PROD }} >> .env
+            echo SERVER_PORT=${{ secrets.SERVER_PORT }} >> .env
+            echo SERVER_URL=${{ secrets.SERVER_URL_PROD }} >> .env
+            echo SERVER_IP=${{ secrets.SERVER_IP }} >> .env
+            echo CORS=${{ secrets.CORS_PROD }} >> .env 
+            echo FRONTEND_PORT=${{ secrets.FRONTEND_PORT }} >> .env
+            echo FRONTEND_URL=${{ secrets.FRONTEND_URL }} >> .env
+            echo NODE_ENV=${{ secrets.NODE_ENV }} >> .env
+           
+    - name: "Create Frontend .env file"
+      working-directory: packages
+      run: cp .env frontend && cp .env server
+
+    - name: rsync deployments
+      uses: burnett01/rsync-deployments@5.1
+      with:
+        switches: --delete --exclude-from=.rsyncignore -avz -q --progress
+        path: /packages
+        remote_path: ${{ secrets.DEPLOY_PATH_PROD }}
+        remote_host: ${{ secrets.DEPLOY_HOST_PROD }}
+        remote_port: ${{ secrets.DEPLOY_PORT_PROD }}
+        remote_user: ${{ secrets.DEPLOY_USER_PROD }}
+        remote_key: ${{ secrets.SSH_KEY_PROD }}
+   
+  build-frontend: 
+    needs: [send-files-to-distant-server]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Docker build frontend
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.DEPLOY_HOST_PROD }}
+        username: ${{ secrets.DEPLOY_USER_PROD }}
+        key: ${{ secrets.SSH_KEY_PROD }}
+        port: ${{ secrets.DEPLOY_PORT_PROD }}
+        script: cd ondefy/packages/frontend && docker build -f Prod.dockerfile -t odynext .
+
+  build-server: 
+    needs: [send-files-to-distant-server]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Docker build frontend
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.DEPLOY_HOST_PROD }}
+        username: ${{ secrets.DEPLOY_USER_PROD }}
+        key: ${{ secrets.SSH_KEY_PROD }}
+        port: ${{ secrets.DEPLOY_PORT_PROD }}
+        script: cd ondefy/packages/server && docker build -f Prod.dockerfile -t odytokenserver .
+
+  run-container: 
+    needs: [build-frontend, build-server]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Docker run
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.DEPLOY_HOST_PROD }}
+        username: ${{ secrets.DEPLOY_USER_PROD }}
+        key: ${{ secrets.SSH_KEY_PROD }}
+        port: ${{ secrets.DEPLOY_PORT_PROD }}
+        script: |
+                cd ondefy/packages
+                docker-compose -f docker-compose-production.yml down 
+                docker-compose -f docker-compose-production.yml up -d --remove-orphans
+  
+  clean: 
+    needs: [run-container]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Clean server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.DEPLOY_HOST_PROD }}
+        username: ${{ secrets.DEPLOY_USER_PROD }}
+        key: ${{ secrets.SSH_KEY_PROD }}
+        port: ${{ secrets.DEPLOY_PORT_PROD }}
+        script: |
+                cd ondefy/packages
+                docker image prune -a -f
+
+                

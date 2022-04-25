@@ -1,0 +1,16 @@
+.DS_Store
+*.local
+main
+
+node_modules/
+dist/
+.cache
+.vscode/
+.firebase 
+.well-known/
+*.log
+
+*.dump
+
+.github
+contracts/

@@ -7,16 +7,19 @@ Hack time : 36H
 # TODO 
 
 ## Frontend
+
+### Global
+- [ ] Add network Selector
+- [ ] Display current network
+- [ ] DevOps
+
 ### homepage 
 - [x] make it cleaner
 
 ### create
 - [ ] add price estimation
 - [ ] set Max to 50 according to the smart contract
-
-### Global
-- [ ] Add network Selector
-- [ ] Display current network
+- [ ] fix IPFS upload error on prod
 
 ### gallery
 - [x] use db to get all pocs related to a user

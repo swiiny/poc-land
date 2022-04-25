@@ -1,0 +1,8 @@
+poc.land
+
+www.poc.land {
+    redir https://poc.land{uri}
+}
+
+reverse_proxy localhost:8080
+reverse_proxy /v1/server/* http://127.0.0.1:3000

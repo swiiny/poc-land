@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button } from '../../styles/GlobalComponents';
-import Portal from '../utils/Portal';
+import Portal from '../utils/gallery/Portal';
 
 const WalletPopup = ({ onClose, isVisible = false }) => (
   <Portal selector="body">

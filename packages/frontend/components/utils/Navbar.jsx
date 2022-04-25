@@ -8,8 +8,8 @@ import useResponsive from '../../hooks/useResponsive';
 import useWallet from '../../hooks/useWallet';
 import { Button, Size, StyledTag } from '../../styles/GlobalComponents';
 import { formatAddress } from '../../utils/functions';
+import Portal from './gallery/Portal';
 import NetworkSelector from './NetworkSelector';
-import Portal from './Portal';
 
 export const pages = [
   {
