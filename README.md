@@ -7,26 +7,24 @@ DeFi enabled, censorship resistant multi chain poaps. Built with Superfluid, IPF
 
 ## Frontend
 ### homepage 
-- [x] make it cleaner/more beautiful
+- [x] make it cleaner
+
 ### create
-- [x] add count + price estimation..
-- [x] create function to get the created contract address
-- [x] save in db address of poc with creator and chain id
-- [x] should display QR code for the poc
-- [ ] reaccess this page?
-### redeem 
-- [x] check on which network the poap is ? 
-- [x] save in db if successful server side
-- [x] fetch metadata to display poc being claimed
+- [ ] add price estimation
+- [ ] set Max to 50 according to the smart contract
+
+### Global
+- [ ] Add network Selector
+- [ ] Display current network
+
 ### gallery
 - [x] use db to get all pocs related to a user
 - [ ] flow visulisation
-### My Collections
-- [ ] When Gallery is finished, copy past the page and change the fetch addresses endpoint url
-- [ ] Add option to start Flow using Superfluid
+- [ ] add placeholder and CTA to conenct wallet when it isn't
 
-## Backend
-- [x] Setup db connection
+### My Collections
+- [ ] Add option to start Flow using Superfluid
+- [ ] add placeholder and CTA to conenct wallet when it isn't
 
 ## Smart contracts : base
 - [ ] Setup fee to mint
@@ -34,15 +32,6 @@ DeFi enabled, censorship resistant multi chain poaps. Built with Superfluid, IPF
 ## Smart contracts : tradeable cashflow
 - [ ] TBD
 - [ ] Merge with base
-
-## Production & Contest
-- [x] Buy poc.land
-- [x] Create server & deploy
-- [x] Deploy contracts on the chains
-- [x] Create slides
-- [x] Create video
-- [x] Create logo
-- [x] Register on hacker dashboard
 
 
 Verification of contracts : 
