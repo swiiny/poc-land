@@ -109,7 +109,13 @@ const Create = () => {
       const brandedName = `PoC - ${pocName}`;
 
       const murl = await uploadPocDataToIPFS([pocFile], brandedName, pocDescription);
-      setUploadState(UPLOAD_STATE.waitingForMMAction);
+
+      if (murl) {
+        setUploadState(UPLOAD_STATE.waitingForMMAction);
+      } else {
+        setUploadState(UPLOAD_STATE.error);
+        setCreationState(CREATION_STATE.deployingError);
+      }
 
       try {
         // const res = await createPocContract(window.ethereum, murl, brandedName, pocCount);

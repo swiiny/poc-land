@@ -66,7 +66,7 @@ const PocItem = ({
             </>
           )}
 
-          {!demo && (
+          {!demo && !isLoading && (
           <>
             <StyledAddressBtn
               onClick={() => copyToClipboard(poc.address)}
@@ -156,8 +156,8 @@ const StyledPocItem = styled.li`
             align-items: center;
 
             position: absolute;
-            top: -10px;
-            left: -10px;
+            top: -20px;
+            left: -20px;
 
             border-radius: 50%;
             overflow: hidden;
