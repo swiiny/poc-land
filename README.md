@@ -1,8 +1,10 @@
 # poc.land
 
-Project for the ETHGlobal Hackathon in Amsterdam.
+Source Code of Pol.lanc, a project for the ETHGlobal Hackathon in Amsterdam.
 DeFi enabled, censorship resistant multi chain poaps. Built with Superfluid, IPFS, Optimism and Polygon.   
 Hack time : 36H
+
+Built with [Hugo Roussel](https://github.com/hugoroussel) and [Clément Petit](https://github.com/clempetit)
 
 # TODO 
 
